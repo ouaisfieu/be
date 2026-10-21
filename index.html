@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-slate-50 scroll-smooth">
+<head>
+    <!-- SEO & Web Sémantique Grundmann -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilan Critique de l'État Belge (2026) : Analyse Structurelle & Failles Systémiques</title>
+    <meta name="description" content="Analyse juridique et politologique exhaustive des failles systémiques de l'État belge au 20 octobre 2026 : particratie, opacité, inconstitutionnalité, inexécution des jugements et crise de l'État de droit.">
+    <meta name="keywords" content="Belgique, État de droit, particratie, GRECO Règle 32, CADA, Cour Constitutionnelle, Fedasil, crise carcérale, droit constitutionnel, séparation des pouvoirs, érosion démocratique">
+    <meta name="author" content="Analyse Structurelle Démocratique">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ouaisfieu.github.io/be/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ouaisfieu.github.io/be/">
+    <meta property="og:title" content="Bilan Critique de l'État Belge (2026) : Analyse Structurelle">
+    <meta property="og:description" content="Diagnostic complet des failles institutionnelles et juridiques du Royaume de Belgique : opacité, paralégalité, particratie et inexécution des jugements.">
+    <meta property="og:locale" content="fr_BE">
+    <meta property="og:site_name" content="Analyse Structurelle de l'État Belge">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bilan Critique de l'État Belge - Failles Systémiques 2026">
+    <meta name="twitter:description" content="Autopsie juridique et politologique : crise de l'État de droit, mandat impératif de facto et opacité au sommet de l'État.">
+
+    <!-- JSON-LD Structured Data for SEO (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Report",
+          "@id": "https://ouaisfieu.github.io/be/#report",
+          "headline": "Bilan Critique de l'État Belge (2026) : Analyse Structurelle des Failles Systémiques",
+          "description": "Examen juridique et politologique de la crise de l'État de droit, de la particratie et de la défaillance des mécanismes de contrôle en Belgique.",
+          "datePublished": "2026-10-20",
+          "dateModified": "2026-10-20",
+          "inLanguage": "fr-BE",
+          "mainEntityOfPage": "https://ouaisfieu.github.io/be/",
+          "author": {
+            "@type": "Organization",
+            "name": "Observatoire des Institutions et de l'État de Droit"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Analyse Structurelle Belgique",
+            "url": "https://ouaisfieu.github.io/be/"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://ouaisfieu.github.io/be/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Qu'est-ce que la procédure sous Règle 32 du GRECO visant la Belgique ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "La Règle 32 du Conseil de l'Europe est une procédure disciplinaire appliquée lorsque le niveau de conformité d'un État aux recommandations anticorruption est jugé 'globalement insatisfaisant'. La Belgique y a été soumise en raison de son refus persistant de réglementer le lobbying à l'exécutif, la transparence des cabinets ministériels et le contrôle patrimonial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Comment la particratie neutralise-t-elle l'article 42 de la Constitution belge ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Bien que l'article 42 interdise le mandat impératif et consacre la liberté du parlementaire, le monopole des présidents de parti sur la confection des listes électorales et la dépendance aux dotations publiques (86,5M€/an) imposent une discipline de vote absolue, transformant les députés en exécuteurs des consignes des états-majors partisans."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Pourquoi l'État belge peut-il refuser d'exécuter les décisions de justice sans être saisi ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "L'État bénéficie en droit belge d'un principe d'immunité d'exécution sur ses biens publics (Art. 1412bis du Code judiciaire), empêchant toute saisie forçat par un huissier. Cela crée une asymétrie où l'État peut accumuler des millions d'euros d'astreintes non payées (ex: crise Fedasil) en toute impunité matérielle."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            500: '#1e3a8a',
+                            600: '#1d4ed8',
+                            800: '#1e1b4b',
+                            900: '#0f172a',
+                        },
+                        accent: {
+                            danger: '#dc2626',
+                            warning: '#d97706',
+                            success: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Strict responsive boundaries for Chart containers */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-active {
+            border-bottom: 3px solid #1d4ed8;
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+        .tab-inactive {
+            border-bottom: 3px solid transparent;
+            color: #64748b;
+        }
+        .tab-inactive:hover {
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        /* Custom accessibility focus outlines */
+        a:focus-visible, button:focus-visible, input:focus-visible {
+            outline: 2px solid #1d4ed8;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 bg-slate-50 antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!--
+    <!-- Chosen Palette: Slate & Imperial Navy with Crimson/Amber Accents (Aesthetics: Authoritative neutral, analytical, optimal contrast for text readability and WCAG accessibility) -->
+    <!-- Application Structure Plan:
+         Designed as a comprehensive interactive dashboard and structured deep-dive politological platform:
+         - SEO Metadata & Semantic HTML5 (<header>, <nav>, <main>, <article>, <section>, <aside>, <footer>)
+         - Semantic Schema.org JSON-LD microdata for search engines.
+         - Instant Live Search / Global Filter Bar across concepts, laws, and reform plans.
+         - Structured Key Indicators Bar highlighting quantitative parameters.
+         - 8 Domain Navigation Tabs:
+            1. Vue d'Ensemble & Diagnostic (Global Synthesis + 2 Canvas Charts)
+            2. Opacité & GRECO (5th Cycle breakdown, Cabinet secrecy, Rule 32 dualism)
+            3. Particratie & Paralégalité (Party funding chart, Material Constitution, de facto imperative mandate)
+            4. Inexécution des Jugements (Fedasil, Carceral overcrowding line chart, Klimaatzaak, State execution immunity)
+            5. Séparation des Pouvoirs & Justice (Backlog chart, Constitutional court composition, Magistrate alerts)
+            6. Fédéralisme Dissociatif (Equipollence of norms, Centripetal/Centrifugal paradox)
+            7. Pistes de Refondation (Filterable reform proposals matrix)
+            8. F.A.Q. Sémantique (Indexed schema questions for SEO and quick legal reference)
+    -->
+    <!-- Visualization & Content Choices:
+         - Chart 1: GRECO 5th Cycle Compliance (Doughnut Chart)
+         - Chart 2: Prison Overcrowding & Floor Mattresses (Line Chart 2023-2026)
+         - Chart 3: Political Party Funding & Net Wealth (Bar Chart)
+         - Chart 4: Civil vs Administrative Judicial Backlog (Bar Chart)
+         - Interactive Table for GRECO recommendations, interactive reform search filter, live global search bar.
+         - Supporting Libraries: Chart.js (Canvas). NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    -->
+
+    <!-- HEADER & APPLICATION BAR -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <nav aria-label="Fil d'Ariane" class="flex items-center gap-2 text-xs text-slate-400 mb-1">
+                    <a href="https://ouaisfieu.github.io/be/" class="hover:text-white transition-colors">Accueil</a>
+                    <span>/</span>
+                    <span class="text-slate-200">Analyse Structurelle</span>
+                    <span>/</span>
+                    <span class="text-amber-400 font-mono">20 Octobre 2026</span>
+                </nav>
+                <h1 class="text-xl md:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                    Bilan Critique de l'État Belge
+                    <span class="text-xs px-2 py-0.5 rounded bg-red-600/90 text-white font-normal uppercase tracking-wider">Édition Spéciale 2026</span>
+                </h1>
+            </div>
+
+            <!-- Global Search & Alert Badges -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                <div class="relative w-full sm:w-64">
+                    <label for="globalSearch" class="sr-only">Rechercher une notion juridique ou une faille</label>
+                    <input type="text" id="globalSearch" onkeyup="handleGlobalSearch()" placeholder="Rechercher (ex: GRECO, CADA, Fedasil)..." class="w-full bg-slate-800 text-xs text-slate-100 placeholder-slate-400 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                </div>
+                <div class="flex gap-2">
+                    <span class="bg-amber-950/90 border border-amber-600/60 text-amber-300 text-[11px] px-2.5 py-1 rounded-md font-medium flex items-center gap-1 shadow-sm">
+                        &#9888; GRECO Règle 32
+                    </span>
+                    <span class="bg-red-950/90 border border-red-600/60 text-red-300 text-[11px] px-2.5 py-1 rounded-md font-medium flex items-center gap-1 shadow-sm">
+                        &#9888; UE : Déficit Excessif
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN TAB NAVIGATION -->
+        <nav aria-label="Navigation Principale" class="bg-slate-800 border-t border-slate-700/80 overflow-x-auto scrollbar-none">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-6 text-sm font-medium whitespace-nowrap" id="navTabs" role="tablist">
+                <button role="tab" aria-selected="true" aria-controls="tab-overview" onclick="switchTab('tab-overview')" id="btn-tab-overview" class="py-3 px-1 tab-active flex items-center gap-1.5 focus:outline-none">
+                    &#128202; Vue d'Ensemble
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="tab-greco" onclick="switchTab('tab-greco')" id="btn-tab-greco" class="py-3 px-1 tab-inactive flex items-center gap-1.5 focus:outline-none">
+                    &#128065; Opacité & GRECO
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="tab-particracy" onclick="switchTab('tab-particracy')" id="btn-tab-particracy" class="py-3 px-1 tab-inactive flex items-center gap-1.5 focus:outline-none">
+                    &#127963; Particratie & Paralégalité
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="tab-enforcement" onclick="switchTab('tab-enforcement')" id="btn-tab-enforcement" class="py-3 px-1 tab-inactive flex items-center gap-1.5 focus:outline-none">
+                    &#9878; Inexécution des Jugements
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="tab-judiciary" onclick="switchTab('tab-judiciary')" id="btn-tab-judiciary" class="py-3 px-1 tab-inactive flex items-center gap-1.5 focus:outline-none">
+                    &#9873; Séparation des Pouvoirs
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="tab-federalism" onclick="switchTab('tab-federalism')" id="btn-tab-federalism" class="py-3 px-1 tab-inactive flex items-center gap-1.5 focus:outline-none">
+                    &#128506; Fédéralisme Dissociatif
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="tab-reforms" onclick="switchTab('tab-reforms')" id="btn-tab-reforms" class="py-3 px-1 tab-inactive flex items-center gap-1.5 focus:outline-none">
+                    &#128221; Refondation
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="tab-faq" onclick="switchTab('tab-faq')" id="btn-tab-faq" class="py-3 px-1 tab-inactive flex items-center gap-1.5 focus:outline-none">
+                    &#10067; F.A.Q. Sémantique
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- GLOBAL METRIC CARDS BAR -->
+        <section aria-label="Indicateurs clés" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 mb-6">
+            <article class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-sm flex flex-col justify-between hover:border-slate-300 transition-all">
+                <header class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Perception Corruption</header>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span class="text-2xl font-black text-slate-900">69<span class="text-xs font-normal text-slate-500">/100</span></span>
+                    <span class="text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">-4 pts vs '21</span>
+                </div>
+                <footer class="text-[11px] text-slate-500 mt-1">21e rang mondial (TI 2025/26)</footer>
+            </article>
+
+            <article class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-sm flex flex-col justify-between hover:border-slate-300 transition-all">
+                <header class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Conformité GRECO (C5)</header>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span class="text-2xl font-black text-red-600">36.3%</span>
+                    <span class="text-xs font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Règle 32</span>
+                </div>
+                <footer class="text-[11px] text-slate-500 mt-1">8 recommandations / 22</footer>
+            </article>
+
+            <article class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-sm flex flex-col justify-between hover:border-slate-300 transition-all">
+                <header class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Matelas au Sol (Prisons)</header>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span class="text-2xl font-black text-red-600">644</span>
+                    <span class="text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">+261% vs '23</span>
+                </div>
+                <footer class="text-[11px] text-slate-500 mt-1">Record historique (Mars '26)</footer>
+            </article>
+
+            <article class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-sm flex flex-col justify-between hover:border-slate-300 transition-all">
+                <header class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Patrimoine Net Partis</header>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span class="text-2xl font-black text-blue-900">156.8M€</span>
+                    <span class="text-xs font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">Exercice '25</span>
+                </div>
+                <footer class="text-[11px] text-slate-500 mt-1">Dotations : 86.5M€/an</footer>
+            </article>
+
+            <article class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-sm flex flex-col justify-between hover:border-slate-300 transition-all">
+                <header class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Astreintes Asile Non Payées</header>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span class="text-2xl font-black text-red-600">&gt;6.6M€</span>
+                    <span class="text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">Fedasil</span>
+                </div>
+                <footer class="text-[11px] text-slate-500 mt-1">&gt;2200 condamnations CEDH</footer>
+            </article>
+
+            <article class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-sm flex flex-col justify-between hover:border-slate-300 transition-all">
+                <header class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Arriéré Administratif</header>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span class="text-2xl font-black text-amber-600">370 j.</span>
+                    <span class="text-xs font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">1ère Inst.</span>
+                </div>
+                <footer class="text-[11px] text-slate-500 mt-1">Délai moyen de jugement</footer>
+            </article>
+        </section>
+
+        <!-- TAB 1: VUE D'ENSEMBLE & DIAGNOSTIC -->
+        <section id="tab-overview" role="tabpanel" aria-labelledby="btn-tab-overview" class="tab-content block space-y-6">
+            <article class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <header class="border-b border-slate-100 pb-4 mb-4">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Diagnostic Institutionnel Global</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1">Introduction : L'Hypothèque Particratique et la Crise du Modèle Belge</h2>
+                </header>
+                <div class="prose prose-slate max-w-none text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>
+                        À la date du <strong>20 octobre 2026</strong>, l'architecture institutionnelle et constitutionnelle du Royaume de Belgique traverse la crise la plus aiguë de son histoire contemporaine. Longtemps célébrée par la littérature politologique comme le laboratoire exemplaire de la <strong>démocratie consociative</strong> (Arend Lijphart), la Belgique a vu ses mécanismes d'accommodation des élites muter progressivement en instruments d'opacité, d'asphyxie financière de l'État et de contournement systématique de l'État de droit.
+                    </p>
+                    <p>
+                        L'analyse juridique rigoureuse met en évidence un divorce consommé entre la <strong>Constitution formelle</strong> (texte de 1994 dérivé de 1831) et la <strong>Constitution matérielle</strong>, façonnée par les présidents de partis politiques. Cette dérive paralégale se manifeste par la soumission du Parlement aux états-majors partisans, l'incapacité de l'exécutif à se plier aux ordres de ses propres cours et tribunaux, et l'érosion progressive des garanties anticorruption au sommet de l'État.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 my-5 p-4 bg-slate-50 rounded-lg border border-slate-200/80">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl font-black text-blue-900">89%</span>
+                        <div>
+                            <div class="text-xs font-bold uppercase text-slate-800">Attachement Citoyen à l'État de Droit</div>
+                            <div class="text-xs text-slate-600 mt-0.5">Les citoyens belges affirment l'importance fondamentale du respect des règles juridiques et de la justice (Eurobaromètre 2025/2026).</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl font-black text-red-600">21%</span>
+                        <div>
+                            <div class="text-xs font-bold uppercase text-slate-800">Confiance envers les Partis Politiques</div>
+                            <div class="text-xs text-slate-600 mt-0.5">Effondrement dramatique de la confiance envers les structures partisanes qui détiennent le monopole effectif du pouvoir décisionnel.</div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- VISUALIZATION DASHBOARD GRID -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- CHART 1: GRECO -->
+                <article class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <header class="mb-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-slate-900">Mise en Œuvre Recommandations GRECO (5e Cycle)</h3>
+                            <span class="text-[11px] font-mono text-slate-500">101e Plénière / Oct. 2026</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">Prévention de la corruption au sommet de l'exécutif (ministres, cabinets) et des forces de police.</p>
+                    </header>
+                    <div class="chart-container">
+                        <canvas id="chartGreco" aria-label="Graphique des recommandations GRECO" role="img"></canvas>
+                    </div>
+                    <footer class="text-[11px] text-slate-500 border-t border-slate-100 pt-2 mt-2">
+                        Source : Groupe d'États contre la Corruption (Conseil de l'Europe).
+                    </footer>
+                </article>
+
+                <!-- CHART 2: PRISON OVERCROWDING -->
+                <article class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <header class="mb-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-slate-900">Surpopulation Carcérale & Matelas au Sol</h3>
+                            <span class="text-[11px] font-mono text-slate-500">Mars 2023 - Mars 2026</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">Évolution des violations de l'Article 3 CEDH (traitements inhumains et dégradants) dans les prisons belges.</p>
+                    </header>
+                    <div class="chart-container">
+                        <canvas id="chartPrisons" aria-label="Graphique surpopulation carcérale" role="img"></canvas>
+                    </div>
+                    <footer class="text-[11px] text-slate-500 border-t border-slate-100 pt-2 mt-2">
+                        Source : Direction Générale des Établissements Pénitenciers (DG EPI).
+                    </footer>
+                </article>
+
+                <!-- CHART 3: PARTY WEALTH -->
+                <article class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <header class="mb-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-slate-900">Hypertrophie Financière des Partis Politiques</h3>
+                            <span class="text-[11px] font-mono text-slate-500">Exercice 2025/2026</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">Dotations publiques annuelles versées aux partis par rapport à leur patrimoine net consolidé accumulé.</p>
+                    </header>
+                    <div class="chart-container">
+                        <canvas id="chartParties" aria-label="Graphique financement des partis" role="img"></canvas>
+                    </div>
+                    <footer class="text-[11px] text-slate-500 border-t border-slate-100 pt-2 mt-2">
+                        Source : Commission de contrôle des dépenses électorales (Chambre des représentants).
+                    </footer>
+                </article>
+
+                <!-- CHART 4: COURT BACKLOG -->
+                <article class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <header class="mb-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-slate-900">Érosion de la Justice : Délais de Jugement</h3>
+                            <span class="text-[11px] font-mono text-slate-500">Évolution 2022 - 2024 (Jours)</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">Augmentation continue des délais moyens pour obtenir un jugement en première instance.</p>
+                    </header>
+                    <div class="chart-container">
+                        <canvas id="chartBacklog" aria-label="Graphique arriéré judiciaire" role="img"></canvas>
+                    </div>
+                    <footer class="text-[11px] text-slate-500 border-t border-slate-100 pt-2 mt-2">
+                        Source : Collège des cours et tribunaux / Conseil d'État.
+                    </footer>
+                </article>
+            </div>
+        </section>
+
+        <!-- TAB 2: OPACITÉ & GRECO -->
+        <section id="tab-greco" role="tabpanel" aria-labelledby="btn-tab-greco" class="tab-content hidden space-y-6">
+            <article class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <header class="border-b border-slate-100 pb-4 mb-4">
+                    <span class="text-xs font-bold text-red-600 uppercase tracking-wider">Transparence & Intégrité Publique</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1">Opacité au Sommet de l'Exécutif et Soumission à la Règle 32 du GRECO</h2>
+                </header>
+                <div class="prose prose-slate max-w-none text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>
+                        La première faille systémique réside dans l'étanchéité presque totale garantie au sommet de l'appareil d'État. Malgré l'adoption tardive de la loi du 12 mai 2024 modifiant la loi du 11 avril 1994 relative à la publicité de l'administration pour tenter d'inclure les cabinets ministériels, l'accès réel aux documents stratégiques demeure neutralisé.
+                    </p>
+                    <p>
+                        Trois mécanismes entretiennent cette opacité : l'absence de caractère contraignant des avis de la Commission d'Accès aux Documents Administratifs (CADA), la règle de rejet implicite en cas de silence ministériel, et la pratique généralisée de la suppression des communications informelles (SMS, WhatsApp, Teams) échappant au contrôle de la Loi sur les archives.
+                    </p>
+                </div>
+
+                <!-- DUAL HIGHLIGHT BOX -->
+                <div class="grid md:grid-cols-2 gap-4 my-6">
+                    <div class="p-4 rounded-xl bg-blue-50/80 border border-blue-200">
+                        <span class="text-xs font-bold uppercase text-blue-900">Article 32 de la Constitution</span>
+                        <h3 class="text-base font-bold text-blue-950 mt-1">Le Droit Consacré à la Transparence</h3>
+                        <p class="text-xs text-blue-900/90 mt-1.5 leading-relaxed">
+                            « Chacun a le droit de consulter chaque document administratif et de s'en faire remettre copie, sauf dans les cas et conditions fixés par la loi, le décret ou la règle visée à l'article 134. »
+                        </p>
+                        <p class="text-xs text-slate-600 mt-2 italic">En pratique : Neutralisé au sein des cabinets ministériels en l'absence de sanctions pénales ou d'autorité décisionnelle indépendante.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-red-50/80 border border-red-200">
+                        <span class="text-xs font-bold uppercase text-red-900">Règle 32 du Règlement du GRECO</span>
+                        <h3 class="text-base font-bold text-red-950 mt-1">Procédure Disciplinaire d'Exception</h3>
+                        <p class="text-xs text-red-900/90 mt-1.5 leading-relaxed">
+                            Procédure internationale appliquée lorsque la conformité d'un État membre est jugée « globalement insatisfaisante ». La Belgique y est soumise pour non-respect des recommandations du 5e cycle.
+                        </p>
+                        <p class="text-xs text-red-800 font-semibold mt-2">Échéance fatidique : Rapport d'avancement requis avant le 30 Novembre 2026.</p>
+                    </div>
+                </div>
+
+                <!-- GRECO MATRIX TABLE -->
+                <h3 class="text-sm font-bold text-slate-900 mb-3">Matrice d'Évaluation des Recommandations Anticorruption (Cycles 4 & 5)</h3>
+                <div class="overflow-x-auto rounded-lg border border-slate-200">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                <th class="p-3 font-bold">Domaine d'Évaluation</th>
+                                <th class="p-3 font-bold">Exigence du Conseil de l'Europe</th>
+                                <th class="p-3 font-bold">Pratique Effective (2026)</th>
+                                <th class="p-3 font-bold">Statut de Conformité</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 bg-white">
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-3 font-semibold text-slate-900">Cabinets Ministériels</td>
+                                <td class="p-3 text-slate-600">Recrutement au mérite et contrôle d'intégrité (vetting) préalable.</td>
+                                <td class="p-3 text-slate-600">Refus assumé au nom du "spoils system". Simple circulaire du 11 juin 2024 sans valeur légale.</td>
+                                <td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">Partiellement appliquée</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-3 font-semibold text-slate-900">Encadrement du Lobbying</td>
+                                <td class="p-3 text-slate-600">Registre obligatoire des lobbys à l'exécutif & empreinte normative.</td>
+                                <td class="p-3 text-slate-600">Absence totale de registre obligatoire pour le gouvernement fédéral. Consultations discrétionnaires.</td>
+                                <td class="p-3"><span class="px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold">Non mise en œuvre</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-3 font-semibold text-slate-900">Transparence Patrimoniale</td>
+                                <td class="p-3 text-slate-600">Déclarations avec passif (dettes) et conjoint, contrôle proactif.</td>
+                                <td class="p-3 text-slate-600">Refus écrit du gouvernement. Déclarations sous plis scellés à la Cour des comptes, détruites après 5 ans.</td>
+                                <td class="p-3"><span class="px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold">Non mise en œuvre</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-3 font-semibold text-slate-900">Police & Narcotrafic</td>
+                                <td class="p-3 text-slate-600">Contrôle patrimonial des officiers d'élite en zones critiques (Port d'Anvers).</td>
+                                <td class="p-3 text-slate-600">Blocage syndical et législatif. Risque d'infiltration par le crime organisé non endigué.</td>
+                                <td class="p-3"><span class="px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold">Bloquée</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+
+        <!-- TAB 3: PARTICRATIE & PARALÉGALITÉ -->
+        <section id="tab-particracy" role="tabpanel" aria-labelledby="btn-tab-particracy" class="tab-content hidden space-y-6">
+            <article class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <header class="border-b border-slate-100 pb-4 mb-4">
+                    <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Analyse Politologique</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1">La Particratie Intégrale et la Paralégalité des Accords de Gouvernement</h2>
+                </header>
+                <div class="prose prose-slate max-w-none text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>
+                        En Belgique, la souveraineté populaire est captée par un système d'oligopole partisan. Les politologues (Deschouwer, Sinardet, Caluwaerts) démontrent que les partis politiques belges sont devenus les structures partisanes les plus puissantes et les mieux financées du monde occidental par rapport à la taille du pays.
+                    </p>
+                    <p>
+                        L'<strong>accord de gouvernement</strong>, négocié à huis clos entre présidents de partis, agit comme une véritable <em>Constitution matérielle</em> prévalant sur la Constitution formelle. Les parlementaires sont contraints de voter l'intégralité des textes issus du conclave sous peine de bannissement des listes électorales futures.
+                    </p>
+                </div>
+
+                <!-- CONSTITUTION vs REALITY COMPARISON GRID -->
+                <div class="grid md:grid-cols-2 gap-6 my-6">
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-300">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2.5 py-0.5 text-xs font-bold bg-blue-100 text-blue-800 rounded">Constitution Formelle</span>
+                            <h3 class="text-sm font-bold text-slate-900">Article 42 de la Constitution Belge</h3>
+                        </div>
+                        <p class="text-xs text-slate-700 italic border-l-2 border-blue-600 pl-3 py-1 my-2">
+                            « Les membres des deux Chambres représentent la Nation, et non uniquement ceux qui les ont élus. »
+                        </p>
+                        <ul class="text-xs text-slate-600 space-y-2 mt-3 list-disc list-inside">
+                            <li>Interdiction stricte du mandat impératif.</li>
+                            <li>Élection personnelle du député pour un mandat de 5 ans.</li>
+                            <li>Liberté totale de vote et de délibération en conscience.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-300">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2.5 py-0.5 text-xs font-bold bg-amber-100 text-amber-800 rounded">Réalité Matérielle</span>
+                            <h3 class="text-sm font-bold text-slate-900">Mandat Impératif de Facto</h3>
+                        </div>
+                        <p class="text-xs text-slate-700 italic border-l-2 border-amber-600 pl-3 py-1 my-2">
+                            L'Accord de Gouvernement érigé en norme suprême coercitive pour la majorité.
+                        </p>
+                        <ul class="text-xs text-slate-600 space-y-2 mt-3 list-disc list-inside">
+                            <li>Monopole absolu des présidents de parti sur la confection des listes.</li>
+                            <li>Consignes de vote hebdomadaires strictes imposées aux parlementaires.</li>
+                            <li>Financement public massif (86,5 M€/an) affranchissant les partis de leurs militants.</li>
+                            <li>Micro-ciblage numérique absorbant jusqu'à 35% des budgets de communication.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+                    <h4 class="text-xs font-bold uppercase text-amber-900 mb-1">Contournement Légistique et Urgence Abusive</h4>
+                    <p class="text-xs text-amber-900 leading-relaxed">
+                        Pour imposer sans débat les compromis complexes de conclave, le gouvernement recourt de manière récurrente aux procédures d'urgence législative ou au dépôt d'amendements gouvernementaux tardifs. Cette méthode prive sciemment la section de législation du Conseil d'État et l'Institut Fédéral des Droits Humains (IFDH) du délai constitutionnel requis pour évaluer la conformité des projets avec les droits fondamentaux.
+                    </p>
+                </div>
+            </article>
+        </section>
+
+        <!-- TAB 4: INEXÉCUTION DES JUGEMENTS -->
+        <section id="tab-enforcement" role="tabpanel" aria-labelledby="btn-tab-enforcement" class="tab-content hidden space-y-6">
+            <article class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <header class="border-b border-slate-100 pb-4 mb-4">
+                    <span class="text-xs font-bold text-red-600 uppercase tracking-wider">Crise de l'État de Droit</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1">L'État Hors-la-Loi : Inexécution Systémique des Décisions de Justice</h2>
+                </header>
+                <div class="prose prose-slate max-w-none text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>
+                        Le symptôme le plus alarmant de la défaillance de l'État belge réside dans le refus assumé par le pouvoir exécutif d'exécuter des milliers de décisions de justice rendues par ses propres juridictions nationales ainsi que par la Cour européenne des droits de l'homme (CEDH).
+                    </p>
+                </div>
+
+                <!-- CASE STUDIES GRID -->
+                <div class="grid md:grid-cols-3 gap-4 my-6">
+                    <article class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
+                        <div>
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-red-100 text-red-800 rounded">Crise d'Accueil</span>
+                            <h3 class="text-sm font-bold text-slate-900 mt-2 mb-1">Fedasil & Affaire Camara</h3>
+                            <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                                Refus persistant d'accorder un hébergement aux demandeurs d'asile. Arrêt de la CEDH <em>Camara c. Belgique</em> (2023) constatant une carence systémique au sens de l'Art. 6 §1.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-200/80">
+                            <div class="text-[11px] text-red-700 font-mono font-bold">&gt;6.6M€ d'astreintes impayées</div>
+                            <div class="text-[11px] text-slate-500 font-mono">&gt;2200 mesures provisoires CEDH</div>
+                        </div>
+                    </article>
+
+                    <article class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
+                        <div>
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-red-100 text-red-800 rounded">Surpopulation Carcérale</span>
+                            <h3 class="text-sm font-bold text-slate-900 mt-2 mb-1">Groupes Vasilescu & L.B.</h3>
+                            <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                                Taux d'occupation atteignant 125.3%. Traitement inhumain et dégradant caractérisé par plus de 644 détenus contraints de dormir à même le sol.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-200/80">
+                            <div class="text-[11px] text-red-700 font-mono font-bold">Délai exec. CEDH : 4 ans 9 mois</div>
+                            <div class="text-[11px] text-slate-500 font-mono">13 397 détenus / 10 795 places</div>
+                        </div>
+                    </article>
+
+                    <article class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
+                        <div>
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-amber-100 text-amber-800 rounded">Urgence Climatique</span>
+                            <h3 class="text-sm font-bold text-slate-900 mt-2 mb-1">Arrêt Klimaatzaak (2023)</h3>
+                            <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                                Injonction judiciaire de réduire les émissions de GES de -55% d'ici 2030. Blocage de l'accord d'imputation ("burden sharing") entre entités fédérées.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-200/80">
+                            <div class="text-[11px] text-amber-700 font-mono font-bold">Incapacité de Burden Sharing</div>
+                            <div class="text-[11px] text-slate-500 font-mono">Moratoires régionaux conflictuels</div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <h4 class="text-xs font-bold uppercase text-red-900 mb-1">L'Anomalie Juridique : L'Immunité d'Exécution Public (Art. 1412bis C.Jud.)</h4>
+                    <p class="text-xs text-red-900 leading-relaxed">
+                        En droit belge, en vertu de l'article 1412bis du Code judiciaire, les autorités publiques bénéficient d'une insaisissabilité quasi absolue de leurs biens. Un huissier de justice ne peut faire exécuter une saisie forçat sur les comptes de l'État pour recouvrir une astreinte. Ce verrou juridique octroie de facto à l'exécutif une <strong>impunité matérielle</strong> lorsqu'il choisit sciemment de bafouer un jugement.
+                    </p>
+                </div>
+            </article>
+        </section>
+
+        <!-- TAB 5: SÉPARATION DES POUVOIRS & JUSTICE -->
+        <section id="tab-judiciary" role="tabpanel" aria-labelledby="btn-tab-judiciary" class="tab-content hidden space-y-6">
+            <article class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <header class="border-b border-slate-100 pb-4 mb-4">
+                    <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Pouvoir Judiciaire</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1">Asphyxie du Pouvoir Judiciaire et Politisation de la Cour Constitutionnelle</h2>
+                </header>
+                <div class="prose prose-slate max-w-none text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>
+                        Le troisième pouvoir (le judiciaire) fait l'objet d'un sous-financement structurel chronique calculé pour limiter son pouvoir de contrôle sur l'action publique. En parallèle, les organes juridictionnels suprêmes subissent une politisation statutaire.
+                    </p>
+                </div>
+
+                <!-- CITATIONS DE MAGISTRATS -->
+                <div class="space-y-3 my-6">
+                    <blockquote class="p-4 bg-slate-100 rounded-xl border-l-4 border-slate-800 text-xs">
+                        <p class="italic text-slate-800 font-medium">« Un État qui marchande sa fonction la plus archaïque — rendre la justice — et asphyxie ses juridictions n'est plus un État de droit, mais un État voyou. »</p>
+                        <cite class="block mt-1 font-bold text-slate-900 not-italic">— Jean de Codt, Premier président de la Cour de cassation (Discours historique)</cite>
+                    </blockquote>
+
+                    <blockquote class="p-4 bg-slate-100 rounded-xl border-l-4 border-red-600 text-xs">
+                        <p class="italic text-slate-800 font-medium">« Quand on refuse d'exécuter une décision de justice pour des raisons budgétaires, on affirme que la loi ne vaut plus rien ; on dit que la loi, ce n'est plus le juge, c'est l'argent. »</p>
+                        <cite class="block mt-1 font-bold text-slate-900 not-italic">— Frédéric Van Leeuw, Procureur général près la cour d'appel de Bruxelles</cite>
+                    </blockquote>
+                </div>
+
+                <!-- CONSTITUTIONAL COURT ANALYSIS -->
+                <div class="border border-slate-200 rounded-xl p-5 bg-slate-50">
+                    <h3 class="text-sm font-bold text-slate-900 mb-2">La Composition Partisane de la Cour Constitutionnelle</h3>
+                    <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                        En vertu de la loi spéciale du 6 janvier 1989 (Articles 31 à 34), la moitié exacte des 12 juges composant la Cour constitutionnelle doit obligatoirement être constituée d'<strong>anciens parlementaires</strong> nommés sur proposition des partis politiques.
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 shadow-sm">
+                            <span class="font-bold text-slate-900 block mb-1">Quota Partisan de 50%</span>
+                            Réservation statutaire de 6 sièges sur 12 aux cadres politiques issus des assemblées.
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 shadow-sm">
+                            <span class="font-bold text-slate-900 block mb-1">Absence de Diplôme Juridique</span>
+                            Historiquement, aucun diplôme en droit n'était exigé des anciens parlementaires pour siéger comme juges constitutionnels.
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 shadow-sm">
+                            <span class="font-bold text-slate-900 block mb-1">Non-Récusation (Art. 101 al. 2)</span>
+                            Le fait d'avoir voté personnellement la loi contestée au Parlement ne constitue pas une cause juridique de récusation du juge !
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- TAB 6: FÉDÉRALISME DISSOCIATIF -->
+        <section id="tab-federalism" role="tabpanel" aria-labelledby="btn-tab-federalism" class="tab-content hidden space-y-6">
+            <article class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <header class="border-b border-slate-100 pb-4 mb-4">
+                    <span class="text-xs font-bold text-green-700 uppercase tracking-wider">Ingénierie Constitutionnelle</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1">Le Fédéralisme Dissociatif et le Blocage Consociatif</h2>
+                </header>
+                <div class="prose prose-slate max-w-none text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>
+                        Né de réformes successives visant à séparer plutôt qu'à unir, le fédéralisme belge souffre de failles structurelles uniques au monde : l'exclusivité absolue des compétences combinée à l'<strong>équipollence des normes</strong> (absence de clause de primauté du droit fédéral).
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 my-6">
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                        <h3 class="text-sm font-bold text-slate-900 mb-2">Absence de Primauté Fédérale</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Contrairement au modèle allemand (<em>« Bundesrecht bricht Landesrecht »</em>) ou américain, une loi fédérale belge et un décret régional ont une valeur juridique strictement égale. Tout conflit d'intérêts se mue immédiatement en crise institutionnelle ou en paralysie de l'action publique.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                        <h3 class="text-sm font-bold text-slate-900 mb-2">Veto International (Article 167 Constitution)</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Chacun des 9 exécutifs/parlements régionaux et communautaires dispose d'un droit de veto sur la ratification des traités internationaux conclus par la Belgique (ex: épisode du CETA en Wallonie), affaiblissant la signature diplomatique du pays.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SINARDET ANALYSIS BOX -->
+                <div class="p-5 bg-blue-50/80 border border-blue-200 rounded-xl">
+                    <h4 class="text-xs font-bold uppercase text-blue-900 mb-1">Le Paradoxe des Partis Unilingues (Analyse Dave Sinardet)</h4>
+                    <p class="text-xs text-blue-950 leading-relaxed">
+                        La scission des partis politiques en ailes unilingues francophones et néerlandaises supprime toute incitation pour un homme politique à séduire l'électorat de l'autre communauté. Les élus ne rendent de comptes qu'à leur opinion publique régionale. Pour sceller des compromis fédéraux, les partis recourent au « gaufrier financier » : accorder une dépense équivalente de l'autre côté de la frontière linguistique, alimentant le déficit budgétaire massif visé par la procédure de l'UE.
+                    </p>
+                </div>
+            </article>
+        </section>
+
+        <!-- TAB 7: REFONDATION & RÉFORMES -->
+        <section id="tab-reforms" role="tabpanel" aria-labelledby="btn-tab-reforms" class="tab-content hidden space-y-6">
+            <article class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4 mb-4">
+                    <div>
+                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Matrice de Solutions</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-0.5">Plan de Refondation Constitutionnelle et Législative</h2>
+                    </div>
+                    <!-- REFORM CATEGORY FILTERS -->
+                    <div class="flex flex-wrap gap-1.5 text-xs" id="reformFilters" role="group" aria-label="Filtres de réformes">
+                        <button onclick="filterReforms('all')" class="px-3 py-1.5 rounded-lg font-semibold bg-slate-900 text-white shadow-sm" id="flt-all">Toutes</button>
+                        <button onclick="filterReforms('transparency')" class="px-3 py-1.5 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200" id="flt-transparency">Transparence</button>
+                        <button onclick="filterReforms('justice')" class="px-3 py-1.5 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200" id="flt-justice">Justice</button>
+                        <button onclick="filterReforms('particracy')" class="px-3 py-1.5 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200" id="flt-particracy">Particratie</button>
+                        <button onclick="filterReforms('federalism')" class="px-3 py-1.5 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200" id="flt-federalism">Fédéralisme</button>
+                    </div>
+                </header>
+
+                <div class="grid md:grid-cols-2 gap-4" id="reformsContainer">
+                    <!-- REFORM ITEM 1 -->
+                    <article class="reform-card p-4 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-white transition-all" data-cat="transparency">
+                        <header class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-blue-100 text-blue-800 rounded">Transparence</span>
+                            <span class="text-[10px] text-slate-500 font-mono">Art. 32 Const.</span>
+                        </header>
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">CADA Décisionnelle & Sanctions Pénales</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Transformer la CADA fédérale en autorité indépendante avec pouvoir d'injonction sous astreinte. Pégaliser la destruction délibérée des archives électroniques ministérielles (WhatsApp/Teams).</p>
+                    </article>
+
+                    <!-- REFORM ITEM 2 -->
+                    <article class="reform-card p-4 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-white transition-all" data-cat="transparency">
+                        <header class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-blue-100 text-blue-800 rounded">Transparence</span>
+                            <span class="text-[10px] text-slate-500 font-mono">GRECO C5</span>
+                        </header>
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">Audit Patrimonial Public & Registre des Lobbys</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Lever le secret des déclarations de patrimoine à la Cour des comptes en incluant le passif. Rendre obligatoire le registre des représentants d'intérêts pour l'ensemble du gouvernement.</p>
+                    </article>
+
+                    <!-- REFORM ITEM 3 -->
+                    <article class="reform-card p-4 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-white transition-all" data-cat="justice">
+                        <header class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-red-100 text-red-800 rounded">Justice</span>
+                            <span class="text-[10px] text-slate-500 font-mono">Art. 1412bis C.Jud.</span>
+                        </header>
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">Levée de l'Immunité d'Exécution Public</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Réformer le statut d'insaisissabilité des biens de l'État pour autoriser la saisie conservatoire des comptes bancaires ministériels en cas de refus d'exécution d'un jugement (ex: crise Fedasil).</p>
+                    </article>
+
+                    <!-- REFORM ITEM 4 -->
+                    <article class="reform-card p-4 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-white transition-all" data-cat="justice">
+                        <header class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-red-100 text-red-800 rounded">Justice</span>
+                            <span class="text-[10px] text-slate-500 font-mono">CEDH Art. 3</span>
+                        </header>
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">Régulation Automatique de la Dépense Carcérale</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Instaurer un numéro d'écrou plafond (90% de la capacité) au-delà duquel la libération conditionnelle anticipée ou le sursis devient obligatoire pour bannir définitivement les matelas au sol.</p>
+                    </article>
+
+                    <!-- REFORM ITEM 5 -->
+                    <article class="reform-card p-4 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-white transition-all" data-cat="particracy">
+                        <header class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-amber-100 text-amber-800 rounded">Particratie</span>
+                            <span class="text-[10px] text-slate-500 font-mono">Art. 42 Const.</span>
+                        </header>
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">Plafonnement des Dotations & Audit Numérique</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Réduire de 50% la dotation publique des partis, interdire la publicité politique micro-ciblée sur les réseaux sociaux et auditer leur patrimoine immobilier consolidé.</p>
+                    </article>
+
+                    <!-- REFORM ITEM 6 -->
+                    <article class="reform-card p-4 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-white transition-all" data-cat="justice">
+                        <header class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-red-100 text-red-800 rounded">Justice</span>
+                            <span class="text-[10px] text-slate-500 font-mono">Cour Const.</span>
+                        </header>
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">Dépolitisation de la Cour Constitutionnelle</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Abroger le quota de 50% d'anciens parlementaires (Art. 34 Loi 1989), imposer un recrutement exclusivement magistral/académique et abroger la clause de non-récusation (Art. 101 al. 2).</p>
+                    </article>
+
+                    <!-- REFORM ITEM 7 -->
+                    <article class="reform-card p-4 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-white transition-all" data-cat="federalism">
+                        <header class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-green-100 text-green-800 rounded">Fédéralisme</span>
+                            <span class="text-[10px] text-slate-500 font-mono">Ingénierie</span>
+                        </header>
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">Circonscription Électorale Fédérale Nationale</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Créer un collège électoral national unique pour l'élection de 15% des membres de la Chambre afin d'obliger les leaders politiques à rendre des comptes à l'ensemble du peuple belge.</p>
+                    </article>
+
+                    <!-- REFORM ITEM 8 -->
+                    <article class="reform-card p-4 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-white transition-all" data-cat="federalism">
+                        <header class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-green-100 text-green-800 rounded">Fédéralisme</span>
+                            <span class="text-[10px] text-slate-500 font-mono">Suprématie</span>
+                        </header>
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">Clause de Primauté Fédérale</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Inscrire dans la Constitution la primauté de la norme fédérale en matière d'énergie, de climat, de défense et d'engagements internationaux pour supprimer le veto unilatéral des régions.</p>
+                    </article>
+                </div>
+            </article>
+        </section>
+
+        <!-- TAB 8: F.A.Q. SÉMANTIQUE (SEO INDEXATION) -->
+        <section id="tab-faq" role="tabpanel" aria-labelledby="btn-tab-faq" class="tab-content hidden space-y-6">
+            <article class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <header class="border-b border-slate-100 pb-4 mb-4">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Foire Aux Questions Juridiques</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1">Guide de Référence sur les Failles Systémiques</h2>
+                </header>
+
+                <div class="space-y-4 text-xs">
+                    <details class="p-4 rounded-lg bg-slate-50 border border-slate-200 group" open>
+                        <summary class="font-bold text-sm text-slate-900 cursor-pointer list-none flex justify-between items-center">
+                            <span>Qu'est-ce que la procédure sous Règle 32 du GRECO visant la Belgique ?</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">&#9660;</span>
+                        </summary>
+                        <p class="mt-3 text-slate-600 leading-relaxed">
+                            La Règle 32 du Règlement intérieur du GRECO (Conseil de l'Europe) est une procédure disciplinaire d'exception déclenchée lorsque le niveau de conformité d'un État aux recommandations anticorruption est jugé « globalement insatisfaisant ». La Belgique y a été soumise en raison de son inertie répétée concernant la régulation du lobbying auprès de l'exécutif, l'absence de vérification du patrimoine des ministres et le manque de transparence des cabinets.
+                        </p>
+                    </details>
+
+                    <details class="p-4 rounded-lg bg-slate-50 border border-slate-200 group">
+                        <summary class="font-bold text-sm text-slate-900 cursor-pointer list-none flex justify-between items-center">
+                            <span>Comment la particratie neutralise-t-elle l'article 42 de la Constitution ?</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">&#9660;</span>
+                        </summary>
+                        <p class="mt-3 text-slate-600 leading-relaxed">
+                            L'article 42 consacre le principe selon lequel le parlementaire représente la Nation et vote sans mandat impératif. Cependant, la particratie inverse ce principe : les présidents de parti disposent du monopole de la désignation sur les listes électorales et distribuent les mandats. Un député qui voteriez contre la ligne du parti est exclu des listes suivantes. Cette contrainte transforme le vote parlementaire en une simple formalité d'enregistrement.
+                        </p>
+                    </details>
+
+                    <details class="p-4 rounded-lg bg-slate-50 border border-slate-200 group">
+                        <summary class="font-bold text-sm text-slate-900 cursor-pointer list-none flex justify-between items-center">
+                            <span>Pourquoi l'État belge peut-il refuser d'exécuter les jugements sans saisie ?</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">&#9660;</span>
+                        </summary>
+                        <p class="mt-3 text-slate-600 leading-relaxed">
+                            L'article 1412bis du Code judiciaire accorde un statut d'insaisissabilité générale aux biens des personnes morales de droit public. Contrairement à un citoyen ordinaire, l'État ne peut pas voir ses comptes bancaires ou ses immeubles saisis par un huissier. Ainsi, lorsque le gouvernement refuse de payer les astreintes dues dans le cadre de la crise de l'asile (Fedasil), la justice n'a aucun moyen de contrainte matérielle pour forcer l'exécutif à obtempérer.
+                        </p>
+                    </details>
+                </div>
+            </article>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <span class="font-bold text-slate-200">Analyse Structurelle de l'État Belge</span> — Rapport arrêté au <span class="text-amber-400 font-mono">20 Octobre 2026</span>.
+                <div class="text-[11px] text-slate-500 mt-0.5">Hébergé sur : <code class="font-mono text-slate-400">https://ouaisfieu.github.io/be/</code></div>
+            </div>
+            <div class="text-slate-500 text-center md:text-right text-[11px]">
+                Basé sur les rapports officiels : GRECO, CEDH, Conseil d'État, Cour des comptes & littérature politologique.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC & CHART INITIALIZATION -->
+    <script>
+        // TAB SWITCHING LOGIC WITH ACCESSIBILITY ATTRIBUTES
+        function switchTab(tabId) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
+
+            // Reset navigation tab states
+            const buttons = document.querySelectorAll('#navTabs button');
+            buttons.forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+                btn.setAttribute('aria-selected', 'false');
+            });
+
+            // Show target content
+            const activeContent = document.getElementById(tabId);
+            if(activeContent) activeContent.classList.remove('hidden');
+
+            // Set active button
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.remove('tab-inactive');
+                activeBtn.classList.add('tab-active');
+                activeBtn.setAttribute('aria-selected', 'true');
+            }
+        }
+
+        // REFORM CATEGORY FILTERING LOGIC
+        function filterReforms(category) {
+            const cards = document.querySelectorAll('.reform-card');
+            cards.forEach(card => {
+                if(category === 'all' || card.getAttribute('data-cat') === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            // Update filter button styling
+            const filterBtns = document.querySelectorAll('#reformFilters button');
+            filterBtns.forEach(btn => {
+                btn.className = 'px-3 py-1.5 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors';
+            });
+            const activeFltBtn = document.getElementById('flt-' + category);
+            if(activeFltBtn) {
+                activeFltBtn.className = 'px-3 py-1.5 rounded-lg font-semibold bg-slate-900 text-white shadow-sm';
+            }
+        }
+
+        // LIVE GLOBAL SEARCH FILTER ACROSS ALL TEXT & CARDS
+        function handleGlobalSearch() {
+            const query = document.getElementById('globalSearch').value.toLowerCase().trim();
+            if(!query) return;
+
+            // Search cards and sections
+            const searchableElements = document.querySelectorAll('article, .reform-card, details');
+            searchableElements.forEach(el => {
+                const text = el.textContent.toLowerCase();
+                if(text.includes(query)) {
+                    el.classList.remove('opacity-30');
+                } else {
+                    el.classList.add('opacity-30');
+                }
+            });
+        }
+
+        // INITIALIZE CHART.JS VISUALIZATIONS ON DOM READY
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // CHART 1: GRECO DOUGHNUT CHART
+            const ctxGreco = document.getElementById('chartGreco').getContext('2d');
+            new Chart(ctxGreco, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pleinement Appliquées', 'Partiellement Appliquées', 'Non Appliquées / Bloquées'],
+                    datasets: [{
+                        data: [8, 10, 4],
+                        backgroundColor: ['#059669', '#d97706', '#dc2626'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let total = 22;
+                                    let val = context.raw;
+                                    let pct = ((val / total) * 100).toFixed(1);
+                                    return `${context.label}: ${val} (${pct}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // CHART 2: PRISON OVERCROWDING LINE CHART
+            const ctxPrisons = document.getElementById('chartPrisons').getContext('2d');
+            new Chart(ctxPrisons, {
+                type: 'line',
+                data: {
+                    labels: ['Mars 2023', 'Déc 2023', 'Janv 2024', 'Sept 2025', 'Déc 2025', 'Mars 2026'],
+                    datasets: [
+                        {
+                            label: 'Matelas au Sol',
+                            data: [250, 178, 210, 480, 614, 644],
+                            borderColor: '#dc2626',
+                            backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        },
+                        {
+                            label: 'Taux d\'Occupation (%)',
+                            data: [110.5, 112.2, 114.1, 125.3, 124.0, 124.5],
+                            borderColor: '#1e3a8a',
+                            borderDash: [5, 5],
+                            fill: false,
+                            tension: 0.3,
+                            yAxisID: 'y2'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: 'Nb. Matelas', font: { size: 10 } }
+                        },
+                        y2: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            min: 100,
+                            max: 135,
+                            grid: { drawOnChartArea: false },
+                            title: { display: true, text: 'Taux (%)', font: { size: 10 } }
+                        },
+                        x: { ticks: { font: { size: 10 } } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                    }
+                }
+            });
+
+            // CHART 3: PARTY FINANCING BAR CHART
+            const ctxParties = document.getElementById('chartParties').getContext('2d');
+            new Chart(ctxParties, {
+                type: 'bar',
+                data: {
+                    labels: ['Dotations Fédérales', 'Groupes Parl.', 'Total Dotations/An', 'Patrimoine Net Cumulé'],
+                    datasets: [{
+                        label: 'Montant en Millions d\'Euros (€M)',
+                        data: [38.1, 25.1, 86.5, 156.8],
+                        backgroundColor: ['#93c5fd', '#60a5fa', '#1d4ed8', '#0f172a'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Millions €', font: { size: 10 } } },
+                        x: { ticks: { font: { size: 10 } } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // CHART 4: COURT BACKLOG BAR CHART
+            const ctxBacklog = document.getElementById('chartBacklog').getContext('2d');
+            new Chart(ctxBacklog, {
+                type: 'bar',
+                data: {
+                    labels: ['Civils (2023)', 'Civils (2024)', 'Admin. (2022)', 'Admin. (2023)', 'Admin. (2024)'],
+                    datasets: [{
+                        label: 'Délai Moyen (Jours)',
+                        data: [246, 246, 288, 360, 370],
+                        backgroundColor: ['#cbd5e1', '#94a3b8', '#fde68a', '#f59e0b', '#d97706'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Jours de procédure', font: { size: 10 } } },
+                        x: { ticks: { font: { size: 9 } } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
