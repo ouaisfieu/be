@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  
+  <!-- SEO & SÉMANTIQUE DE BASE -->
+  <title>Diagnostic Structurel de la Belgique | Audit, Dette, Emploi &amp; Institutions</title>
+  <meta name="description" content="Analyse critique et exhaustive du diagnostic structurel de la Belgique : finances publiques, dette de 533 Mds€, fractures du marché du travail, déclin PISA, surpopulation carcérale et blocages institutionnels.">
+  <meta name="keywords" content="Belgique, diagnostic structurel, finances publiques, dette publique, Cour des comptes, Banque Nationale de Belgique, Bureau fédéral du Plan, PISA, coin fiscal, chômage, AROPE, procédure déficit excessif">
+  <meta name="author" content="Observatoire des Politiques Structurelles Belges">
+  <link rel="canonical" href="https://ouaisfieu.github.io/be/ep/">
+
+  <!-- OPEN GRAPH / FACEBOOK -->
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="fr_BE">
+  <meta property="og:site_name" content="Diagnostic Structurel de la Belgique">
+  <meta property="og:title" content="Diagnostic Structurel de la Belgique | Audit Révélateur des Vulnérabilités Souveraines">
+  <meta property="og:description" content="Découvrez l'analyse synthétique et interactive des verrous systémiques belges : trajectoire budgétaire (-4,6% PIB), décrochage scolaire, asymétries régionales de l'emploi et crise régalienne.">
+  <meta property="og:url" content="https://ouaisfieu.github.io/be/ep/">
+  <meta property="article:published_time" content="2026-10-21">
+  <meta property="article:section" content="Économie &amp; Politique Publique">
+
+  <!-- TWITTER CARD -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Diagnostic Structurel de la Belgique | Outil d'Analyse">
+  <meta name="twitter:description" content="Base de données interactive et diagnostic officiel des fragilités belges : finances, travail, éducation et infrastructures.">
+
+  <!-- STRUCTURED DATA (SCHEMA.ORG JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "@id": "https://ouaisfieu.github.io/be/ep/#article",
+        "isPartOf": {
+          "@type": "WebPage",
+          "@id": "https://ouaisfieu.github.io/be/ep/"
+        },
+        "headline": "Diagnostic Structurel de la Belgique : Vulnérabilités Souveraines et Fractures Territorialisées",
+        "description": "Rapport analytique et interactif examinant les déséquilibres budgétaires, le coin fiscal, les asymétries du marché du travail, l'érosion du capital humain et les défaillances régaliennes de la Belgique.",
+        "inLanguage": "fr-BE",
+        "mainEntityOfPage": "https://ouaisfieu.github.io/be/ep/",
+        "datePublished": "2026-10-21",
+        "dateModified": "2026-10-21",
+        "author": {
+          "@type": "Organization",
+          "name": "Observatoire des Politiques Structurelles Belges"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Observatoire des Politiques Structurelles Belges",
+          "url": "https://ouaisfieu.github.io/be/ep/"
+        },
+        "about": [
+          {"@type": "Thing", "name": "Finances Publiques Belgique"},
+          {"@type": "Thing", "name": "Dette Publique Fédérale"},
+          {"@type": "Thing", "name": "Marché du Travail et Coin Fiscal"},
+          {"@type": "Thing", "name": "Éducation PISA"},
+          {"@type": "Thing", "name": "Système Pénitentiaire et État de Droit"}
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://ouaisfieu.github.io/be/ep/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Accueil",
+            "item": "https://ouaisfieu.github.io/be/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Diagnostic Structurel Évaluation Fédérale",
+            "item": "https://ouaisfieu.github.io/be/ep/"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- TAILWIND CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- CHART.JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Styling strict pour la gestion responsable et fluide des conteneurs Chart.js */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 310px;
+      max-height: 380px;
+    }
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 340px;
+      }
+    }
+    
+    /* Transitions des onglets interactifs */
+    .tab-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+    .tab-content.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Accessibilité focus */
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 2px solid #d97706;
+      outline-offset: 2px;
+    }
+  </style>
+
+  <!-- Chosen Palette: Warm Neutral Sovereign (Stone-50 background, Slate-900 header/text, Warm Amber-600 and Rust-700 accents, Emerald/Crimson badges) -->
+  <!-- Application Structure Plan: Tabbed analytical dashboard + Semantic HTML5 markup (header, nav, main, section, article, figure, table, summary, footer) + Interactive global text search filter + Regional status switcher + Schema.org structured data for max SEO authority. Tabs: 1. Synthèse Systémique, 2. Finances & Dette, 3. Emploi & Coin Fiscal, 4. Éducation & Pauvreté, 5. Infrastructures & Justice. -->
+  <!-- Visualization & Content Choices:
+      1. Budget Distribution -> Donut Chart (Chart.js Canvas) -> Visual breakdown of Entité I expenditures.
+      2. Regional Employment Disparities -> Bar Chart (Chart.js Canvas) -> Compare Employment Rate vs Unemployment across Brussels, Flanders, Wallonia.
+      3. PISA Historical Decline -> Line Chart (Chart.js Canvas) -> Historical math scores by community.
+      4. Poverty Risk (AROPE) -> Horizontal Bar Chart (Chart.js Canvas) -> Regional and provincial vulnerability rankings.
+      5. Prison Capacity vs Overcrowding -> Grouped Bar Chart (Chart.js Canvas) -> Capacity vs Detainees and Floor Mattresses.
+      NO SVG graphics used. NO Mermaid JS used. Dynamic updates via Vanilla JS. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+
+<body class="bg-stone-50 text-stone-800 font-sans antialiased min-h-screen flex flex-col selection:bg-amber-100 selection:text-amber-900">
+
+  <!-- LIEN D'ÉVITEMENT POUR L'ACCESSIBILITÉ -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-amber-600 text-white px-4 py-2 rounded-md z-50 shadow-md">
+    Aller au contenu principal
+  </a>
+
+  <!-- ENTÊTE DE PAGE ET BARRE DE NAVIGATION (SÉMANTIQUE HEADER) -->
+  <header class="bg-stone-900 text-stone-100 border-b border-stone-800 sticky top-0 z-40 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Haut de Header : Titre, Métadonnées & Outils de Filtrage -->
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center py-4 border-b border-stone-800 gap-4">
+        
+        <div>
+          <div class="flex flex-wrap items-center gap-2 mb-1">
+            <span class="text-xs font-semibold uppercase tracking-wider text-amber-400 bg-amber-950/80 border border-amber-800/80 px-2.5 py-0.5 rounded-full">
+              Audit Stratégique Officiel
+            </span>
+            <time datetime="2026-10" class="text-xs text-stone-400">Octobre 2026</time>
+            <span class="text-xs text-stone-500">• Sources : Cour des comptes, BNB, BFP, FMI, OCDE, Statbel</span>
+          </div>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
+            Diagnostic Structurel de la Belgique
+          </h1>
+          <p class="text-xs sm:text-sm text-stone-400 mt-0.5">
+            Évaluation intégrée des vulnérabilités budgétaires, des fractures régionales et de l'attrition régalienne
+          </p>
+        </div>
+
+        <!-- Outils d'Interaction : Recherche en Temps Réel + Filtre Régional -->
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full lg:w-auto">
+          <!-- Recherche textuelle globale -->
+          <div class="relative w-full sm:w-64">
+            <label for="global-search" class="sr-only">Rechercher un indicateur</label>
+            <input type="search" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Rechercher (ex: Dette, PISA, Flandre)..." class="w-full bg-stone-800 border border-stone-700 text-stone-200 placeholder-stone-500 text-xs rounded-lg px-3 py-2 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all">
+          </div>
+
+          <!-- Selecteur de région -->
+          <div class="flex items-center bg-stone-800 p-1 rounded-lg border border-stone-700 text-xs shrink-0" role="group" aria-label="Filtrage par Région">
+            <span class="text-stone-400 px-2 font-medium hidden sm:inline">Région :</span>
+            <button onclick="setGlobalRegionFilter('ALL')" id="btn-reg-ALL" class="px-2.5 py-1 rounded-md text-stone-100 bg-stone-700 font-medium transition-all" aria-pressed="true">National</button>
+            <button onclick="setGlobalRegionFilter('VLA')" id="btn-reg-VLA" class="px-2.5 py-1 rounded-md text-stone-400 hover:text-stone-200 transition-all" aria-pressed="false">Flandre</button>
+            <button onclick="setGlobalRegionFilter('WAL')" id="btn-reg-WAL" class="px-2.5 py-1 rounded-md text-stone-400 hover:text-stone-200 transition-all" aria-pressed="false">Wallonie</button>
+            <button onclick="setGlobalRegionFilter('BRU')" id="btn-reg-BRU" class="px-2.5 py-1 rounded-md text-stone-400 hover:text-stone-200 transition-all" aria-pressed="false">Bruxelles</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation principale par Onglets (Sémantique NAV & ARIA tablist) -->
+      <nav class="flex overflow-x-auto space-x-1 py-2.5 text-xs sm:text-sm scrollbar-none" role="tablist" aria-label="Navigation du Diagnostic">
+        <button onclick="switchTab('tab-overview')" id="nav-tab-overview" role="tab" aria-selected="true" aria-controls="tab-overview" class="tab-btn px-3.5 py-2 rounded-md font-medium whitespace-nowrap bg-amber-500 text-stone-950 shadow-sm transition-all">
+          📊 Vue d'Ensemble &amp; Verrous
+        </button>
+        <button onclick="switchTab('tab-finance')" id="nav-tab-finance" role="tab" aria-selected="false" aria-controls="tab-finance" class="tab-btn px-3.5 py-2 rounded-md font-medium whitespace-nowrap text-stone-300 hover:bg-stone-800 hover:text-white transition-all">
+          🏛️ Finances Publiques &amp; Dette
+        </button>
+        <button onclick="switchTab('tab-labor')" id="nav-tab-labor" role="tab" aria-selected="false" aria-controls="tab-labor" class="tab-btn px-3.5 py-2 rounded-md font-medium whitespace-nowrap text-stone-300 hover:bg-stone-800 hover:text-white transition-all">
+          💼 Emploi &amp; Coin Fiscal
+        </button>
+        <button onclick="switchTab('tab-social')" id="nav-tab-social" role="tab" aria-selected="false" aria-controls="tab-social" class="tab-btn px-3.5 py-2 rounded-md font-medium whitespace-nowrap text-stone-300 hover:bg-stone-800 hover:text-white transition-all">
+          🎓 Capital Humain &amp; Pauvreté
+        </button>
+        <button onclick="switchTab('tab-infra')" id="nav-tab-infra" role="tab" aria-selected="false" aria-controls="tab-infra" class="tab-btn px-3.5 py-2 rounded-md font-medium whitespace-nowrap text-stone-300 hover:bg-stone-800 hover:text-white transition-all">
+          ⛓️ Infrastructures &amp; Justice
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- CONTENU PRINCIPAL DE L'APPLICATION (SÉMANTIQUE MAIN) -->
+  <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+    <!-- CADRE PERMANENT DE PRESENTATION ET MISE EN CONTEXTE -->
+    <aside aria-label="Mise en contexte institutionnelle" class="mb-8 p-4 sm:p-5 rounded-2xl bg-white border border-stone-200/80 shadow-sm">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="space-y-1">
+          <h2 class="text-sm font-bold text-stone-900 flex items-center gap-2">
+            <span class="text-amber-600" aria-hidden="true">📌</span> Cadre Méthodologique &amp; Périmètre des Évaluations Audités
+          </h2>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed max-w-4xl">
+            Cet outil synthétise les audits officiels publiés par la <strong>Cour des comptes</strong>, le <strong>Bureau fédéral du Plan (BFP)</strong>, la <strong>Banque Nationale de Belgique (BNB)</strong>, le <strong>Conseil Supérieur des Finances (CSF)</strong>, le <strong>FMI</strong>, l'<strong>OCDE</strong> et <strong>Statbel</strong>. Il met en lumière les tensions nées de l'asymétrie institutionnelle, du vieillissement de la population et du sous-investissement régale.
+          </p>
+        </div>
+        
+        <!-- Badges d'Alertes Institutionnelles -->
+        <div class="flex flex-wrap gap-2 text-xs shrink-0">
+          <span class="px-2.5 py-1 bg-red-100 text-red-800 rounded-md border border-red-200 font-semibold">Procédure PDE Active</span>
+          <span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-md border border-amber-200 font-semibold">Coin Fiscal OCDE #1</span>
+          <span class="px-2.5 py-1 bg-stone-100 text-stone-800 rounded-md border border-stone-300 font-semibold">Chute PISA Historique</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Zone de Notification/Résultats de la Recherche Globale -->
+    <div id="search-results-banner" class="hidden mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm flex justify-between items-center">
+      <div>
+        <span class="font-bold">Filtrage dynamique actif pour :</span> <span id="search-keywords-display" class="font-mono bg-amber-200/60 px-2 py-0.5 rounded text-amber-950"></span>
+      </div>
+      <button onclick="clearGlobalSearch()" class="text-xs text-amber-800 underline hover:text-amber-950 font-medium">Réinitialiser la recherche</button>
+    </div>
+
+    <!-- ==================== TAB 1: VUE D'ENSEMBLE & SYNTHÈSE ==================== -->
+    <section id="tab-overview" class="tab-content active space-y-8" role="tabpanel" aria-labelledby="nav-tab-overview">
+      
+      <!-- Présentation de la section -->
+      <header class="bg-stone-100 p-4 rounded-xl border border-stone-200 text-stone-700 text-xs sm:text-sm leading-relaxed">
+        <h2 class="font-bold text-stone-900 mb-1">Introduction de la Section : Vue d'Ensemble &amp; Diagnostic Systémique</h2>
+        <p>
+          Cette vue d'ensemble offre un panorama chiffré des métriques souveraines et expose le modèle explicatif des <em>trois verrous systémiques</em>. Elle démontre comment le fédéralisme centrifuge déconnecte l'autonomie de dépense de la responsabilité fiscale, créant un effet d'éviction permanent sur les fonctions régaliennes et le capital humain.
+        </p>
+      </header>
+
+      <!-- Grille de KPIs Souverains Principaux -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm hover:border-stone-300 transition-all flex flex-col justify-between" data-search="solde deficit public entite pde cour des comptes">
+          <div>
+            <div class="text-xs font-semibold text-stone-500 uppercase tracking-wide">Solde Public Général (2024)</div>
+            <div class="text-2xl font-black text-red-600 mt-1 sm:text-3xl">-4,6 % <span class="text-xs font-normal text-stone-500">du PIB</span></div>
+            <p class="text-xs text-stone-600 mt-1 font-mono">-27 451 Millions € (Entités I &amp; II)</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+            <span class="bg-red-50 text-red-700 font-semibold px-2 py-0.5 rounded border border-red-100">Dégradation continue</span>
+            <span class="text-stone-400">Cour des comptes</span>
+          </div>
+        </article>
+
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm hover:border-stone-300 transition-all flex flex-col justify-between" data-search="dette brute federale agence dette bnb pib">
+          <div>
+            <div class="text-xs font-semibold text-stone-500 uppercase tracking-wide">Dette Brute Fédérale (2025)</div>
+            <div class="text-2xl font-black text-stone-900 mt-1 sm:text-3xl">533,66 <span class="text-xs font-normal text-stone-500">Mds €</span></div>
+            <p class="text-xs text-stone-600 mt-1 font-mono">Ratio public global ~105 % du PIB</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+            <span class="bg-amber-50 text-amber-800 font-semibold px-2 py-0.5 rounded border border-amber-100">Intérêts : 10 Mds€ / an</span>
+            <span class="text-stone-400">Agence de la Dette</span>
+          </div>
+        </article>
+
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm hover:border-stone-300 transition-all flex flex-col justify-between" data-search="taux emploi statbel flandre wallonie bruxelles">
+          <div>
+            <div class="text-xs font-semibold text-stone-500 uppercase tracking-wide">Taux d'Emploi (20-64 ans)</div>
+            <div class="text-2xl font-black text-stone-900 mt-1 sm:text-3xl">72,8 %</div>
+            <p class="text-xs text-stone-600 mt-1 font-mono">Objectif Gvt 2029 : 80,0 %</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+            <span class="bg-stone-100 text-stone-700 font-semibold px-2 py-0.5 rounded">Écart UE-27 : -3,3 pts</span>
+            <span class="text-stone-400">Statbel EFT</span>
+          </div>
+        </article>
+
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm hover:border-stone-300 transition-all flex flex-col justify-between" data-search="pauvrete arope risque exclusion bruxelles hainaut">
+          <div>
+            <div class="text-xs font-semibold text-stone-500 uppercase tracking-wide">Risque Pauvreté / Exclusion</div>
+            <div class="text-2xl font-black text-stone-900 mt-1 sm:text-3xl">18,3 %</div>
+            <p class="text-xs text-stone-600 mt-1 font-mono">&gt; 2,1 Millions de personnes (AROPE)</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+            <span class="bg-red-50 text-red-700 font-semibold px-2 py-0.5 rounded border border-red-100">Bruxelles : 37,3 %</span>
+            <span class="text-stone-400">EU-SILC</span>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Analyse Structurée : Les 3 Verrous Systémiques du Modèle Belge -->
+      <article class="searchable-card bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-6" data-search="verrous systemiques asymetrie fiscale eviction investissement capital humain">
+        <div>
+          <h3 class="text-base sm:text-lg font-bold text-stone-900 flex items-center gap-2">
+            <span class="text-amber-600">⚙️</span> Modèle Analytique : Les 3 Verrous Interdépendants de la Crise Belge
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-600 mt-1">
+            Les défaillances documentées dans les domaines budgétaire, social et régalien ne sont pas fortuites. Elles s'auto-entretiennent au travers de trois boucles de rétroaction négative.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Verrou 1 -->
+          <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/50 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold uppercase tracking-wide px-2.5 py-0.5 bg-amber-200 text-amber-900 rounded-md">Verrou #1</span>
+                <span class="text-xs font-medium text-stone-500">Institutionnel</span>
+              </div>
+              <h4 class="font-bold text-stone-900 text-sm">Asymétrie Fiscale &amp; Externalisation</h4>
+              <p class="text-xs text-stone-700 leading-relaxed">
+                Le transfert massif de compétences de dépenses vers les Régions et Communautés (81,5 Mds€ en 2026) s'est fait sans responsabilisation fiscale consolidée. La rupture du financement Fédéral transfère le coût de l'ajustement systématiquement sur l'Entité I.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-amber-200/80 text-xs text-amber-950 font-semibold">
+              ⚠️ Conséquence : Dépassement budgétaire potentiel &gt; 20 Mds€ d'ici 2029 (CSF).
+            </div>
+          </div>
+
+          <!-- Verrou 2 -->
+          <div class="p-5 rounded-xl border border-red-200 bg-red-50/50 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold uppercase tracking-wide px-2.5 py-0.5 bg-red-200 text-red-900 rounded-md">Verrou #2</span>
+                <span class="text-xs font-medium text-stone-500">Macroéconomique</span>
+              </div>
+              <h4 class="font-bold text-stone-900 text-sm">Spirale d'Éviction de l'Investissement</h4>
+              <p class="text-xs text-stone-700 leading-relaxed">
+                Le poids combiné du service de la dette (10 Mds€ d'intérêts), des pensions (73,65 Mds€) et des incapacités de longue durée (&gt;500k personnes) force le maintien du coin fiscal le plus lourd de l'OCDE, comprimant l'investissement public net.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-red-200/80 text-xs text-red-950 font-semibold">
+              ⚠️ Conséquence : Capital public bloqué sous la moyenne de la zone euro depuis 1980.
+            </div>
+          </div>
+
+          <!-- Verrou 3 -->
+          <div class="p-5 rounded-xl border border-slate-200 bg-slate-100/60 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold uppercase tracking-wide px-2.5 py-0.5 bg-slate-300 text-slate-800 rounded-md">Verrou #3</span>
+                <span class="text-xs font-medium text-stone-500">Socio-Éducatif</span>
+              </div>
+              <h4 class="font-bold text-stone-900 text-sm">Découplage &amp; Dualisation du Capital Humain</h4>
+              <p class="text-xs text-stone-700 leading-relaxed">
+                La baisse des acquis scolaires (PISA/TIMSS) s'accompagne d'une fragmentation du marché du travail. Le modèle protège fortement les diplômés supérieurs (85,4 % d'emploi) mais exclut massivement les non-diplômés (46,4 % d'emploi).
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-900 font-semibold">
+              ⚠️ Conséquence : Risque AROPE grimpant à 37,3 % à Bruxelles et 26,7 % en Hainaut.
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+      <!-- Graphiques de Synthèse Macroéconomique -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Graphic 1: Distribution Dépenses Fédérales -->
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex flex-col justify-between" data-search="bosa budget depenses securite sociale pensions transferts regions fontionnement">
+          <header>
+            <h3 class="text-sm font-bold text-stone-900">Structure des Dépenses de l'Entité I (Budget 2026 BOSA)</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Sur un total de 293,5 Milliards d'euros (44,2 % du PIB)</p>
+          </header>
+          <figure class="my-4">
+            <div class="chart-container">
+              <canvas id="chartSocialSecurity" aria-label="Graphique circulaire de la répartition des dépenses fédérales" role="img"></canvas>
+            </div>
+            <figcaption class="sr-only">Graphique montrant la prépondérance des pensions et soins de santé dans les dépenses fédérales.</figcaption>
+          </figure>
+          <footer class="text-xs text-stone-600 bg-stone-50 p-3 rounded-xl border border-stone-200">
+            📌 <strong>Analyse :</strong> La sécurité sociale (147,3 Mds€) et les transferts aux entités fédérées (81,5 Mds€) absorbent 78 % du total. Les dépenses propres de fonctionnement de l'État fédéral se réduisent à 41,9 Mds€.
+          </footer>
+        </article>
+
+        <!-- Graphic 2: Taux d'Emploi par Région -->
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex flex-col justify-between" data-search="emploi chomage flandre wallonie bruxelles disparites regionales statbel">
+          <header>
+            <h3 class="text-sm font-bold text-stone-900">Disparités Régionales du Marché du Travail (T2 2026)</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Taux d'emploi (20-64 ans) vs Taux de Chômage BIT (%)</p>
+          </header>
+          <figure class="my-4">
+            <div class="chart-container">
+              <canvas id="chartRegionalEmployment" aria-label="Graphique en barres de l'emploi par région" role="img"></canvas>
+            </div>
+            <figcaption class="sr-only">Graphique comparant les performances du marché du travail entre Flandre, Wallonie et Bruxelles.</figcaption>
+          </figure>
+          <footer class="text-xs text-stone-600 bg-stone-50 p-3 rounded-xl border border-stone-200">
+            📌 <strong>Analyse :</strong> La Flandre atteint le quasi-plein emploi (77,3 %), tandis que Bruxelles subit un chômage élevé de 12,7 % et que la Wallonie plafonne à 67,6 % d'emploi.
+          </footer>
+        </article>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 2: FINANCES PUBLIQUES ==================== -->
+    <section id="tab-finance" class="tab-content space-y-8" role="tabpanel" aria-labelledby="nav-tab-finance">
+      
+      <header class="bg-stone-100 p-4 rounded-xl border border-stone-200 text-stone-700 text-xs sm:text-sm leading-relaxed">
+        <h2 class="font-bold text-stone-900 mb-1">Présentation de la Section : Finances Publiques &amp; Trajectoire de Dette</h2>
+        <p>
+          Cette section détaille l'audit des finances publiques belges, l'activation de la Procédure pour Déficit Excessif (PDE) par la Commission européenne et l'effet boule de neige des charges de la dette. Les données audiotées par la Cour des comptes et le Conseil Supérieur des Finances confirment un risque de dérapage prolongé.
+        </p>
+      </header>
+
+      <!-- Cartes Métriques Clés Budget -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <article class="searchable-card bg-white p-4 rounded-xl border border-stone-200 shadow-sm" data-search="solde caisse recettes nettes cour des comptes">
+          <span class="text-xs font-semibold text-stone-500 uppercase">Solde Fédéral de Caisse</span>
+          <div class="text-2xl font-bold text-red-600 mt-1 sm:text-3xl">-26,2 Mds €</div>
+          <p class="text-xs text-stone-600 mt-1">Recettes nettes : 136,5 Mds€ (2024)</p>
+        </article>
+        <article class="searchable-card bg-white p-4 rounded-xl border border-stone-200 shadow-sm" data-search="charges interets agence dette effet taux">
+          <span class="text-xs font-semibold text-stone-500 uppercase">Charges d'intérêts (2024)</span>
+          <div class="text-2xl font-bold text-stone-900 mt-1 sm:text-3xl">10,0 Mds €</div>
+          <p class="text-xs text-amber-800 mt-1 font-semibold">+1,5 Md€ sur un an (Effet de taux)</p>
+        </article>
+        <article class="searchable-card bg-white p-4 rounded-xl border border-stone-200 shadow-sm" data-search="vieillissement pensions bureau federal plan 2070">
+          <span class="text-xs font-semibold text-stone-500 uppercase">Coût du Vieillissement (2070)</span>
+          <div class="text-2xl font-bold text-stone-900 mt-1 sm:text-3xl">12,2 % du PIB</div>
+          <p class="text-xs text-stone-600 mt-1">+1,7 pt de PIB d'ici 2070 (BFP)</p>
+        </article>
+      </div>
+
+      <!-- Tableau Complet Sémantique des Indicateurs Budgétaires -->
+      <article class="searchable-card bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden" data-search="tableau indicateurs budgetaires dette entite 1 entite 2 cour des comptes icn bosa">
+        <header class="p-4 border-b border-stone-200 bg-stone-50 flex justify-between items-center flex-wrap gap-2">
+          <div>
+            <h3 class="font-bold text-stone-900 text-sm">Tableau Synthétique des Indicateurs Financiers Audités</h3>
+            <p class="text-xs text-stone-500">Dernières données validées par la Cour des comptes et l'ICN</p>
+          </div>
+          <span class="text-xs bg-stone-200 text-stone-800 px-2.5 py-1 rounded-md font-mono">Consolidation Entités I &amp; II</span>
+        </header>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm text-stone-700">
+            <caption class="sr-only">Indicateurs financiers et budgétaires consolidés de l'État belge</caption>
+            <thead class="bg-stone-100 text-stone-600 font-semibold uppercase tracking-wider border-b border-stone-200">
+              <tr>
+                <th scope="col" class="p-3.5">Poste / Indicateur Budgétaire</th>
+                <th scope="col" class="p-3.5">Valeur / Montant</th>
+                <th scope="col" class="p-3.5">Période</th>
+                <th scope="col" class="p-3.5">Source Officielle</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-200">
+              <tr class="hover:bg-stone-50/80 transition-colors">
+                <td class="p-3.5 font-medium text-stone-900">Solde de financement public général</td>
+                <td class="p-3.5 text-red-600 font-bold">-4,6 % PIB (-27 451 M€)</td>
+                <td class="p-3.5">2024</td>
+                <td class="p-3.5">Cour des comptes / ICN</td>
+              </tr>
+              <tr class="bg-stone-50/40 hover:bg-stone-50/80 transition-colors">
+                <td class="p-3.5 font-medium text-stone-900">Solde Entité I (État Fédéral + Séc. Soc.)</td>
+                <td class="p-3.5 text-red-600 font-bold">-2,8 % PIB (-17 311 M€)</td>
+                <td class="p-3.5">2024</td>
+                <td class="p-3.5">Cour des comptes</td>
+              </tr>
+              <tr class="hover:bg-stone-50/80 transition-colors">
+                <td class="p-3.5 font-medium text-stone-900">Encours Brut de la Dette Fédérale</td>
+                <td class="p-3.5 font-bold text-stone-900">533,659 Mds €</td>
+                <td class="p-3.5">2025</td>
+                <td class="p-3.5">Agence de la Dette / Cour des comptes</td>
+              </tr>
+              <tr class="bg-stone-50/40 hover:bg-stone-50/80 transition-colors">
+                <td class="p-3.5 font-medium text-stone-900">Dépenses de Sécurité Sociale (dont Pensions)</td>
+                <td class="p-3.5">147,3 Mds€ (Pensions : ~73,6 Mds€)</td>
+                <td class="p-3.5">2026</td>
+                <td class="p-3.5">SPF BOSA / BFP</td>
+              </tr>
+              <tr class="hover:bg-stone-50/80 transition-colors">
+                <td class="p-3.5 font-medium text-stone-900">Transferts aux Régions et Communautés</td>
+                <td class="p-3.5 font-bold text-stone-900">81,5 Mds €</td>
+                <td class="p-3.5">2026</td>
+                <td class="p-3.5">SPF BOSA</td>
+              </tr>
+              <tr class="bg-stone-50/40 hover:bg-stone-50/80 transition-colors">
+                <td class="p-3.5 font-medium text-stone-900">Écart potentiel déficit Fédéral (trajectoire CSF)</td>
+                <td class="p-3.5 text-amber-800 font-bold">&gt; +20 Mds € d'ici 2029</td>
+                <td class="p-3.5">2024-2029</td>
+                <td class="p-3.5">Conseil Supérieur des Finances</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- Analyse Qualitative de la Procédure Déficit Excessif -->
+      <article class="searchable-card bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4" data-search="pde commission europeenne consolidation ajustement structurel pib csf pacte stabilite">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
+          <span class="text-red-600">🚨</span> Conséquences de l'Activation de la Procédure pour Déficit Excessif (PDE)
+        </h3>
+        <div class="text-xs sm:text-sm text-stone-700 space-y-3 leading-relaxed">
+          <p>
+            L'ouverture formelle de la Procédure pour Déficit Excessif par le Conseil d'Écofin impose à la Belgique un ajustement structurel minimum de <strong>0,5 % à 0,7 % du PIB par an</strong> (soit environ 3 à 4,5 Mds€ de corrections annuelles récurrentes).
+          </p>
+          <p>
+            Selon le Conseil Supérieur des Finances (CSF), l'absence de réformes structurelles approfondies porterait le déficit public à plus de <strong>6 % du PIB à l'horizon 2029</strong>, sous la poussée de l'indexation des pensions, des dépenses de santé et de l'augmentation du coût moyen du refinancement de la dette (rendement moyen réestimé à >3,2 %).
+          </p>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ==================== TAB 3: EMPLOI & COIN FISCAL ==================== -->
+    <section id="tab-labor" class="tab-content space-y-8" role="tabpanel" aria-labelledby="nav-tab-labor">
+      
+      <header class="bg-stone-100 p-4 rounded-xl border border-stone-200 text-stone-700 text-xs sm:text-sm leading-relaxed">
+        <h2 class="font-bold text-stone-900 mb-1">Présentation de la Section : Marché du Travail &amp; Coin Fiscal</h2>
+        <p>
+          Le marché du travail belge est caractérisé par un paradoxe structurel : un coin fiscal au plus haut de l'OCDE (52,7 %), coexistant avec un taux de vacance d'emploi élevé et plus de 500 000 personnes en incapacité de longue durée (invalidité).
+        </p>
+      </header>
+
+      <!-- Cartes Métriques Clés Emploi -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <article class="searchable-card bg-white p-4 rounded-xl border border-stone-200 shadow-sm" data-search="coin fiscal ocde impots cotisations sociales">
+          <span class="text-xs font-semibold text-stone-500 uppercase">Coin Fiscal Célibataire (OCDE)</span>
+          <div class="text-2xl font-bold text-red-600 mt-1 sm:text-3xl">52,7 %</div>
+          <p class="text-xs text-stone-600 mt-1">N°1 Mondial OCDE (Moyenne UE : 41,2 %)</p>
+        </article>
+        <article class="searchable-card bg-white p-4 rounded-xl border border-stone-200 shadow-sm" data-search="invalidite incapacite longue duree maladie travail">
+          <span class="text-xs font-semibold text-stone-500 uppercase">Incapacité Longue Durée</span>
+          <div class="text-2xl font-bold text-amber-800 mt-1 sm:text-3xl">&gt; 500 000</div>
+          <p class="text-xs text-stone-600 mt-1">Dépasse le nombre total de chômeurs</p>
+        </article>
+        <article class="searchable-card bg-white p-4 rounded-xl border border-stone-200 shadow-sm" data-search="faiblement diplomes taux emploi statbel">
+          <span class="text-xs font-semibold text-stone-500 uppercase">Emploi Faiblement Diplômés</span>
+          <div class="text-2xl font-bold text-stone-900 mt-1 sm:text-3xl">46,4 %</div>
+          <p class="text-xs text-stone-600 mt-1">Vs 85,4 % chez les diplômés supérieurs</p>
+        </article>
+      </div>
+
+      <!-- Analyse de la Fracturation du Marché du Travail -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3" data-search="seniors taux emploi pretensionnement carriere">
+          <h3 class="font-bold text-stone-900 text-sm">1. La Fracture par l'Âge et l'Inactivité des Seniors</h3>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            Même si le taux d'emploi global atteint 72,8 %, la participation des personnes âgées de 55 à 64 ans s'établit à seulement <strong>60,2 %</strong>, un niveau nettement inférieur à la moyenne des pays voisins (73,1 % aux Pays-Bas, 72,5 % en Allemagne). Les mécanismes de prépension réaménagés et les départs anticipés pour pénibilité continuent de peser sur le volume d'heures travaillées.
+          </p>
+        </article>
+
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3" data-search="handicap salarial cce competitivité indexation">
+          <h3 class="font-bold text-stone-900 text-sm">2. Handicap Salarial et Compétitivité Coût</h3>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            Le Conseil Central de l'Économie (CCE) note un **handicap salarial cumulé** d'environ 10 % par rapport aux trois pays voisins (Allemagne, France, Pays-Bas) depuis 1996. L'indexation automatique des salaires couplée à la loi de 1996 sur la promotion de l'emploi crée des rigidités dans la négociation collective et restreint les marges d'ajustement hors secteur marchand.
+          </p>
+        </article>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 4: CAPITAL HUMAIN & PAUVRETÉ ==================== -->
+    <section id="tab-social" class="tab-content space-y-8" role="tabpanel" aria-labelledby="nav-tab-social">
+      
+      <header class="bg-stone-100 p-4 rounded-xl border border-stone-200 text-stone-700 text-xs sm:text-sm leading-relaxed">
+        <h2 class="font-bold text-stone-900 mb-1">Présentation de la Section : Éducation (PISA) &amp; Risque AROPE</h2>
+        <p>
+          Cette section analyse le déclin mesuré des compétences fondamentales (PISA / TIMSS) dans les deux principales Communautés et son impact direct sur le risque de pauvreté ou d'exclusion sociale (AROPE), particulièrement marqué dans les zones urbaines bruxelloises et le sillon industriel wallon.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Graphique 3: Évolution PISA Mathématiques -->
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex flex-col justify-between" data-search="pisa mathématiques score declin communaute flamande francophone ocde">
+          <header>
+            <h3 class="text-sm font-bold text-stone-900">Évolution des Scores PISA en Mathématiques (2003-2022)</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Moyenne OCDE de référence : 472 points (2022)</p>
+          </header>
+          <figure class="my-4">
+            <div class="chart-container">
+              <canvas id="chartPisaDecline" aria-label="Graphique d'évolution des scores PISA" role="img"></canvas>
+            </div>
+            <figcaption class="sr-only">Graphique montrant la baisse constante des résultats PISA en Flandre et en Fédération Wallonie-Bruxelles.</figcaption>
+          </figure>
+          <footer class="text-xs text-stone-600 bg-stone-50 p-3 rounded-xl border border-stone-200">
+            📌 <strong>Audit :</strong> La Flandre enregistre une baisse de plus de 50 points en 20 ans (l'équivalent de plus d'une année d'apprentissage), tandis que la Fédération Wallonie-Bruxelles stagne sous la moyenne OCDE à 474 points.
+          </footer>
+        </article>
+
+        <!-- Graphique 4: Taux AROPE par Région / Province -->
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex flex-col justify-between" data-search="arope pauvrete exclusion sociale hainaut bruxelles flandre wallonie statbel">
+          <header>
+            <h3 class="text-sm font-bold text-stone-900">Taux de Risque de Pauvreté ou d'Exclusion (AROPE)</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Données EU-SILC / Statbel (%)</p>
+          </header>
+          <figure class="my-4">
+            <div class="chart-container">
+              <canvas id="chartAropePoverty" aria-label="Graphique horizontal du risque de pauvreté" role="img"></canvas>
+            </div>
+            <figcaption class="sr-only">Graphique illustrant le taux AROPE à Bruxelles, en Wallonie, en Flandre et dans la province du Hainaut.</figcaption>
+          </figure>
+          <footer class="text-xs text-stone-600 bg-stone-50 p-3 rounded-xl border border-stone-200">
+            📌 <strong>Audit :</strong> À Bruxelles, 37,3 % de la population est menacée de pauvreté ou d'exclusion sociale. Dans le Hainaut, ce taux atteint 26,7 %, contre seulement 12,3 % en Flandre occidentale.
+          </footer>
+        </article>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 5: INFRASTRUCTURES & JUSTICE ==================== -->
+    <section id="tab-infra" class="tab-content space-y-8" role="tabpanel" aria-labelledby="nav-tab-infra">
+      
+      <header class="bg-stone-100 p-4 rounded-xl border border-stone-200 text-stone-700 text-xs sm:text-sm leading-relaxed">
+        <h2 class="font-bold text-stone-900 mb-1">Présentation de la Section : Infrastructures, Transport &amp; Crise Pénitentiaire</h2>
+        <p>
+          L'effet d'éviction budgétaire sur les dépenses publiques d'investissement a durement touché les infrastructures stratégiques (mobilité, justice, réseau ferroviaire). Cette section documente les coûts de la congestion routière et l'audit sur la crise carcérale.
+        </p>
+      </header>
+
+      <!-- Grid de Cartes d'Audit Régalien -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-4" data-search="embouteillages congestion routiere cout transport sncb voies navigables">
+          <header class="border-b border-stone-100 pb-3">
+            <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">Infrastructures &amp; Mobilité</span>
+            <h3 class="font-bold text-stone-900 text-base mt-2">Coût Économique de la Congestion Routière</h3>
+          </header>
+          <div class="space-y-2 text-xs sm:text-sm text-stone-700">
+            <p>
+              Les études combinées du VBM (Vlaams Instituut voor de Logistiek) et de la Fédération Belge de l'Automobile évaluent le coût direct de la congestion routière à <strong>5,3 Milliards d'euros par an</strong> (perte de temps, carburant, surcoûts logistiques).
+            </p>
+            <p>
+              Le sous-investissement chronique dans la rénovation des ouvrages d'art (tunnels bruxellois, viaducs autoroutiers wallons) impose des goulets d'étranglement permanents sur les axes E40, E411 et le Ring de Bruxelles.
+            </p>
+          </div>
+        </article>
+
+        <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-4" data-search="prisons surpopulation carcérale matelas au sol strasbourg cedh dgep justice">
+          <header class="border-b border-stone-100 pb-3">
+            <span class="text-xs font-semibold text-red-700 bg-red-50 px-2.5 py-1 rounded-md border border-red-200">État de Droit &amp; Justice</span>
+            <h3 class="font-bold text-stone-900 text-base mt-2">Surpopulation Carcérale et Défaillance Régaliennes</h3>
+          </header>
+          <div class="space-y-2 text-xs sm:text-sm text-stone-700">
+            <p>
+              Le taux d'occupation moyen des établissements pénitentiaires belges s'établit à <strong>124 % de la capacité nominale</strong> (> 12 500 détenus pour 10 100 places).
+            </p>
+            <p>
+              Plus de <strong>614 détenus dorment actuellement sur des matelas au sol</strong> (fondation <i>grondslapers</i>), provoquant de récurrentes condamnations par la Cour Européenne des Droits de l'Homme (CEDH) pour traitement inhumain et dégradant.
+            </p>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Graphique 5: Surpopulation Carcérale -->
+      <article class="searchable-card bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex flex-col justify-between" data-search="prisons detentation capacite matelas au sol saint gilles antwerpen forest prisonniers dgep">
+        <header>
+          <h3 class="text-sm font-bold text-stone-900">Capacité Théorique vs Population Réelle dans les Prisons Majeures</h3>
+          <p class="text-xs text-stone-500 mt-0.5">Source : Direction Générale des Établissements Pénitentiaires (DGEP)</p>
+        </header>
+        <figure class="my-4">
+          <div class="chart-container">
+            <canvas id="chartPrisonsOvercrowding" aria-label="Graphique montrant la surpopulation carcérale" role="img"></canvas>
+          </div>
+          <figcaption class="sr-only">Graphique comparant la capacité et le nombre réel de détenus à Saint-Gilles, Anvers, Lantin et Mons.</figcaption>
+        </figure>
+        <footer class="text-xs text-stone-600 bg-stone-50 p-3 rounded-xl border border-stone-200">
+          📌 <strong>Constat :</strong> Les prisons urbaines d'Anvers et de Saint-Gilles affichent des taux de surpopulation dépassant 140 %, nécessitant le recours systématique aux matelas posés à même le sol.
+        </footer>
+      </article>
+
+    </section>
+
+  </main>
+
+  <!-- PIED DE PAGE SÉMANTIQUE (FOOTER) -->
+  <footer class="bg-stone-900 text-stone-400 border-t border-stone-800 mt-16 py-8 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-stone-800 pb-4">
+        <div>
+          <span class="font-bold text-stone-200 text-sm">Observatoire des Politiques Structurelles Belges</span>
+          <p class="mt-0.5 text-stone-500">Synthèse consolidée des rapports officiels de la Cour des comptes, BNB, BFP, FMI &amp; OCDE.</p>
+        </div>
+        <div class="flex flex-wrap gap-4 text-stone-400">
+          <a href="#main-content" class="hover:text-amber-400 transition-colors">Haut de page</a>
+          <span aria-hidden="true">•</span>
+          <span class="text-stone-500">Mise à jour : Octobre 2026</span>
+        </div>
+      </div>
+      <div class="flex flex-col sm:flex-row justify-between text-stone-500 text-[11px] gap-2">
+        <p>© 2026 Diagnostic Structurel Belgique. Réutilisation autorisée sous réserve de citation des sources officielles.</p>
+        <p>Conforme aux normes d'accessibilité RGAA / WCAG 2.1 AA.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT VANILLA JS (LOGIQUE INTERACTIVE & CHART.JS) -->
+  <script>
+    /* ==================== GLOBAL STATE & TAB MANAGEMENT ==================== */
+    let currentRegionFilter = 'ALL';
+    let activeChartInstances = {};
+
+    function switchTab(tabId) {
+      // 1. Cacher tous les onglets
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      // 2. Désélectionner tous les boutons de navigation
+      const navBtns = document.querySelectorAll('.tab-btn');
+      navBtns.forEach(btn => {
+        btn.setAttribute('aria-selected', 'false');
+        btn.classList.remove('bg-amber-500', 'text-stone-950', 'shadow-sm');
+        btn.classList.add('text-stone-300', 'hover:bg-stone-800', 'hover:text-white');
+      });
+
+      // 3. Activer l'onglet cible
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) {
+        targetTab.classList.add('active');
+      }
+
+      // 4. Mettre à jour le style du bouton sélectionné
+      const targetBtn = document.getElementById('nav-' + tabId);
+      if (targetBtn) {
+        targetBtn.setAttribute('aria-selected', 'true');
+        targetBtn.classList.remove('text-stone-300', 'hover:bg-stone-800', 'hover:text-white');
+        targetBtn.classList.add('bg-amber-500', 'text-stone-950', 'shadow-sm');
+      }
+
+      // 5. Redimensionner proprement les graphiques du tab activé
+      setTimeout(() => {
+        Object.values(activeChartInstances).forEach(chart => {
+          if (chart) chart.resize();
+        });
+      }, 50);
+    }
+
+    /* ==================== SEARCH & REGIONAL FILTERING ==================== */
+    function handleGlobalSearch(query) {
+      const cleanQuery = query.toLowerCase().trim();
+      const cards = document.querySelectorAll('.searchable-card');
+      const banner = document.getElementById('search-results-banner');
+      const keywordDisplay = document.getElementById('search-keywords-display');
+
+      if (cleanQuery.length > 0) {
+        banner.classList.remove('hidden');
+        keywordDisplay.textContent = `"${query}"`;
+
+        cards.forEach(card => {
+          const searchData = (card.getAttribute('data-search') || '') + ' ' + card.innerText.toLowerCase();
+          if (searchData.toLowerCase().includes(cleanQuery)) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      } else {
+        clearGlobalSearch();
+      }
+    }
+
+    function clearGlobalSearch() {
+      document.getElementById('global-search').value = '';
+      document.getElementById('search-results-banner').classList.add('hidden');
+      const cards = document.querySelectorAll('.searchable-card');
+      cards.forEach(card => {
+        card.style.display = '';
+      });
+    }
+
+    function setGlobalRegionFilter(region) {
+      currentRegionFilter = region;
+      const buttons = ['ALL', 'VLA', 'WAL', 'BRU'];
+      
+      buttons.forEach(r => {
+        const btn = document.getElementById('btn-reg-' + r);
+        if (r === region) {
+          btn.classList.add('bg-stone-700', 'text-stone-100', 'font-medium');
+          btn.classList.remove('text-stone-400');
+          btn.setAttribute('aria-pressed', 'true');
+        } else {
+          btn.classList.remove('bg-stone-700', 'text-stone-100', 'font-medium');
+          btn.classList.add('text-stone-400');
+          btn.setAttribute('aria-pressed', 'false');
+        }
+      });
+
+      // Si une région spécifique est sélectionnée, orienter la recherche
+      if (region !== 'ALL') {
+        const regionNames = { 'VLA': 'flandre', 'WAL': 'wallonie', 'BRU': 'bruxelles' };
+        handleGlobalSearch(regionNames[region]);
+      } else {
+        clearGlobalSearch();
+      }
+    }
+
+    /* ==================== INITIALISATION DES GRAPHIQUES (CHART.JS CANVAS) ==================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // Configuration Globale Chart.js
+      Chart.defaults.font.family = 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      Chart.defaults.font.size = 11;
+      Chart.defaults.color = '#57534e';
+
+      // -------------------------------------------------------------
+      // Chart 1: Répartition Dépenses Fédérales (Donut)
+      // -------------------------------------------------------------
+      const ctx1 = document.getElementById('chartSocialSecurity');
+      if (ctx1) {
+        activeChartInstances.socialSec = new Chart(ctx1, {
+          type: 'doughnut',
+          data: {
+            labels: [
+              'Sécurité Sociale (147,3 Mds€)',
+              'Transferts Régions/Comm. (81,5 Mds€)',
+              'Fonctionnement Éat / Defense (41,9 Mds€)',
+              'Charges Dette / Intérêts (10,0 Mds€)',
+              'Investissements Publics (12,8 Mds€)'
+            ],
+            datasets: [{
+              data: [147.3, 81.5, 41.9, 10.0, 12.8],
+              backgroundColor: ['#d97706', '#0284c7', '#475569', '#dc2626', '#10b981'],
+              borderWidth: 2,
+              borderColor: '#ffffff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 12, padding: 10 } },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return ` ${context.label}: ${context.raw} Mds € (${((context.raw / 293.5)*100).toFixed(1)}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // -------------------------------------------------------------
+      // Chart 2: Disparités Régionales de l'Emploi (Bar Chart)
+      // -------------------------------------------------------------
+      const ctx2 = document.getElementById('chartRegionalEmployment');
+      if (ctx2) {
+        activeChartInstances.regionalEmp = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: ['Flandre', 'Wallonie', 'Bruxelles', 'Moyenne Nationale'],
+            datasets: [
+              {
+                label: "Taux d'Emploi 20-64 ans (%)",
+                data: [77.3, 67.6, 66.2, 72.8],
+                backgroundColor: '#15803d'
+              },
+              {
+                label: 'Taux de Chômage BIT (%)',
+                data: [3.5, 8.2, 12.7, 5.6],
+                backgroundColor: '#b91c1c'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } }
+            },
+            plugins: {
+              legend: { position: 'bottom' }
+            }
+          }
+        });
+      }
+
+      // -------------------------------------------------------------
+      // Chart 3: Déclin Historique PISA (Line Chart)
+      // -------------------------------------------------------------
+      const ctx3 = document.getElementById('chartPisaDecline');
+      if (ctx3) {
+        activeChartInstances.pisa = new Chart(ctx3, {
+          type: 'line',
+          data: {
+            labels: ['2003', '2009', '2012', '2015', '2018', '2022'],
+            datasets: [
+              {
+                label: 'Communauté Flamande (Maths)',
+                data: [553, 537, 531, 521, 518, 501],
+                borderColor: '#d97706',
+                backgroundColor: '#d97706',
+                tension: 0.2
+              },
+              {
+                label: 'Fédération Wallonie-Bruxelles (Maths)',
+                data: [498, 495, 493, 490, 481, 474],
+                borderColor: '#0284c7',
+                backgroundColor: '#0284c7',
+                tension: 0.2
+              },
+              {
+                label: 'Moyenne OCDE',
+                data: [500, 496, 494, 490, 489, 472],
+                borderColor: '#78716c',
+                borderDash: [5, 5],
+                pointRadius: 0
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { min: 450, max: 570 }
+            },
+            plugins: {
+              legend: { position: 'bottom' }
+            }
+          }
+        });
+      }
+
+      // -------------------------------------------------------------
+      // Chart 4: Taux AROPE Pauvreté (Horizontal Bar)
+      // -------------------------------------------------------------
+      const ctx4 = document.getElementById('chartAropePoverty');
+      if (ctx4) {
+        activeChartInstances.arope = new Chart(ctx4, {
+          type: 'bar',
+          indexAxis: 'y',
+          data: {
+            labels: ['Région Bruxelloise', 'Prov. Hainaut', 'Prov. Liège', 'Région Wallonne', 'Région Flamande'],
+            datasets: [{
+              label: 'Risque de Pauvreté ou Exclusion AROPE (%)',
+              data: [37.3, 26.7, 21.4, 20.6, 12.3],
+              backgroundColor: ['#dc2626', '#ea580c', '#d97706', '#f59e0b', '#16a34a']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { beginAtZero: true, max: 45, ticks: { callback: v => v + '%' } }
+            },
+            plugins: {
+              legend: { display: false }
+            }
+          }
+        });
+      }
+
+      // -------------------------------------------------------------
+      // Chart 5: Surpopulation Carcérale (Grouped Bar)
+      // -------------------------------------------------------------
+      const ctx5 = document.getElementById('chartPrisonsOvercrowding');
+      if (ctx5) {
+        activeChartInstances.prisons = new Chart(ctx5, {
+          type: 'bar',
+          data: {
+            labels: ['Saint-Gilles (BRU)', 'Anvers (VLA)', 'Lantin (WAL)', 'Mons (WAL)'],
+            datasets: [
+              {
+                label: 'Capacité Théorique (places)',
+                data: [580, 440, 690, 310],
+                backgroundColor: '#78716c'
+              },
+              {
+                label: 'Population Réelle (détenus)',
+                data: [890, 680, 870, 430],
+                backgroundColor: '#dc2626'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { beginAtZero: true }
+            },
+            plugins: {
+              legend: { position: 'bottom' }
+            }
+          }
+        });
+      }
+
+    });
+  </script>
+</body>
+</html>
