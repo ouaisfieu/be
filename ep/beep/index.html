@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomie Critique du Pouvoir Citoyen en Belgique | Rapport Politologique Interactif</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 330px;
+            max-height: 420px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 370px;
+            }
+        }
+        .tab-active {
+            border-bottom: 3px solid #c2410c;
+            color: #c2410c;
+            font-weight: 700;
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 4px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-[#faf8f5] text-slate-800 font-sans antialiased selection:bg-orange-200 selection:text-orange-950 min-h-screen flex flex-col">
+
+    <!-- Chosen Palette: Warm Editorial Civic (Sand #faf8f5, Slate #1e293b, Deep Ink #0f172a, Rust #c2410c, Soft Sage #059669, Amber #d97706) -->
+    <!-- Application Structure Plan: 6 core interactive modules: 1. Synthesis & Executive Summary, 2. Empirical Macro Indicators (V-Dem, OECD 2025/2026, ESS long-term trends), 3. Mechanics of Particracy (3-Pillar interactive system), 4. Electoral Reforms & Direct Democracy Locks (2024 regional comparison table + Art 33 analysis), 5. Deliberative Lab Audit (Ostbelgien 2019 vs 2026 reform & Mixed Commissions filter simulator), 6. Interactive Civic Power Diagnostic & Source Index. Selected to provide a seamless transition from macro-statistical evidence to institutional mechanisms and practical citizen action simulation. -->
+    <!-- Visualization & Content Choices: Canvas Chart.js bar charts for V-Dem & OECD trust rankings; ESS historical line chart with dynamic BE/NL/DE/FR toggles; pure HTML/CSS interactive comparison grid for 2024 municipal electoral reform; step-by-step interactive workflow diagram for deliberative recommendation absorption; JS diagnostic engine. Strictly NO SVG elements and NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <header class="bg-slate-900 text-slate-100 border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between py-4 border-b border-slate-800/80">
+                <div>
+                    <div class="flex items-center space-x-3">
+                        <span class="inline-flex items-center justify-center w-7 h-7 bg-orange-600 text-white font-black text-xs rounded">BE</span>
+                        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">L'Illusion Participative en Régime Particratique</h1>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Anatomie critique du pouvoir d'agir et des verrous institutionnels en Belgique</p>
+                </div>
+                <div class="mt-3 md:mt-0 flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-slate-800 text-orange-400 rounded border border-slate-700">Données V-Dem 2025/2026</span>
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-slate-800 text-emerald-400 rounded border border-slate-700">Enquête OCDE Trust 2025/2026</span>
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-slate-800 text-amber-400 rounded border border-slate-700">Scrutin Oct. 2024</span>
+                </div>
+            </div>
+            
+            <nav class="flex space-x-1 sm:space-x-4 overflow-x-auto py-2 text-xs sm:text-sm font-medium custom-scrollbar">
+                <button onclick="switchTab('tab-summary')" id="nav-tab-summary" class="tab-btn tab-active py-2 px-3 rounded-t-md whitespace-nowrap transition-all">0. Synthèse</button>
+                <button onclick="switchTab('tab-indicators')" id="nav-tab-indicators" class="tab-btn py-2 px-3 text-slate-400 hover:text-slate-200 rounded-t-md whitespace-nowrap transition-all">1. Indicateurs & Confiance</button>
+                <button onclick="switchTab('tab-particracy')" id="nav-tab-particracy" class="tab-btn py-2 px-3 text-slate-400 hover:text-slate-200 rounded-t-md whitespace-nowrap transition-all">2. Verrou Particratique</button>
+                <button onclick="switchTab('tab-electoral')" id="nav-tab-electoral" class="tab-btn py-2 px-3 text-slate-400 hover:text-slate-200 rounded-t-md whitespace-nowrap transition-all">3. Élections & Référendum</button>
+                <button onclick="switchTab('tab-deliberative')" id="nav-tab-deliberative" class="tab-btn py-2 px-3 text-slate-400 hover:text-slate-200 rounded-t-md whitespace-nowrap transition-all">4. Bilan Délibératif (2026)</button>
+                <button onclick="switchTab('tab-diagnostic')" id="nav-tab-diagnostic" class="tab-btn py-2 px-3 text-slate-400 hover:text-slate-200 rounded-t-md whitespace-nowrap transition-all">5. Diagnostic D'Impasse</button>
+                <button onclick="switchTab('tab-sources')" id="nav-tab-sources" class="tab-btn py-2 px-3 text-slate-400 hover:text-slate-200 rounded-t-md whitespace-nowrap transition-all">6. Bibliographie & Sources</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- MODULE 0: SYNTHÈSE EXÉCUTIVE -->
+        <section id="tab-summary" class="tab-content block space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80">
+                <div class="max-w-4xl">
+                    <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 font-semibold text-xs rounded-full mb-3">Rapport d'Étude Politologique & Data-Analyse</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-4">La Dépossession Citoyenne en Régime Particratique</h2>
+                    <p class="text-slate-700 leading-relaxed text-base sm:text-lg mb-6">
+                        Ce rapport interactif explore le grand paradoxe de la démocratie belge : bien que la Belgique obtienne d'excellents scores internationaux pour l'organisation régulière de ses élections, ses citoyens font face à une impuissance structurelle entre deux scrutins. Capté par les présidents de partis, étouffé par une technostructure de cabinets ministériels et verrouillé par l'interdiction constitutionnelle du référendum, le pouvoir citoyen y est réduit à une fonction d'enregistrement quinquennal.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-slate-100">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <div class="text-xs font-bold text-slate-500 uppercase">Écart V-Dem (2024-2026)</div>
+                            <div class="text-2xl font-black text-slate-900 mt-1">-0,257 pt</div>
+                            <p class="text-xs text-slate-600 mt-1">Gouffre entre démocratie électorale (0,886) et participative (0,629).</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <div class="text-xs font-bold text-slate-500 uppercase">Confiance Partis (OCDE)</div>
+                            <div class="text-2xl font-black text-orange-700 mt-1">27,0 %</div>
+                            <p class="text-xs text-slate-600 mt-1">L'institution publique la moins digne de confiance en Belgique.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <div class="text-xs font-bold text-slate-500 uppercase">Abstention Flandre Local 2024</div>
+                            <div class="text-2xl font-black text-amber-700 mt-1">36,4 %</div>
+                            <p class="text-xs text-slate-600 mt-1">Chute de participation suite à la fin du vote obligatoire local.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <div class="text-xs font-bold text-slate-500 uppercase">Taux d'Échec Référendaire</div>
+                            <div class="text-2xl font-black text-slate-900 mt-1">100 %</div>
+                            <p class="text-xs text-slate-600 mt-1">Verrou constitutionnel absolu (Art. 33) depuis le séisme de 1950.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-800 flex items-center justify-center font-extrabold text-lg mb-3">1</div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">Particratie Paroxysmique</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Les accords de coalition de plusieurs centaines de pages, rédigés à huis clos par les présidents de partis, lient strictement la majorité parlementaire. Le Parlement perd son rôle délibératif au profit d'une discipline de vote absolue.
+                        </p>
+                    </div>
+                    <button onclick="switchTab('tab-particracy')" class="mt-4 text-xs font-bold text-orange-700 hover:text-orange-800 flex items-center space-x-1">
+                        <span>Explorer la mécanique des verrous</span>
+                        <span>&rarr;</span>
+                    </button>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-800 flex items-center justify-center font-extrabold text-lg mb-3">2</div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">Interdiction de la Démocratie Directe</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Traumatisées par la consultation populaire de 1950 (Question Royale), les élites politiques interdisent le référendum décisionnel. L'article 39bis créé en 2014 pour les consultations régionales reste une Coquille vide non appliquée.
+                        </p>
+                    </div>
+                    <button onclick="switchTab('tab-electoral')" class="mt-4 text-xs font-bold text-orange-700 hover:text-orange-800 flex items-center space-x-1">
+                        <span>Analyser le droit électoral</span>
+                        <span>&rarr;</span>
+                    </button>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-extrabold text-lg mb-3">3</div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">Reprise en Main Délibérative</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Saluees mondialement, les innovations délibératives (Ostbelgien, commissions mixtes) subissent un filtrage strict par les exécutifs et le Parlement. En 2026, la Communauté germanophone a même restreint son modèle permanent.
+                        </p>
+                    </div>
+                    <button onclick="switchTab('tab-deliberative')" class="mt-4 text-xs font-bold text-orange-700 hover:text-orange-800 flex items-center space-x-1">
+                        <span>Consulter le bilan 2026</span>
+                        <span>&rarr;</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 1: INDICATEURS MACRO & CONFIANCE -->
+        <section id="tab-indicators" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200/80">
+                <h2 class="text-2xl font-bold text-slate-900 mb-3">1. Mesure Empirique de la Dépossession (V-Dem & OCDE 2025/2026)</h2>
+                <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                    Cette section analyse l'écart mesuré par les grands instituts internationaux entre la qualité procédurale des élections belges et la faiblesse des capacités réelles d'intervention citoyenne. Les données d'enquêtes révèlent un phénomène de « dissociation institutionnelle » : si les administrations publiques conserve une confiance relative, le système partisan et les assemblées représentatives subissent une crise d'imputabilité profonde.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-slate-900">Varieties of Democracy (V-Dem 2024-2026)</h3>
+                        <span class="text-xs px-2 py-0.5 bg-slate-100 text-slate-600 rounded">Échelle 0,0 à 1,0</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">Comparaison entre la qualité électorale (polyarchie) et les leviers de participation directe citoyenne.</p>
+                    <div class="chart-container">
+                        <canvas id="chartVDem"></canvas>
+                    </div>
+                    <div class="mt-4 p-3 bg-slate-50 rounded text-xs text-slate-600 border border-slate-100">
+                        <strong>Facteur clé :</strong> La Belgique stagne à 0,629 en participation citoyenne en raison de l'absence de référendum d'initiative citoyenne (RIC) et de la nature purement consultative des pétitions.
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-slate-900">Confiance par Institution (Enquête OCDE)</h3>
+                        <span class="text-xs px-2 py-0.5 bg-slate-100 text-slate-600 rounded">% Confiance (Score 6-10)</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">Niveau de confiance accordé aux acteurs publics par la population belge.</p>
+                    <div class="chart-container">
+                        <canvas id="chartOECD"></canvas>
+                    </div>
+                    <div class="mt-4 p-3 bg-slate-50 rounded text-xs text-slate-600 border border-slate-100">
+                        <strong>Paradoxe du système :</strong> L'administration et la police jouissent d'une confiance élevée (output), mais les organes politiques de décision (input) souffrent d'une défiance massive.
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Évolution de la Confiance Politico-Institutionnelle (ESS 2004-2026)</h3>
+                        <p class="text-xs text-slate-500">Pourcentage des citoyens exprimant un score de confiance &ge; 6/10 envers les institutions politiques.</p>
+                    </div>
+                    <div class="mt-3 md:mt-0 flex space-x-2">
+                        <button onclick="updateTrendChart('be')" id="btn-trend-be" class="px-3 py-1 text-xs font-bold bg-slate-800 text-white rounded transition-colors">Belgique Solitaire</button>
+                        <button onclick="updateTrendChart('comp')" id="btn-trend-comp" class="px-3 py-1 text-xs font-bold bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors">Comparatif Européen (NL/DE/FR)</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartTrend"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 2: VERROU PARTICRATIQUE -->
+        <section id="tab-particracy" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200/80">
+                <h2 class="text-2xl font-bold text-slate-900 mb-3">2. L'Architecture de la Particratie : Les Trois Piliers de la Confiscation</h2>
+                <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                    Pourquoi le vote électoral n'assure-t-il plus le pouvoir d'agir citoyen ? La science politique belge (CRISP, De Winter, Pilet, Reuchamps) démontre que la décision politique s'est déplacée des enceintes parlementaires constitutionnelles vers un triangle fermé : les présidents de parti, les cabinets ministériels hypertrophiés et une structure fédérale asymétrique.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm hover:border-orange-500 transition-all cursor-pointer" onclick="showPillarDetail('pillar1')">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="w-8 h-8 rounded-full bg-orange-100 text-orange-800 flex items-center justify-center font-bold text-sm">1</span>
+                        <span class="text-xs font-semibold text-orange-700 uppercase">Au-dessus des lois</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Accords de Coalition Verrouillés</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Négociés à huis clos par les présidents de parti, ces contrats de plusieurs centaines de pages engagent strictement la majorité parlementaire pour toute la législature.
+                    </p>
+                    <span class="inline-block mt-4 text-xs font-bold text-orange-700">Découvrir le mécanisme &rarr;</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm hover:border-orange-500 transition-all cursor-pointer" onclick="showPillarDetail('pillar2')">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="w-8 h-8 rounded-full bg-slate-100 text-slate-800 flex items-center justify-center font-bold text-sm">2</span>
+                        <span class="text-xs font-semibold text-slate-700 uppercase">Technostructure</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">L'Écran des Cabinets Ministériels</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Avec plus de 500 conseillers politiques au niveau fédéral, la Belgique maintient une bureaucratie partisane parallèle qui court-circuite l'administration indépendante.
+                    </p>
+                    <span class="inline-block mt-4 text-xs font-bold text-orange-700">Découvrir le mécanisme &rarr;</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm hover:border-orange-500 transition-all cursor-pointer" onclick="showPillarDetail('pillar3')">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">3</span>
+                        <span class="text-xs font-semibold text-emerald-700 uppercase">Dilution</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Fédéralisme Asymétrique Sans Partis Nationaux</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        La scission des partis politiques (1968-1978) prive les citoyens de tout moyen de sanctionner ou de soutenir un ministre issus de l'autre communauté linguistique.
+                    </p>
+                    <span class="inline-block mt-4 text-xs font-bold text-orange-700">Découvrir le mécanisme &rarr;</span>
+                </div>
+            </div>
+
+            <!-- Detail Display Box -->
+            <div id="pillar-detail-box" class="bg-slate-900 text-slate-100 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-800">
+                <div id="pillar1" class="pillar-detail">
+                    <div class="flex items-center space-x-2 text-orange-400 font-bold text-xs uppercase mb-1">
+                        <span>Focus Pillier 1</span>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white mb-3">Le Contrat de Coalition comme Super-Constitution</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-6">
+                        Lors de la formation d'un gouvernement, les états-majors de partis verrouillent chaque aspect des politiques publiques à venir dans un accord de coalition exhaustif. La discipline de fraction imposée aux parlementaires interdit tout droit d'amendement individuel ou soutien à une initiative citoyenne si celle-ci ne figure pas explicitement au contrat.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-slate-800/80 p-4 rounded-lg border border-slate-700">
+                        <div>
+                            <strong class="text-orange-400 block mb-1">Impact sur le Parlement :</strong>
+                            Réduit au rôle de chambre de ratification passive où les débats en séance publique sont des formalités théâtrales.
+                        </div>
+                        <div>
+                            <strong class="text-orange-400 block mb-1">Impact sur le Citoyen :</strong>
+                            Impossibilité de faire évoluer la loi en cours de législature, même face à un consensus citoyen massif ou une pétition majeure.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pillar2" class="pillar-detail hidden">
+                    <div class="flex items-center space-x-2 text-orange-400 font-bold text-xs uppercase mb-1">
+                        <span>Focus Pillier 2</span>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white mb-3">Cabinets Ministériels & Captation de la Concertation</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-6">
+                        Modèle unique en Europe de l'Ouest par sa taille, le système de cabinets ministériels place des centaines de militants et experts nommés par les partis entre les ministres et l'administration permanente. L'Analyse d'Impact de la Réglementation (AIR) y est régulièrement neutralisée ou rédigée de manière à valider des compromis politiques préétablis.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-slate-800/80 p-4 rounded-lg border border-slate-700">
+                        <div>
+                            <strong class="text-orange-400 block mb-1">Éviction de la Société Civile :</strong>
+                            Le dialogue direct est réservé aux interlocuteurs sociaux traditionnels (Conseil Central de l'Économie), excluant les mouvements citoyens émergents.
+                        </div>
+                        <div>
+                            <strong class="text-orange-400 block mb-1">Opacité de Décision :</strong>
+                            Les arbitrages décisifs s'effectuent au sein des "intercabinets" (GORM/GOP) sans procès-verbaux accessibles au public.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pillar3" class="pillar-detail hidden">
+                    <div class="flex items-center space-x-2 text-orange-400 font-bold text-xs uppercase mb-1">
+                        <span>Focus Pillier 3</span>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white mb-3">Dilution Fédérale et Effet "Pas dans mon espace électoral"</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-6">
+                        Depuis la régionalisation, il n'existe aucune circonscription électorale fédérale unique ni partis politiques fédéraux. Les responsables politiques ne rendent de comptes qu'à l'électorat de leur propre région ou communauté. Cette structure détruit la responsabilité politique (accountability) : chaque niveau gouvernemental peut rejeter la faute des échecs sur l'autre sans risque électoral direct.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-slate-800/80 p-4 rounded-lg border border-slate-700">
+                        <div>
+                            <strong class="text-orange-400 block mb-1">Crise de Sanction :</strong>
+                            Un citoyen wallon ne peut pas voter contre un ministre flamand du gouvernement fédéral dont il désapprouve l'action, et inversement.
+                        </div>
+                        <div>
+                            <strong class="text-orange-400 block mb-1">Chevauchement de Compétences :</strong>
+                            Les dossiers complexes (climat, mobilité, santé publique) souffrent d'un blocage systématique par manque de concertation interrégionale.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 3: ÉLECTIONS & RÉFÉRENDUM -->
+        <section id="tab-electoral" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200/80">
+                <h2 class="text-2xl font-bold text-slate-900 mb-3">3. Droit Électoral & Prohibition Constitutionnelle de la Démocratie Directe</h2>
+                <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                    Cette section examine les évolutions contradictoires du droit électoral local en Belgique et les verrous juridiques qui empêchent toute démocratie directe contraignante. Les élections communales d'octobre 2024 ont marqué une rupture majeure avec la suppression de l'obligation de vote en Flandre, tandis que le dogme représentatif issu du XIXe siècle continue de bloquer le référendum décisionnel.
+                </p>
+            </div>
+
+            <!-- Matrix Table -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Matrice Comparative des Règles Électorales Communales (Post-2024)</h3>
+                        <p class="text-xs text-slate-500">Conséquences législatives de la régionalisation du droit communal et de la réforme flamande du 16 juillet 2021.</p>
+                    </div>
+                    <span class="mt-2 sm:mt-0 text-xs px-2.5 py-1 bg-amber-100 text-amber-800 font-bold rounded">Scrutin d'Octobre 2024</span>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-bold text-slate-700">Dimension Légale</th>
+                                <th class="px-4 py-3 text-left font-bold text-orange-800 bg-orange-50/80">Région Flamande (2024)</th>
+                                <th class="px-4 py-3 text-left font-bold text-slate-700">Région Wallonne</th>
+                                <th class="px-4 py-3 text-left font-bold text-slate-700">Région de Bruxelles-Capitale</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 bg-white">
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-900">Obligation de Vote</td>
+                                <td class="px-4 py-3 text-orange-900 bg-orange-50/30 font-bold">SUPPRIMÉE (Participation : 63,6 %)</td>
+                                <td class="px-4 py-3 text-slate-600">Maintenue en vigueur (Participation : ~88 %)</td>
+                                <td class="px-4 py-3 text-slate-600">Maintenue en vigueur (Participation : ~85 %)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-900">Effet Dévolutif de la Case de Tête</td>
+                                <td class="px-4 py-3 text-orange-900 bg-orange-50/30 font-bold">Supprimé intégralement</td>
+                                <td class="px-4 py-3 text-slate-600">Supprimé intégralement</td>
+                                <td class="px-4 py-3 text-slate-600">Maintenu à 50 %</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-900">Désignation du Bourgmestre</td>
+                                <td class="px-4 py-3 text-orange-900 bg-orange-50/30">Droit d'initiative attribué au 1er élu de la plus forte liste</td>
+                                <td class="px-4 py-3 text-slate-600">Automatique au plus fort score individuel de la liste majorité</td>
+                                <td class="px-4 py-3 text-slate-600">Négociation libre de coalition politique</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-900">Motion de Défiance Constructive</td>
+                                <td class="px-4 py-3 text-orange-900 bg-orange-50/30">Introduite (Possibilité de destitution du Collège)</td>
+                                <td class="px-4 py-3 text-slate-600">En vigueur sous conditions strictes</td>
+                                <td class="px-4 py-3 text-slate-600">Inexistante au niveau local</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Historical Referendum Lock Block -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs font-bold text-orange-800 uppercase mb-2">
+                            <span class="w-2 h-2 rounded-full bg-orange-600"></span>
+                            <span>Souveraineté Nationale Strictement Représentative</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">L'Article 33 Constitutionnel & Le Traumatisme de 1950</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+                            L'article 33 de la Constitution belge (« Tous les pouvoirs émanent de la Nation. Ils sont exercés de la manière établie par la Constitution ») est interprété par le Conseil d'État comme une interdiction absolue du référendum décisionnel.
+                        </p>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                            Cette rigueur juridique s'enracine dans le traumatisme historique de la <strong>Consultation Populaire du 12 mars 1950</strong> sur le retour du Roi Léopold III. Le résultat, profondément divisé sur une ligne communautaire (57,7 % OUI national, mais 72 % OUI en Flandre contre 42 % en Wallonie), avait frôlé la guerre civile et causé la mort de 4 manifestants à Grâce-Berleur. Depuis, les élites politiques perçoivent le référendum comme un outil de déstabilisation du compromis consociatif belge.
+                        </p>
+                    </div>
+                    <div class="p-3 bg-slate-50 border-l-4 border-slate-800 rounded text-xs text-slate-700">
+                        <strong>Article 39bis (2014) :</strong> Malgré sa création pour autoriser des consultations populaires régionales, les restrictions imposées (exclusion des matières budgétaires, fiscales et décrets spéciaux) et l'exigence de majorités qualifiées au Parlement l'ont rendu totalement inopérant.
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs font-bold text-slate-500 uppercase mb-2">
+                            <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+                            <span>Participation Indirecte et Droit de Pétition</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">Pétitionnement Parlementaire & Consultations Locales</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+                            Bien que la Belgique ait assoupli en 2019 le droit de pétition à la Chambre des représentants (seuil abaissé à 25 000 signatures pour obtenir un droit d'audition publique), ce mécanisme ne garantit aucun suivi législatif.
+                        </p>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                            Au niveau municipal, la consultation populaire locale nécessite le soutien de 10 % à 20 % des habitants inscrites sur les listes électorales. Cependant, les délibérations restent <strong>purement indicatives</strong> : le Conseil communal conserve le droit légal d'ignorer complètement le vote citoyen, quel que soit le taux de participation.
+                        </p>
+                    </div>
+                    <div class="p-3 bg-orange-50 border-l-4 border-orange-600 rounded text-xs text-orange-950">
+                        <strong>Constat Politologique :</strong> Le droit de pétition agit comme un "soupape de sécurité" permettant d'exprimer le mécontentement sans jamais altérer l'agenda parlementaire fixé par l'accord de coalition.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 4: BILAN DÉLIBÉRATIF -->
+        <section id="tab-deliberative" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200/80">
+                <h2 class="text-2xl font-bold text-slate-900 mb-3">4. Le « Laboratoire Délibératif » : Émancipation ou Cooptation Institutionnelle ?</h2>
+                <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                    Célébrée à l'international pour ses innovations pionnières basées sur le tirage au sort (modèle permanent d'Ostbelgien, commissions mixtes à Bruxelles et en Wallonie), la Belgique offre un bilan contrasté. Les travaux empiriques récents (Reuchamps, Niessen, Gebauer 2024-2026) démontrent que si ces assemblées renforcent l'engagement des participants, leurs recommandations sont régulièrement neutralisées ou réalignées par les parlements.
+                </p>
+            </div>
+
+            <!-- Focus Ostbelgien Reform -->
+            <div class="bg-white p-6 rounded-xl border border-orange-200 bg-gradient-to-br from-orange-50/40 to-white shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 border-b border-orange-200/60 pb-3">
+                    <div>
+                        <span class="px-2.5 py-0.5 bg-orange-200 text-orange-950 text-xs font-bold rounded-full">Analyse Documentée 2026</span>
+                        <h3 class="text-xl font-bold text-slate-900 mt-1">La Réforme Restrictive du Dialogue Citoyen Permanent d'Ostbelgien</h3>
+                    </div>
+                    <span class="text-xs text-slate-500 mt-2 md:mt-0 font-medium">Évaluation après 5 ans d'application (*Journal of Deliberative Democracy*, 2026)</span>
+                </div>
+                
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6">
+                    Mise en place en 2019 au sein de la Communauté germanophone, le Modèle d'Ostbelgien (un Conseil citoyen permanent tiré au sort épaulé par des Assemblées citoyennes thématiques) était perçu comme l'expérience délibérative la plus aboutie au monde. Toutefois, face aux tensions générées par des propositions citoyennes trop audacieuses, le Parlement germanophone a voté une révision restrictive.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-xs">
+                        <div class="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2">Décret Original (2019)</div>
+                        <ul class="space-y-2 text-xs text-slate-700">
+                            <li class="flex items-start"><span class="text-emerald-600 font-bold mr-2">&check;</span> Autonomie totale du Conseil citoyen pour fixer les thématiques de travail.</li>
+                            <li class="flex items-start"><span class="text-emerald-600 font-bold mr-2">&check;</span> Organisation possible de jusqu'à 3 Assemblées citoyennes par an.</li>
+                            <li class="flex items-start"><span class="text-emerald-600 font-bold mr-2">&check;</span> Stratification du tirage au sort intégrant des critères socio-économiques stricts.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-lg border border-orange-300 shadow-xs">
+                        <div class="text-xs font-extrabold text-orange-800 uppercase tracking-wider mb-2">Réforme Législative de Reprise en Main (2026)</div>
+                        <ul class="space-y-2 text-xs text-slate-700">
+                            <li class="flex items-start"><span class="text-orange-700 font-bold mr-2">&cross;</span> Plafond d'activité fortement réduit à <strong>5 Assemblées maximum par législature</strong>.</li>
+                            <li class="flex items-start"><span class="text-orange-700 font-bold mr-2">&cross;</span> <strong>Obligation légale</strong> de consacrer au moins une Assemblée à un sujet dicté par le Parlement.</li>
+                            <li class="flex items-start"><span class="text-orange-700 font-bold mr-2">&cross;</span> Critères de tirage au sort modifiés pour privilégier le niveau de diplôme au détriment du revenu.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Absorption Workflow Interactive Simulation -->
+            <div class="bg-slate-900 text-slate-100 p-6 rounded-xl shadow-md border border-slate-800">
+                <h3 class="text-lg font-bold text-orange-400 mb-2">Le Parcours d'une Recommandation Citoyenne : Du Tirage au Sort au Filtrage</h3>
+                <p class="text-xs text-slate-400 mb-6">Cliquez sur les étapes ci-dessous pour voir comment les ministères et parlements gèrent les avis des assemblées citoyennes en Belgique :</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center text-xs">
+                    <button onclick="showDelibStep(1)" id="step-btn-1" class="p-3 rounded bg-orange-600 text-white font-bold border border-orange-500">1. Tirage au Sort</button>
+                    <button onclick="showDelibStep(2)" id="step-btn-2" class="p-3 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700 hover:bg-slate-700">2. Délibération</button>
+                    <button onclick="showDelibStep(3)" id="step-btn-3" class="p-3 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700 hover:bg-slate-700">3. Filtrage Ministériel</button>
+                    <button onclick="showDelibStep(4)" id="step-btn-4" class="p-3 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700 hover:bg-slate-700">4. Sort Final</button>
+                </div>
+
+                <div id="delib-step-content" class="mt-6 p-4 bg-slate-800/90 rounded-lg text-xs leading-relaxed border border-slate-700">
+                    <strong class="text-orange-400 block text-sm mb-1">Étape 1 : Convocation et Stratification</strong>
+                    Un échantillon représentatif de citoyens est contacté par courrier. Bien que le taux de réponse initial soit faible (~3 à 7 %), la stratification garantit la parité d'âge, de genre et de localisation géographique.
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 5: DIAGNOSTIC D'IMPASSE -->
+        <section id="tab-diagnostic" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200/80">
+                <h2 class="text-2xl font-bold text-slate-900 mb-3">5. Simulateur de Pouvoir d'Agir & Diagnostic Juridique</h2>
+                <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                    Sélectionnez un canal d'action citoyenne pour tester sa portée contraignante réelle et identifier les verrous juridiques et politiques qui s'y appliquent dans l'architecture institutionnelle belge actuelle.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm space-y-3">
+                    <h3 class="text-base font-bold text-slate-900 mb-3">Sélectionnez une démarche :</h3>
+                    
+                    <button onclick="runDiagnostic('vote')" class="diag-btn w-full text-left p-3 rounded-lg border border-slate-200 hover:border-orange-500 hover:bg-orange-50 transition-all text-xs font-semibold text-slate-800">
+                        1. Vote Électoral Général (Fédéral / Régional)
+                    </button>
+
+                    <button onclick="runDiagnostic('petition')" class="diag-btn w-full text-left p-3 rounded-lg border border-slate-200 hover:border-orange-500 hover:bg-orange-50 transition-all text-xs font-semibold text-slate-800">
+                        2. Pétition Parlementaire Législative (25 000 sign.)
+                    </button>
+
+                    <button onclick="runDiagnostic('referendum')" class="diag-btn w-full text-left p-3 rounded-lg border border-slate-200 hover:border-orange-500 hover:bg-orange-50 transition-all text-xs font-semibold text-slate-800">
+                        3. Initiative de Référendum Décisionnel
+                    </button>
+
+                    <button onclick="runDiagnostic('panel')" class="diag-btn w-full text-left p-3 rounded-lg border border-slate-200 hover:border-orange-500 hover:bg-orange-50 transition-all text-xs font-semibold text-slate-800">
+                        4. Commission Délibérative Tirée au Sort
+                    </button>
+
+                    <button onclick="runDiagnostic('local')" class="diag-btn w-full text-left p-3 rounded-lg border border-slate-200 hover:border-orange-500 hover:bg-orange-50 transition-all text-xs font-semibold text-slate-800">
+                        5. Consultation Populaire Communale
+                    </button>
+                </div>
+
+                <div class="lg:col-span-2 bg-slate-900 text-slate-100 p-6 sm:p-8 rounded-xl shadow-md border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-4">
+                            <span class="w-2.5 h-2.5 bg-orange-500 rounded-full animate-pulse"></span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Résultat de l'Analyse Juridico-Politique</span>
+                        </div>
+                        <h4 id="diag-title" class="text-xl font-extrabold text-orange-400 mb-3">Sélectionnez une option à gauche</h4>
+                        <p id="diag-desc" class="text-sm text-slate-300 leading-relaxed mb-6">
+                            Cliquez sur l'un des leviers d'action citoyenne pour évaluer sa force juridique, son taux historique de transformation législative et les mécanismes de filtrage exercés par les états-majors politiques.
+                        </p>
+                    </div>
+
+                    <div id="diag-metrics" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800 text-xs hidden">
+                        <div class="p-3 bg-slate-800/80 rounded border border-slate-700">
+                            <span class="text-slate-400 block mb-1">Force Obligatoire :</span>
+                            <span id="diag-force" class="font-bold text-white text-sm">--</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded border border-slate-700">
+                            <span class="text-slate-400 block mb-1">Obstacle Majeur :</span>
+                            <span id="diag-filter" class="font-bold text-orange-400 text-sm">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 6: BIBLIOGRAPHIE & SOURCES -->
+        <section id="tab-sources" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200/80">
+                <h2 class="text-2xl font-bold text-slate-900 mb-3">6. Bibliographie & Index des Sources Officielles</h2>
+                <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                    Ce rapport repose sur l'exploitation croisée des bases de données internationales révisées pour 2025/2026 et de la littérature politologique francophone et néerlandophone consacrée au système politique belge.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                <div class="bg-white p-5 rounded-xl border border-slate-200/80 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-900 mb-3 text-orange-800 uppercase">Données Statistiques & Indices</h3>
+                    <ul class="space-y-2.5 text-slate-700">
+                        <li class="pb-2 border-b border-slate-100">
+                            <strong>V-Dem Institute (2025-2026) :</strong> <em>Democracy Report 2025/2026 : Varieties of Democracy Data Version 15</em>. Indices de Polyarchie, Participatif et Délibératif pour la Belgique.
+                        </li>
+                        <li class="pb-2 border-b border-slate-100">
+                            <strong>OCDE (2024-2026) :</strong> <em>OECD Survey on Drivers of Trust in Public Institutions 2024-2026</em>. Résultats détaillés pour la Belgique sur la confiance envers les partis et gouvernements.
+                        </li>
+                        <li class="pb-2 border-b border-slate-100">
+                            <strong>European Social Survey (ESS 2004-2026) :</strong> Enquêtes cumulées Rounds 2 à 11/12 sur la confiance institutionnelle et l'efficacité politique (efficacy).
+                        </li>
+                        <li>
+                            <strong>IWEPS & Statistiek Vlaanderen (2024) :</strong> Chiffres officiels de participation aux élections communales et provinciales du 13 octobre 2024.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200/80 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-900 mb-3 text-orange-800 uppercase">Littérature Politologique Spécialisée</h3>
+                    <ul class="space-y-2.5 text-slate-700">
+                        <li class="pb-2 border-b border-slate-100">
+                            <strong>CRISP (Courrier Hebdomadaire) :</strong> Études sur les cabinets ministériels, le financement des partis politiques et le verrouillage des accords de coalition.
+                        </li>
+                        <li class="pb-2 border-b border-slate-100">
+                            <strong>Reuchamps, M., Niessen, C., Gebauer, R. (2024-2026) :</strong> <em>Evaluations of the Ostbelgien Model and Deliberative Commissions in Brussels</em>, Academic Reports & Journal of Deliberative Democracy.
+                        </li>
+                        <li class="pb-2 border-b border-slate-100">
+                            <strong>De Winter, L., Deschouwer, K., Pilet, J.-B. :</strong> Travaux majeurs sur le système partisan belge, la discipline de vote et la consociativité.
+                        </li>
+                        <li>
+                            <strong>De Visscher, C. & Varone, F. :</strong> <em>L'évaluation des politiques publiques et les réformes de l'État en Belgique</em>.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 text-xs py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <p class="font-bold text-slate-200">Anatomie Critique du Pouvoir Citoyen en Belgique</p>
+                <p class="text-slate-500 mt-0.5">Rapport d'analyse politologique et empirique mis à jour (V-Dem, OCDE, ESS)</p>
+            </div>
+            <div class="text-center sm:text-right text-slate-500">
+                <p>Déployé pour la recherche et l'information publique</p>
+                <p class="mt-0.5">Single Page Application (SPA)</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
+
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('text-slate-400');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.add('tab-active');
+                activeBtn.classList.remove('text-slate-400');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showPillarDetail(pillarId) {
+            const details = document.querySelectorAll('.pillar-detail');
+            details.forEach(d => d.classList.add('hidden'));
+            const target = document.getElementById(pillarId);
+            if(target) {
+                target.classList.remove('hidden');
+            }
+        }
+
+        function showDelibStep(step) {
+            for(let i=1; i<=4; i++) {
+                const btn = document.getElementById('step-btn-' + i);
+                if(btn) {
+                    btn.className = "p-3 rounded text-xs font-bold border transition-all " + 
+                        (i === step ? "bg-orange-600 text-white border-orange-500" : "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700");
+                }
+            }
+
+            const content = document.getElementById('delib-step-content');
+            if (step === 1) {
+                content.innerHTML = `<strong class="text-orange-400 block text-sm mb-1">Étape 1 : Convocation et Stratification</strong>
+                Un échantillon représentatif de citoyens est tiré au sort à partir du registre national. Malgré un faible taux de réponse initial (~3-7 %), la stratification permet de garantir la parité socio-démographique dans l'assemblée.`;
+            } else if (step === 2) {
+                content.innerHTML = `<strong class="text-orange-400 block text-sm mb-1">Étape 2 : Phase de Formation et Délibération</strong>
+                Les citoyens entendent des experts aux avis pluralistes, débattent en sous-groupes animés par des facilitations neutres, puis rédigent des recommandations détaillées votées à la majorité qualifiée.`;
+            } else if (step === 3) {
+                content.innerHTML = `<strong class="text-orange-400 block text-sm mb-1">Étape 3 : Filtrage Ministériel et Parlementaire</strong>
+                Les avis sont transmis aux commissions parlementaires ou aux cabinets. C'est le goulot d'étranglement : les propositions remettant en cause l'accord de coalition ou les arbitrages budgétaires sont systématiquement rejetées ou ajournées.`;
+            } else if (step === 4) {
+                content.innerHTML = `<strong class="text-orange-400 block text-sm mb-1">Étape 4 : Bilan d'Absorption (Résultat)</strong>
+                Selon les données empiriques (2021-2026), environ 60 % des recommandations citoyennes font l'objet d'un "réalignement" (marquées comme "déjà appliquées" par l'administration), 25 % sont rejetées pour motifs techniques, et moins de 15 % donnent lieu à une modification réglementaire substantielle.`;
+            }
+        }
+
+        function runDiagnostic(type) {
+            const title = document.getElementById('diag-title');
+            const desc = document.getElementById('diag-desc');
+            const force = document.getElementById('diag-force');
+            const filter = document.getElementById('diag-filter');
+            const metrics = document.getElementById('diag-metrics');
+
+            metrics.classList.remove('hidden');
+
+            if (type === 'vote') {
+                title.textContent = "1. Le Vote aux Élections Générales";
+                desc.textContent = "Bien qu'assurant la légitimité formelle du Parlement, votre vote est confisqué dès le soir du scrutin. Les présidents de partis négocient l'accord de coalition à huis clos, engageant les députés par une discipline de fraction stricte tout au long de la législature.";
+                force.textContent = "Indirecte (Périodique - 5 ans)";
+                filter.textContent = "Captation par les états-majors de partis";
+            } else if (type === 'petition') {
+                title.textContent = "2. Pétition Parlementaire (25 000 Signatures)";
+                desc.textContent = "Vous obtenez légalement le droit d'être entendu en commission parlementaire à la Chambre. Cependant, aucune obligation de délibération en séance plénière, d'amendement de loi ou de suivi contraignant n'est imposée aux députés.";
+                force.textContent = "Nulle (Droit d'audition pur)";
+                filter.textContent = "Classement sans suite par la majorité";
+            } else if (type === 'referendum') {
+                title.textContent = "3. Initiative de Référendum Décisionnel";
+                desc.textContent = "Impasse juridique absolue. En vertu de l'interprétation stricte de l'Article 33 de la Constitution (héritée du choc royal de 1950), le référendum contraignant est interdit. Les consultations régionales (Art. 39bis) demeurent bloquées par les exigences de majorité qualifiée.";
+                force.textContent = "Inexistante (Interdiction Constitutionnelle)";
+                filter.textContent = "Verrou de l'Article 33 de la Constitution";
+            } else if (type === 'panel') {
+                title.textContent = "4. Commission Délibérative / Panel Citoyen";
+                desc.textContent = "Permet de formuler des propositions novatrices et nuancées. Toutefois, l'absence de portée juridique contraignante soumet les rapports au tri sélectif des ministères ('cherry-picking') et à la neutralisation par les partis de la majorité.";
+                force.textContent = "Consultative (Avis indicatif)";
+                filter.textContent = "Filtrage des cabinets ministériels";
+            } else if (type === 'local') {
+                title.textContent = "5. Consultation Populaire Communale";
+                desc.textContent = "Même si vous atteignez le seuil exigeant de pétitionnaires (10 % à 20 % des habitants), le résultat du vote populaire ne lie en aucun cas le Conseil communal, qui conserve le droit légal de voter l'inverse du résultat.";
+                force.textContent = "Indicative uniquement";
+                filter.textContent = "Pouvoir discrétionnaire du Conseil municipal";
+            }
+        }
+
+        let chartVDemCtx, chartOECDctx, chartTrendCtx;
+        let trendChart;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Chart 1: V-Dem Chart
+            chartVDemCtx = document.getElementById('chartVDem').getContext('2d');
+            new Chart(chartVDemCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['2008 (Pic Hist.)', '2021', '2024 (Électoral)', '2024 (Participatif)', '2025/26 (Participatif)'],
+                    datasets: [{
+                        label: 'Indice V-Dem (0,0 à 1,0)',
+                        data: [0.907, 0.898, 0.886, 0.629, 0.625],
+                        backgroundColor: ['#334155', '#334155', '#1e293b', '#c2410c', '#9a3412'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 1.0 }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Chart 2: OECD Trust Chart
+            chartOECDctx = document.getElementById('chartOECD').getContext('2d');
+            new Chart(chartOECDctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Police', 'Justice / Cours', 'Services Publics', 'Gouvernement Féd.', 'Parlement', 'Partis Politiques'],
+                    datasets: [{
+                        label: '% Confiance (Score 6-10)',
+                        data: [64.0, 53.0, 46.0, 41.0, 36.0, 27.0],
+                        backgroundColor: ['#059669', '#059669', '#334155', '#334155', '#334155', '#c2410c'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { beginAtZero: true, max: 100 }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Chart 3: ESS Historical Trend Chart
+            chartTrendCtx = document.getElementById('chartTrend').getContext('2d');
+            trendChart = new Chart(chartTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2004', '2010 (Crise)', '2018', '2021', '2024/2026'],
+                    datasets: [{
+                        label: 'Belgique (Confiance >= 6/10)',
+                        data: [33.8, 30.0, 37.0, 36.2, 35.5],
+                        borderColor: '#c2410c',
+                        backgroundColor: 'rgba(194, 65, 12, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: false, min: 20, max: 70 }
+                    }
+                }
+            });
+        });
+
+        function updateTrendChart(mode) {
+            const btnBe = document.getElementById('btn-trend-be');
+            const btnComp = document.getElementById('btn-trend-comp');
+
+            if (mode === 'be') {
+                btnBe.className = "px-3 py-1 text-xs font-bold bg-slate-800 text-white rounded transition-colors";
+                btnComp.className = "px-3 py-1 text-xs font-bold bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors";
+
+                trendChart.data.datasets = [{
+                    label: 'Belgique (Confiance >= 6/10)',
+                    data: [33.8, 30.0, 37.0, 36.2, 35.5],
+                    borderColor: '#c2410c',
+                    backgroundColor: 'rgba(194, 65, 12, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 3
+                }];
+            } else {
+                btnComp.className = "px-3 py-1 text-xs font-bold bg-slate-800 text-white rounded transition-colors";
+                btnBe.className = "px-3 py-1 text-xs font-bold bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors";
+
+                trendChart.data.datasets = [
+                    {
+                        label: 'Belgique',
+                        data: [33.8, 30.0, 37.0, 36.2, 35.5],
+                        borderColor: '#c2410c',
+                        borderWidth: 3,
+                        fill: false
+                    },
+                    {
+                        label: 'Pays-Bas',
+                        data: [60.2, 58.0, 62.0, 60.2, 54.2],
+                        borderColor: '#059669',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'Allemagne',
+                        data: [26.2, 31.0, 35.0, 41.0, 36.8],
+                        borderColor: '#2563eb',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'France',
+                        data: [28.0, 25.5, 30.1, 29.4, 28.2],
+                        borderColor: '#6b7280',
+                        borderWidth: 2,
+                        fill: false
+                    }
+                ];
+            }
+            trendChart.update();
+        }
+    </script>
+</body>
+</html>
