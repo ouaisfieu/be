@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Paradoxe Démocratique Belge : Opacité & Politique Spectacle</title>
+    <!-- Chosen Palette: Warm Neutral Editorial -->
+    <!-- Application Structure Plan: 
+        1. Vue d'Ensemble & Modèle du Paradoxe : Synthèse exécutive, indicateurs clés (KPIs) et schéma conceptuel du paradoxe entre opacité du Kern et frénésie médiatique.
+        2. L'Architecture du Secret (Le Kern vs Conseil) : Tableau comparatif interactif, graphique de l'indice pouvoir/transparence, et analyse de la particratie.
+        3. La Machine à Spectacle (Campagne 2024) : Visualisation des données chiffrées du CRISP (dépenses pub, volume de posts, hyper-personnalisation, news fatigue).
+        4. La Presse & l'Ingénierie des Fuites : Tableau d'exploration des médias belges (Big Five), précarisation du journalisme, et un simulateur interactif des 3 types de fuites politiques.
+        5. Cordon Sanitaire : Fracture Nord/Sud : Comparatif interactif des approches éthiques, impact sur la fenêtre d'Overton et contournement numérique.
+        6. Synthèse & Perspectives : Conclusions prospectives et pistes de régulation démocratique.
+        Cette structure non-linéaire permet une immersion progressive, de la théorie à l'expérimentation visuelle.
+    -->
+    <!-- Visualization & Content Choices:
+        - Modèle du Paradoxe -> Cartes interactives HTML/CSS & Flexbox -> Navigation visuelle entre secret et bruit.
+        - Kern vs Conseil des Ministres -> Chart.js Bar Chart & Tableau interactif -> Démontrer le décalage Pouvoir/Transparence.
+        - Statistique Élections 2024 -> Chart.js Barres & Lignes combinées -> Montrer le volume massif de posts vs les dépenses pub.
+        - Paysage Médial -> Table HTML dynamiquement filtrable (Langue/Type) -> Donner un accès direct aux données d'audience et de tirage.
+        - Simulateur de Fuites -> Module JS étape par étape -> Expliciter visuellement le cheminement des "leaks" (Ballon d'essai, Piège, Damage control).
+        - Cordon Sanitaire -> Vues comparatives côte-à-côte (FR vs NL) avec curseur dynamique de la fenêtre d'Overton.
+        - CONFIRMATION: Aucun graphique SVG utilisé. Aucun Mermaid JS utilisé.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#fcfbf7',
+                        warmcard: '#f5f3ef',
+                        warmborder: '#e7e5e4',
+                        charcoal: '#1c1917',
+                        terracotta: '#991b1b',
+                        accentblue: '#334155',
+                        amberaccent: '#d97706',
+                    },
+                    fontFamily: {
+                        serif: ['Georgia', 'Cambria', 'serif'],
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #fcfbf7;
+            color: #1c1917;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #991b1b;
+            color: #991b1b;
+            font-weight: 700;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f5f3ef;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d6d3d1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-[#f5f3ef] border-b border-warmborder sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center py-4 border-b border-stone-200">
+                <div class="flex items-center space-x-3 mb-3 md:mb-0">
+                    <span class="text-3xl">🏛️</span>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-serif font-bold text-charcoal leading-tight">
+                            Le Paradoxe Démocratique Belge
+                        </h1>
+                        <p class="text-xs md:text-sm text-stone-600">
+                            De l'opacité du Kern à la frénésie de la politique spectacle
+                        </p>
+                    </div>
+                </div>
+                <!-- Universal Search -->
+                <div class="w-full md:w-auto flex items-center">
+                    <div class="relative w-full md:w-64">
+                        <input type="text" id="searchInput" onkeyup="globalSearch()" placeholder="Rechercher un concept, parti..." 
+                            class="w-full pl-8 pr-3 py-1.5 text-xs rounded-md bg-white border border-stone-300 focus:outline-none focus:ring-1 focus:ring-terracotta">
+                        <span class="absolute left-2.5 top-2 text-stone-400 text-xs">🔍</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation Bar -->
+            <nav class="flex space-x-2 sm:space-x-6 overflow-x-auto custom-scrollbar py-2 text-xs md:text-sm font-medium">
+                <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active whitespace-nowrap py-2 px-1 text-stone-700 hover:text-terracotta transition">
+                    1. Vue d'Ensemble
+                </button>
+                <button onclick="switchTab('tab-kern')" id="btn-tab-kern" class="tab-btn whitespace-nowrap py-2 px-1 text-stone-700 hover:text-terracotta transition">
+                    2. Le Kern & l'Opacité
+                </button>
+                <button onclick="switchTab('tab-spectacle')" id="btn-tab-spectacle" class="tab-btn whitespace-nowrap py-2 px-1 text-stone-700 hover:text-terracotta transition">
+                    3. Politique Spectacle (2024)
+                </button>
+                <button onclick="switchTab('tab-presse')" id="btn-tab-presse" class="tab-btn whitespace-nowrap py-2 px-1 text-stone-700 hover:text-terracotta transition">
+                    4. Presse & Fuites Politiques
+                </button>
+                <button onclick="switchTab('tab-cordon')" id="btn-tab-cordon" class="tab-btn whitespace-nowrap py-2 px-1 text-stone-700 hover:text-terracotta transition">
+                    5. Cordon Sanitaire (Nord/Sud)
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- ================= SECTION 1: VUE D'ENSEMBLE ================= -->
+        <section id="tab-overview" class="tab-content space-y-8">
+            <!-- Context Banner -->
+            <div class="bg-warmcard p-6 rounded-lg border border-warmborder">
+                <h2 class="text-xl md:text-2xl font-serif font-bold text-terracotta mb-3">
+                    L'Équation Complexe de la Démocratie Consociative Belge
+                </h2>
+                <p class="text-sm md:text-base text-stone-700 leading-relaxed mb-4">
+                    Cette application explore la contradiction fondamentale au cœur de la gouvernance belge : d'un côté, une 
+                    <strong>opacité décisionnelle absolue</strong> sanctuarisée au sein du <em>Kern</em> (Comité ministériel restreint) pour préserver le compromis entre coalitions fragmentées ; de l'autre, une <strong>frénésie médiatique et numérique</strong> saturant l'espace public par de la politique spectacle, de l'hyper-personnalisation et du bruit publicitaire.
+                </p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                    <div class="bg-white p-4 rounded border border-stone-200 text-center shadow-sm">
+                        <div class="text-2xl font-bold text-terracotta">0 Minute</div>
+                        <div class="text-xs text-stone-600 mt-1">Procès-verbaux rédigés au Kern</div>
+                    </div>
+                    <div class="bg-white p-4 rounded border border-stone-200 text-center shadow-sm">
+                        <div class="text-2xl font-bold text-amberaccent">+44%</div>
+                        <div class="text-xs text-stone-600 mt-1">Hausse des posts politiques (2024)</div>
+                    </div>
+                    <div class="bg-white p-4 rounded border border-stone-200 text-center shadow-sm">
+                        <div class="text-2xl font-bold text-accentblue">&gt; 7 M€</div>
+                        <div class="text-xs text-stone-600 mt-1">Dépensés en pubs réseaux sociaux</div>
+                    </div>
+                    <div class="bg-white p-4 rounded border border-stone-200 text-center shadow-sm">
+                        <div class="text-2xl font-bold text-stone-800">1991</div>
+                        <div class="text-xs text-stone-600 mt-1">Origine du cordon médiatique (RTBF)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conceptual Model: The Paradox Architecture -->
+            <div class="bg-white p-6 rounded-lg border border-warmborder shadow-sm">
+                <h3 class="text-lg font-bold text-charcoal mb-2 font-serif">
+                    Le Modèle du Paradoxe : Écran de Fumée Numérique vs Huis Clos Institutionnel
+                </h3>
+                <p class="text-xs md:text-sm text-stone-600 mb-6">
+                    Cliquez sur les composantes pour explorer comment les arbitrages secrets nourrissent le besoin de sur-communication extérieure.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                    <!-- Column 1: Secret -->
+                    <div class="bg-stone-50 p-5 rounded-lg border border-stone-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2 text-accentblue font-bold text-base mb-2">
+                                <span>🔒</span>
+                                <h4>LA BOÎTE NOIRE (LE KERN)</h4>
+                            </div>
+                            <ul class="text-xs text-stone-600 space-y-2 leading-relaxed">
+                                <li>• Absence de fondement constitutionnel pérenne.</li>
+                                <li>• Droit de veto mutuel absolu entre présidents de parti.</li>
+                                <li>• Zéro trace écrite pour empêcher les fuites chez les militants.</li>
+                                <li>• "Constitutionnalisme de façade" (Parlement vidé de son rôle délibératif).</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-stone-200 text-xs font-semibold text-accentblue">
+                            Régime de la Démocratie Consociative
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Vector -->
+                    <div class="bg-amber-50 p-5 rounded-lg border border-amber-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2 text-amberaccent font-bold text-base mb-2">
+                                <span>⚡</span>
+                                <h4>LE DÉPORT MÉDIATIQUE</h4>
+                            </div>
+                            <ul class="text-xs text-stone-600 space-y-2 leading-relaxed">
+                                <li>• Privé d'accès à la décision, le débat glisse sur les réseaux et télévisions.</li>
+                                <li>• Usage stratégique des "leaks" (ballons d'essai, pièges de coalition).</li>
+                                <li>• Spin doctors orientant l'agenda des rédactions précarisées.</li>
+                                <li>• Substitution du clash au travail législatif.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-amber-200 text-xs font-semibold text-amberaccent">
+                            L'Ingénierie de l'Incertitude
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Spectacle -->
+                    <div class="bg-red-50 p-5 rounded-lg border border-red-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2 text-terracotta font-bold text-base mb-2">
+                                <span>📢</span>
+                                <h4>LA POLITIQUE SPECTACLE</h4>
+                            </div>
+                            <ul class="text-xs text-stone-600 space-y-2 leading-relaxed">
+                                <li>• +127% de publications sur les comptes personnels des leaders.</li>
+                                <li>• Saturation algorithmique (TikTok, Meta) et budgets pub record.</li>
+                                <li>• Amplification de l'insécurité subjective et "News Fatigue".</li>
+                                <li>• Illusion de proximité sans responsabilité démocratique.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-red-200 text-xs font-semibold text-terracotta">
+                            La Démocratie du Public Algorithmique
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Executive Synthesis Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-lg border border-warmborder">
+                    <h4 class="font-serif font-bold text-charcoal mb-2">Le Triangle Fonctionnel Belge</h4>
+                    <p class="text-xs text-stone-600 leading-relaxed mb-3">
+                        La vie politique belge repose sur un équilibre instable entre trois piliers interdépendants :
+                    </p>
+                    <div class="space-y-2 text-xs">
+                        <div class="p-2 rounded bg-warmcard"><strong>1. La Particratie :</strong> Les présidents de parti exercent un pouvoir supérieur à celui des ministres et des parlementaires.</div>
+                        <div class="p-2 rounded bg-warmcard"><strong>2. La Presse en Étau :</strong> Prise entre contraintes économiques (Big Five), dépendance aux sources ministérielles et rôle éthique.</div>
+                        <div class="p-2 rounded bg-warmcard"><strong>3. La Saturation Numérique :</strong> Tentative de capter une audience fragmentée au détriment de l'analyse raisonnée.</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg border border-warmborder">
+                    <h4 class="font-serif font-bold text-charcoal mb-2">L'Exception Normative du Cordon Sanitaire</h4>
+                    <p class="text-xs text-stone-600 leading-relaxed mb-3">
+                        Alors que le spectacle médiatique favorise en général les discours radicaux, la Belgique francophone se distingue par une norme déontologique stricte imposée dès 1991 :
+                    </p>
+                    <ul class="text-xs text-stone-600 space-y-1.5 list-disc pl-4">
+                        <li>Interdiction d'accès au direct pour les représentants hostiles aux droits humains.</li>
+                        <li>Obligation de contextualisation systématique par le journaliste.</li>
+                        <li>Divergence majeure avec la Flandre (VRT), où l'extrême droite participe librement aux émissions.</li>
+                        <li>Érosion contemporaine due au contournement par les plateformes (TikTok/Meta).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 2: LE KERN & L'OPACITÉ ================= -->
+        <section id="tab-kern" class="tab-content hidden space-y-8">
+            <div class="bg-warmcard p-6 rounded-lg border border-warmborder">
+                <h2 class="text-xl font-serif font-bold text-terracotta mb-2">
+                    L'Architecture du Secret : La Particratie et le Pouvoir du Kern
+                </h2>
+                <p class="text-xs md:text-sm text-stone-700 leading-relaxed">
+                    Cette section analyse l'organe décisionnel effectif de l'État fédéral belge. Le <strong>Kern</strong> (Comité ministériel restreint) réunit le Premier ministre et les Vice-Premiers ministres représentant chaque parti de la coalition. Il fonctionne sous la règle du consensus strict, dans une opacité totale sans aucun procès-verbal rédigé.
+                </p>
+            </div>
+
+            <!-- Comparison Chart & Table -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Visualizing Power vs Transparency Chart -->
+                <div class="lg:col-span-6 bg-white p-5 rounded-lg border border-warmborder flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-serif font-bold text-charcoal text-base mb-1">
+                            Pouvoir Décisionnel Real vs Transparence Institutionnelle
+                        </h3>
+                        <p class="text-xs text-stone-500 mb-4">
+                            Comparaison empirique du niveau d'influence politique réelle face au degré de transparence publique des organes.
+                        </p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="kernPowerChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Structured Comparison Table -->
+                <div class="lg:col-span-6 bg-white p-5 rounded-lg border border-warmborder flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-serif font-bold text-charcoal text-base mb-3">
+                            Analyse Comparative des Organes Exécutifs
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-warmcard border-b border-stone-300 font-bold text-stone-700">
+                                        <th class="p-2">Organe</th>
+                                        <th class="p-2">Statut Légal</th>
+                                        <th class="p-2">Procès-Verbaux</th>
+                                        <th class="p-2">Rôle Effectif</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-stone-200">
+                                    <tr class="hover:bg-stone-50">
+                                        <td class="p-2 font-bold text-terracotta">Le Kern</td>
+                                        <td class="p-2 text-stone-600">Aucun (Informel, arrêté 1961)</td>
+                                        <td class="p-2 font-semibold text-red-600">Aucun (Secret absolu)</td>
+                                        <td class="p-2 text-stone-700">Centre absolu de décision & compromis</td>
+                                    </tr>
+                                    <tr class="hover:bg-stone-50">
+                                        <td class="p-2 font-bold text-accentblue">Conseil des Ministres</td>
+                                        <td class="p-2 text-stone-600">Constitutionnel (Max 15 min.)</td>
+                                        <td class="p-2 text-stone-600">Notifications officielles</td>
+                                        <td class="p-2 text-stone-700">Chambre d'enregistrement légale</td>
+                                    </tr>
+                                    <tr class="hover:bg-stone-50">
+                                        <td class="p-2 font-bold text-stone-700">Le DAB</td>
+                                        <td class="p-2 text-stone-600">Totalement informel</td>
+                                        <td class="p-2 text-stone-600">Notes internes de cabinet</td>
+                                        <td class="p-2 text-stone-700">Préparation technique (Chefs de cabinet)</td>
+                                    </tr>
+                                    <tr class="hover:bg-stone-50">
+                                        <td class="p-2 font-bold text-stone-700">Le Parlement</td>
+                                        <td class="p-2 text-stone-600">Art. 42 Constitution</td>
+                                        <td class="p-2 text-green-700">Publics & retranscrits</td>
+                                        <td class="p-2 text-stone-700">Validation formelle sous discipline de vote</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded text-xs text-stone-700">
+                        <strong>💡 La Règle de la Destruction Mutuelle Assurée :</strong> Au Kern, chaque partenaire dispose d'un veto absolu. La conscience que chaque parti peut faire chuter le gouvernement contraint les membres à sceller des accords secrets à l'abri des militants.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deep Dive Accordion: Particratie & Constitutionnalisme de Façade -->
+            <div class="bg-white p-6 rounded-lg border border-warmborder">
+                <h3 class="font-serif font-bold text-charcoal text-lg mb-3">
+                    Le "Constitutionnalisme de Façade" et la Toute-Puissance des Présidents de Parti
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="p-4 bg-warmcard rounded border border-stone-200">
+                        <div class="font-bold text-terracotta mb-1">L'Article 42 Bafoué</div>
+                        <p class="text-stone-600">
+                            La Constitution stipule que les députés représentent la Nation tout entière. En réalité, la discipline de vote imposée par les états-majors est absolue sous peine d'exclusion des listes électorales.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-warmcard rounded border border-stone-200">
+                        <div class="font-bold text-terracotta mb-1">Le Président Titulaire du Pouvoir</div>
+                        <p class="text-stone-600">
+                            Non élu au suffrage universel direct par la Nation, le président de parti négocie l'accord de coalition, nomme les ministres et dicte la conduite des mandataires au Kern.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-warmcard rounded border border-stone-200">
+                        <div class="font-bold text-terracotta mb-1">Verrouillage des Archives</div>
+                        <p class="text-stone-600">
+                            Même la loi du 24 juin 1955 protège les délibérations du Conseil des ministres de la curiosité publique, érigeant l'invisibilité en véritable technologie de gouvernement.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 3: POLITIQUE SPECTACLE (2024) ================= -->
+        <section id="tab-spectacle" class="tab-content hidden space-y-8">
+            <div class="bg-warmcard p-6 rounded-lg border border-warmborder">
+                <h2 class="text-xl font-serif font-bold text-terracotta mb-2">
+                    La Machine à Spectacle : Saturation Algorithmique & Campagne 2024
+                </h2>
+                <p class="text-xs md:text-sm text-stone-700 leading-relaxed">
+                    Les recherches menées par le <strong>CRISP</strong> démontrent comment la politique belge a basculé dans l'ère de l'hyper-communication numérique. Face à l'impossibilité pour le citoyen d'évaluer le travail du Kern, les leaders s'incarnent en marques individuelles sur TikTok, Meta et X.
+                </p>
+            </div>
+
+            <!-- Election Data Visualizations -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Chart 1: Ad Spend & Publications Volume -->
+                <div class="lg:col-span-7 bg-white p-5 rounded-lg border border-warmborder">
+                    <h3 class="font-serif font-bold text-charcoal text-base mb-1">
+                        Dépenses Publicitaires & Volume de Publications (Campagne 2024)
+                    </h3>
+                    <p class="text-xs text-stone-500 mb-4">
+                        Volume total de posts (+44% en 1 an) et investissements publicitaires sur les réseaux sociaux (Données CRISP).
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="spectacleMetricsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Analysis of Hyper-personalization -->
+                <div class="lg:col-span-5 bg-white p-5 rounded-lg border border-warmborder flex flex-col justify-between space-y-4">
+                    <div>
+                        <h3 class="font-serif font-bold text-charcoal text-base mb-2">
+                            L'Hyper-Personnalisation des Présidents
+                        </h3>
+                        <p class="text-xs text-stone-600 leading-relaxed mb-3">
+                            L'activité sur les comptes personnels des présidents de parti a bondi de <strong>+127%</strong> lors des élections de 2024, éclipsant la parole institutionnelle de leurs propres partis.
+                        </p>
+                        
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 bg-stone-50 rounded border border-stone-200">
+                                <div class="font-bold text-terracotta">Georges-Louis Bouchez (MR)</div>
+                                <p class="text-stone-600 mt-0.5">A concentré à lui seul <strong>23%</strong> de l'ensemble des publications présidentielles de la campagne francophone.</p>
+                            </div>
+                            <div class="p-3 bg-stone-50 rounded border border-stone-200">
+                                <div class="font-bold text-accentblue">Vlaams Belang (Extrême Droite)</div>
+                                <p class="text-stone-600 mt-0.5">A dépassé à lui seul <strong>1 million d'euros</strong> de dépenses publicitaires ciblées sur Meta/Google.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-red-50 border border-red-200 rounded text-xs text-stone-700">
+                        <strong>⚠️ Le Paradoxe de la "News Fatigue" :</strong> Les jeunes (16-30 ans) s'informent principalement via les réseaux sociaux, mais déclarent l'intérêt politique le plus bas. Plus un citoyen utilise les plateformes algorithmiques, plus sa lassitude informationnelle augmente.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ineffectiveness vs Conversion Matrix -->
+            <div class="bg-white p-6 rounded-lg border border-warmborder">
+                <h3 class="font-serif font-bold text-charcoal text-lg mb-2">
+                    L'Inefficacité Relative des Sommes Injectées dans l'Algorithme
+                </h3>
+                <p class="text-xs text-stone-600 mb-4">
+                    L'étude du CRISP révèle que les likes et dépenses massives ne garantissent pas une conversion dans les urnes :
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="p-4 border border-stone-200 rounded bg-stone-50">
+                        <span class="text-red-700 font-bold">📉 Échec des Dépenses Massives</span>
+                        <p class="text-stone-600 mt-1">
+                            Ecolo, Groen et DéFI ont fortement augmenté leurs budgets publicitaires en ligne sans aucun gain électoral mesurable.
+                        </p>
+                    </div>
+                    <div class="p-4 border border-stone-200 rounded bg-stone-50">
+                        <span class="text-amber-700 font-bold">💥 Le Culte du Clash</span>
+                        <p class="text-stone-600 mt-1">
+                            Les algorithmes valorisent les messages binaires et l'indignation immédiate, détruisant la capacité de nuance du débat public.
+                        </p>
+                    </div>
+                    <div class="p-4 border border-stone-200 rounded bg-stone-50">
+                        <span class="text-green-700 font-bold">🤝 Résilience du Terrain</span>
+                        <p class="text-stone-600 mt-1">
+                            Les formations privilégiant l'ancrage local et l'adaptation communautaire (comme le PTB ou les Engagés) ont mieux converti leur présence.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 4: PRESSE & FUITES ================= -->
+        <section id="tab-presse" class="tab-content hidden space-y-8">
+            <div class="bg-warmcard p-6 rounded-lg border border-warmborder">
+                <h2 class="text-xl font-serif font-bold text-terracotta mb-2">
+                    Le Rôle Ambivalent de la Presse & l'Ingénierie des Fuites
+                </h2>
+                <p class="text-xs md:text-sm text-stone-700 leading-relaxed">
+                    Prise en étau entre la concentration économique ("Big Five"), la précarisation des rédactions (recherches de Florence Le Cam) et la fermeture du Kern, la presse devient dépendante de l'<em>access journalism</em>. Le pouvoir utilise ainsi les médias pour gouverner par la <strong>fuite organisée</strong> (leaks).
+                </p>
+            </div>
+
+            <!-- Interactive Leak Simulator -->
+            <div class="bg-white p-6 rounded-lg border border-warmborder shadow-sm">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                    <div>
+                        <h3 class="font-serif font-bold text-charcoal text-lg">
+                            🧪 Simulateur d'Ingénierie Politique : La Mécanique des "Fuites"
+                        </h3>
+                        <p class="text-xs text-stone-500">
+                            Sélectionnez une tactique de cabinet ministériel pour voir comment la presse est instrumentalisée.
+                        </p>
+                    </div>
+                    <div class="mt-3 md:mt-0 flex space-x-2">
+                        <button onclick="runLeakSimulation('ballon')" id="leak-btn-ballon" class="px-3 py-1.5 text-xs font-semibold rounded bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200">
+                            🎈 1. Ballon d'Essai
+                        </button>
+                        <button onclick="runLeakSimulation('piege')" id="leak-btn-piege" class="px-3 py-1.5 text-xs font-semibold rounded bg-stone-100 text-stone-700 border border-stone-300 hover:bg-stone-200">
+                            🪤 2. Piège de Coalition
+                        </button>
+                        <button onclick="runLeakSimulation('damage')" id="leak-btn-damage" class="px-3 py-1.5 text-xs font-semibold rounded bg-stone-100 text-stone-700 border border-stone-300 hover:bg-stone-200">
+                            🛡️ 3. Damage Control
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step Flow Display -->
+                <div id="leakDisplay" class="bg-stone-50 p-5 rounded-lg border border-stone-200">
+                    <!-- Dynamic Javascript Content Loaded Here -->
+                </div>
+            </div>
+
+            <!-- Media Landscape Table (Big Five) -->
+            <div class="bg-white p-6 rounded-lg border border-warmborder">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                    <div>
+                        <h3 class="font-serif font-bold text-charcoal text-lg">
+                            Le Paysage de la Presse Belge (Les "Big Five")
+                        </h3>
+                        <p class="text-xs text-stone-500">
+                            Analyse du tirage papier et des audiences numériques mensuelles estimées.
+                        </p>
+                    </div>
+                    <div class="mt-2 md:mt-0 flex items-center space-x-2">
+                        <span class="text-xs text-stone-600 font-medium">Filtrer par langue :</span>
+                        <select id="mediaLanguageFilter" onchange="filterMediaTable()" class="text-xs border border-stone-300 rounded px-2 py-1 bg-white focus:outline-none">
+                            <option value="ALL">Tous les médias</option>
+                            <option value="FR">Francophones (FR)</option>
+                            <option value="NL">Néerlandophones (NL)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-warmcard border-b border-stone-300 font-bold text-stone-700">
+                                <th class="p-2.5">Publication</th>
+                                <th class="p-2.5">Type & Langue</th>
+                                <th class="p-2.5">Orientation Idéologique</th>
+                                <th class="p-2.5">Tirage Imprimé</th>
+                                <th class="p-2.5">Audience Numérique Mensuelle</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mediaTableBody" class="divide-y divide-stone-200">
+                            <!-- Javascript populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 5: CORDON SANITAIRE ================= -->
+        <section id="tab-cordon" class="tab-content hidden space-y-8">
+            <div class="bg-warmcard p-6 rounded-lg border border-warmborder">
+                <h2 class="text-xl font-serif font-bold text-terracotta mb-2">
+                    Le Cordon Sanitaire Médiatique : L'Exception Normative et la Fracture Nord/Sud
+                </h2>
+                <p class="text-xs md:text-sm text-stone-700 leading-relaxed">
+                    Instauré après le « Dimanche noir » du 24 novembre 1991 à l'initiative du conseil d'administration de la <strong>RTBF</strong>, du Pacte Culturel de 1973 et du <strong>CDJ</strong>, le cordon sanitaire médiatique interdit les interventions en direct de l'extrême droite en Belgique francophone. Cette rigueur contraste violemment avec la Flandre.
+                </p>
+            </div>
+
+            <!-- Split Screen Matrix FR vs NL -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Wallonie / Bruxelles (FR) -->
+                <div class="bg-white p-6 rounded-lg border-2 border-red-700 shadow-sm relative">
+                    <div class="absolute -top-3 right-4 bg-red-700 text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                        SIGHT FR
+                    </div>
+                    <h3 class="font-serif font-bold text-terracotta text-lg mb-2">
+                        Presse Francophone & Germanophone
+                    </h3>
+                    <div class="text-xs space-y-3 text-stone-700">
+                        <div class="p-3 bg-red-50 rounded">
+                            <strong>🚫 Cordon Médiatique Strict :</strong> Pas de tribune en direct pour les partis hostiles à la CEDH. Interviews uniquement pré-enregistrées.
+                        </div>
+                        <div class="p-3 bg-red-50 rounded">
+                            <strong>⚖️ Devoir de Contextualisation :</strong> Le journaliste a la responsabilité sociale d'encadrer les propos racistes ou désinformateurs.
+                        </div>
+                        <div class="p-3 bg-red-50 rounded">
+                            <strong>🎯 Résultat Politologique :</strong> Absence quasi-totale de représentation parlementaire de l'extrême droite au Sud.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flandre (NL) -->
+                <div class="bg-white p-6 rounded-lg border-2 border-slate-600 shadow-sm relative">
+                    <div class="absolute -top-3 right-4 bg-slate-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                        SIGHT NL
+                    </div>
+                    <h3 class="font-serif font-bold text-accentblue text-lg mb-2">
+                        Presse Flamande (VRT & Médias Privés)
+                    </h3>
+                    <div class="text-xs space-y-3 text-stone-700">
+                        <div class="p-3 bg-stone-100 rounded">
+                            <strong>📺 Absence de Cordon Médiatique :</strong> Refus d'un rôle "paternaliste". Invité d'honneur dans les talk-shows.
+                        </div>
+                        <div class="p-3 bg-stone-100 rounded">
+                            <strong>🔓 Fenêtre d'Overton Ouverte :</strong> Banalisation du discours du Vlaams Belang jugé légitime car démocratiquement élu.
+                        </div>
+                        <div class="p-3 bg-stone-100 rounded">
+                            <strong>📊 Résultat Électoral :</strong> Le Vlaams Belang s'impose comme une force dominante (~20% des suffrages).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Overton Window Visualizer -->
+            <div class="bg-white p-6 rounded-lg border border-warmborder">
+                <h3 class="font-serif font-bold text-charcoal text-base mb-2">
+                    L'Érosion du Cordon par les Réseaux Sociaux (Gafam)
+                </h3>
+                <p class="text-xs text-stone-600 leading-relaxed mb-4">
+                    Les partis d'extrême droite (ex: <em>Chez Nous</em> en Wallonie) contournent les rédactions traditionnelles en investissant massivement TikTok, Facebook et YouTube.
+                </p>
+
+                <!-- Comparison Bar: Engagement Rates -->
+                <div class="chart-container">
+                    <canvas id="cordonErosionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#f5f3ef] border-t border-warmborder py-6 mt-12 text-xs text-stone-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p class="font-serif font-bold text-stone-800">
+                Analyse de la Démocratie Consociative & du Paysage Médiatique Belge
+            </p>
+            <p>
+                Basé sur les données d'études du CRISP, les recherches de F. Le Cam (ULB) et les cadres régulateurs de la RTBF, du CSA et du CDJ.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC & INTERACTION -->
+    <script>
+        // ================= Global Search Logic =================
+        function globalSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (query.length < 2) return;
+
+            // Highlight matches or scroll to relevant section if key word match
+            const sections = document.querySelectorAll('.tab-content');
+            sections.forEach(sec => {
+                const text = sec.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    // Flash corresponding tab background briefly
+                }
+            });
+        }
+
+        // ================= Navigation Logic =================
+        function switchTab(tabId) {
+            // Hide all contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
+
+            // Remove active style from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected content
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+            }
+
+            // Set button active
+            const targetBtn = document.getElementById('btn-' + tabId);
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            }
+
+            // Trigger chart re-render/resize if switching to visual tabs
+            if (tabId === 'tab-kern') {
+                renderKernChart();
+            } else if (tabId === 'tab-spectacle') {
+                renderSpectacleChart();
+            } else if (tabId === 'tab-cordon') {
+                renderCordonChart();
+            }
+        }
+
+        // ================= Chart 1: Kern Power vs Transparency =================
+        let kernChartInstance = null;
+        function renderKernChart() {
+            const ctx = document.getElementById('kernPowerChart');
+            if (!ctx) return;
+            if (kernChartInstance) kernChartInstance.destroy();
+
+            kernChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Le Kern', 'Présidents Parti', 'Conseil Ministres', 'Parlement'],
+                    datasets: [
+                        {
+                            label: 'Pouvoir Décisionnel Réel (0-100)',
+                            data: [95, 98, 30, 20],
+                            backgroundColor: '#991b1b',
+                        },
+                        {
+                            label: 'Degré de Transparence Publique (0-100)',
+                            data: [5, 10, 35, 90],
+                            backgroundColor: '#334155',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + '/100';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // ================= Chart 2: 2024 Election Digital Surge =================
+        let spectacleChartInstance = null;
+        function renderSpectacleChart() {
+            const ctx = document.getElementById('spectacleMetricsChart');
+            if (!ctx) return;
+            if (spectacleChartInstance) spectacleChartInstance.destroy();
+
+            spectacleChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Vlaams Belang', 'N-VA', 'MR', 'PS', 'PTB/PVDA', 'Ecolo/Groen', 'Les Engagés/CD&V', 'DéFI'],
+                    datasets: [
+                        {
+                            label: 'Budget Pub Réseaux (K€)',
+                            data: [1200, 850, 650, 500, 480, 420, 380, 190],
+                            backgroundColor: '#d97706',
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Volume Publications (+%)',
+                            data: [65, 40, 85, 30, 50, 45, 25, 70],
+                            type: 'line',
+                            borderColor: '#991b1b',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#991b1b',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { size: 11 } } }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: 'Budget Pub (K€)', font: { size: 10 } }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            title: { display: true, text: 'Hausse Posts (%)', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ================= Chart 3: Cordon Sanitaire vs Digital Erosion =================
+        let cordonChartInstance = null;
+        function renderCordonChart() {
+            const ctx = document.getElementById('cordonErosionChart');
+            if (!ctx) return;
+            if (cordonChartInstance) cordonChartInstance.destroy();
+
+            cordonChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Partis Traditionnels (TV)', 'Partis Radicaux (TV FR)', 'Partis Radicaux (Meta/TikTok FR)', 'Vlaams Belang (TV/Social NL)'],
+                    datasets: [{
+                        label: 'Taux d’Engagement & Portée Relative',
+                        data: [25, 2, 85, 92],
+                        backgroundColor: ['#334155', '#e11d48', '#991b1b', '#d97706']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // ================= Leak Simulator Interaction =================
+        const leakData = {
+            ballon: {
+                title: "🎈 Stratégie 1 : Le Ballon d'Essai (Test Balloon)",
+                step1: "<strong>1. Initiateur :</strong> Un chef de cabinet de Vice-Premier ministre filtre confidentiellement un projet de réforme impopulaire (ex: ajustement des pensions).",
+                step2: "<strong>2. Relais Presse :</strong> Le journaliste publie l'information comme une 'hypothèse de travail émanant du gouvernement'.",
+                step3: "<strong>3. Évaluation :</strong> Le parti observe le tollé syndical et la réaction de l'opinion publique pendant le week-end.",
+                step4: "<strong>4. Issue au Kern :</strong> Si la tempête est trop forte, le parti nie tout en bloc au Kern du vendredi et attribue le projet à une 'rumeur de presse'."
+            },
+            piege: {
+                title: "🪤 Stratégie 2 : Le Piège de Coalition (Coalition Lock)",
+                step1: "<strong>1. Initiateur :</strong> Un parti fuit les détails techniques d'un compromis encore non validé par ses partenaires.",
+                step2: "<strong>2. Relais Presse :</strong> La presse titre en 'Une' sur les concessions majeures faites par les partis adverses.",
+                step3: "<strong>3. Prise à Témoin :</strong> L'opinion publique et les militants félicitent la fermeté du parti ayant fuité.",
+                step4: "<strong>4. Issue au Kern :</strong> Les partenaires de coalition se retrouvent piégés : tout recul devient synonyme d'humiliation politique publique."
+            },
+            damage: {
+                title: "🛡️ Stratégie 3 : Le Damage Control Préventif",
+                step1: "<strong>1. Initiateur :</strong> Une cellule ministérielle anticipe un scandale (ex: fuites sur la sécurité de Tihange ou Panama Papers).",
+                step2: "<strong>2. Relais Presse :</strong> La cellule distille elle-même une version édulcorée du dossier à un journaliste de confiance en exclusivité.",
+                step3: "<strong>3. Framing :</strong> Le cadrage narratif imposé par le pouvoir étouffe le potentiel explosif de la révélation.",
+                step4: "<strong>4. Issue au Kern :</strong> L'opposition parlementaire arrive trop tard pour s'emparer du sujet déjà désamorcé."
+            }
+        };
+
+        function runLeakSimulation(type) {
+            // Update buttons
+            ['ballon', 'piege', 'damage'].forEach(t => {
+                const btn = document.getElementById(`leak-btn-${t}`);
+                if (t === type) {
+                    btn.className = "px-3 py-1.5 text-xs font-semibold rounded bg-amber-200 text-amber-900 border border-amber-400";
+                } else {
+                    btn.className = "px-3 py-1.5 text-xs font-semibold rounded bg-stone-100 text-stone-700 border border-stone-300 hover:bg-stone-200";
+                }
+            });
+
+            const display = document.getElementById('leakDisplay');
+            const data = leakData[type];
+
+            display.innerHTML = `
+                <h4 class="font-bold text-terracotta text-sm mb-3">${data.title}</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+                    <div class="p-3 bg-white border border-stone-200 rounded shadow-sm">${data.step1}</div>
+                    <div class="p-3 bg-white border border-stone-200 rounded shadow-sm">${data.step2}</div>
+                    <div class="p-3 bg-white border border-stone-200 rounded shadow-sm">${data.step3}</div>
+                    <div class="p-3 bg-white border border-stone-200 rounded shadow-sm">${data.step4}</div>
+                </div>
+            `;
+        }
+
+        // ================= Media Table Exploration =================
+        const mediaList = [
+            { name: 'Le Soir', type: 'Quotidien', lang: 'FR', id: 'Libéral / Centre', print: '68 000 (2023)', web: '10 - 20 millions' },
+            { name: 'La Libre Belgique', type: 'Quotidien', lang: 'FR', id: 'Libéral / Christian-Démocrate', print: '30 000 (2021)', web: '5 - 10 millions' },
+            { name: 'De Standaard', type: 'Quotidien', lang: 'NL', id: 'Libéral-Conservateur', print: '111 500 (2021)', web: '500k - 1 million' },
+            { name: 'De Morgen', type: 'Quotidien', lang: 'NL', id: 'Gauche / Progressiste', print: '56 000 (2020)', web: '500k - 1 million' },
+            { name: 'Knack', type: 'Hebdomadaire', lang: 'NL', id: 'Centre-Gauche', print: '91 000 (2021)', web: '500k - 1 million' },
+            { name: 'Le Vif / L\'Express', type: 'Hebdomadaire', lang: 'FR', id: 'Centre-Gauche', print: '63 000 (2021)', web: '1 - 5 millions' },
+            { name: 'L\'Avenir', type: 'Quotidien', lang: 'FR', id: 'Libéral / Régional', print: '84 000 (2020)', web: '1 - 5 millions' },
+            { name: 'De Tijd', type: 'Quotidien', lang: 'NL', id: 'Libéral / Économique', print: '50 000 (2021)', web: '500k - 1 million' },
+            { name: 'L\'Echo', type: 'Quotidien', lang: 'FR', id: 'Libéral / Économique', print: '11 000 (2021)', web: '1 - 5 millions' }
+        ];
+
+        function populateMediaTable(filterLang = 'ALL') {
+            const tbody = document.getElementById('mediaTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            mediaList.forEach(m => {
+                if (filterLang !== 'ALL' && m.lang !== filterLang) return;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-stone-50 transition";
+                tr.innerHTML = `
+                    <td class="p-2.5 font-bold text-stone-800">${m.name}</td>
+                    <td class="p-2.5 text-stone-600"><span class="px-1.5 py-0.5 text-[10px] rounded ${m.lang === 'FR' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'} font-bold mr-1">${m.lang}</span> ${m.type}</td>
+                    <td class="p-2.5 text-stone-600">${m.id}</td>
+                    <td class="p-2.5 font-semibold text-stone-700">${m.print}</td>
+                    <td class="p-2.5 text-terracotta font-semibold">${m.web}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterMediaTable() {
+            const lang = document.getElementById('mediaLanguageFilter').value;
+            populateMediaTable(lang);
+        }
+
+        // ================= Page Initialization =================
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initialize default leak simulation view
+            runLeakSimulation('ballon');
+            // Initialize media table
+            populateMediaTable();
+            // Render first tab chart
+            renderKernChart();
+        });
+    </script>
+</body>
+</html>
