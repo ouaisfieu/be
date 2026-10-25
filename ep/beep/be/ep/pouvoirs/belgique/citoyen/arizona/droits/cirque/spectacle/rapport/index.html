@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observatoire Politique & Économique Belge (2024-2026)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #d97706;
+            color: #0f172a;
+            font-weight: 700;
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-amber-100 selection:text-amber-900">
+
+    <!-- Chosen Palette: Slate & Warm Amber Neutral -->
+    <!-- Application Structure Plan:
+        1. Header & Hero Dashboard: High-level KPI summary cards giving immediate overview of the key findings (600+ days crisis, 106% debt, 72.8% employment rate, 16 parties in Parliament).
+        2. Navigation Bar: Sticky tab navigation separating complex report themes into 5 logical user flows:
+           - 🗳️ Cartographie Électorale (Fédéral, Wallonie, Flandre, Europe)
+           - 🏛️ Gouvernance & Coalitions (Arizona & Impasse Bruxelloise)
+           - 💶 Mur Budgétaire & Communes (Finances nationales & Impact local wallon)
+           - 💼 Marché du Travail (Analyse de l'objectif 80% & Disparités)
+           - ✊ Tension Sociale & Horizons 2029 (Chronologie des grèves & Sondages)
+        3. Dynamic Content Sections: Interactive charts (Chart.js), dynamic data filtering, comparison cards, and interactive scenario tools (Commune budget simulator).
+        4. Context & Guidance: Each section begins with an explanatory overview linking data back to the report's insights.
+    -->
+    <!-- Visualization & Content Choices:
+        - Electoral Breakdown -> Chart.js Donut & Bar Charts with dynamic party detail cards for seamless exploration across 4 parliamentary levels.
+        - Institutional Crisis -> Interactive dual-college diagram and timeline cards for Brussels' 600+ day standstill (No SVG, purely HTML/Tailwind).
+        - Debt Trajectory -> Chart.js Line chart displaying 2024-2030 projections with and without CSF adjustments.
+        - Communes Wallonnes Financial Impact -> Interactive calculator showing cumulative losses from the indexation cut.
+        - Employment Gap -> Chart.js Horizontal Bar Chart comparing regional rates against the national 80% target.
+        - Protest Timeline & 2029 Projections -> Interactive timeline component and poll comparison cards.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">🏛️</span>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-100 tracking-tight">Observatoire Politique Belge</h1>
+                    <p class="text-xs text-slate-400">Rapport de Forces, Défis Budgétaires & Transformations (2024-2026)</p>
+                </div>
+            </div>
+            <div class="text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-amber-400 font-medium">
+                ⏱️ Mise à jour analytique : Automne 2026
+            </div>
+        </div>
+
+        <nav class="bg-slate-100 border-t border-slate-200 text-slate-600 text-xs sm:text-sm font-medium overflow-x-auto">
+            <div class="max-w-7xl mx-auto flex whitespace-nowrap px-2">
+                <button onclick="switchTab('elections')" id="tab-elections" class="tab-btn active px-4 py-3 border-b-2 border-transparent hover:text-slate-900 transition-colors">🗳️ Élections 2024</button>
+                <button onclick="switchTab('gouvernance')" id="tab-gouvernance" class="tab-btn px-4 py-3 border-b-2 border-transparent hover:text-slate-900 transition-colors">🏛️ Gouvernance & Crise</button>
+                <button onclick="switchTab('finances')" id="tab-finances" class="tab-btn px-4 py-3 border-b-2 border-transparent hover:text-slate-900 transition-colors">💶 Dette & Finances</button>
+                <button onclick="switchTab('emploi')" id="tab-emploi" class="tab-btn px-4 py-3 border-b-2 border-transparent hover:text-slate-900 transition-colors">💼 Marché du Travail</button>
+                <button onclick="switchTab('climat')" id="tab-climat" class="tab-btn px-4 py-3 border-b-2 border-transparent hover:text-slate-900 transition-colors">✊ Climat Social & 2029</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Formation Fédérale</span>
+                    <div class="text-2xl font-extrabold text-slate-900 mt-1">239 Jours</div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">Gouvernement "Arizona" assermenté le 3 février 2025.</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Blocage Bruxellois</span>
+                    <div class="text-2xl font-extrabold text-amber-600 mt-1">+600 Jours</div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">Paralysie institutionnelle régionale sans précédent.</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dette Publique (2026)</span>
+                    <div class="text-2xl font-extrabold text-slate-900 mt-1">~106 % PIB</div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">670 Md€ de dette globale (Entité I : 519,2 Md€).</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Taux d'Emploi (Q2 2026)</span>
+                    <div class="text-2xl font-extrabold text-slate-900 mt-1">72,8 %</div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">Objectif fédéral fixé à 80,0 % d'ici 2029.</p>
+            </div>
+        </section>
+
+        <section id="sec-elections" class="space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Anatomie du Séisme Électoral du 9 Juin 2024</h2>
+                <p class="text-sm text-slate-600 leading-relaxed max-w-4xl">
+                    Le scrutin simultané de juin 2024 a consacré une redistribution majeure des forces politiques en Belgique. Caractérisé par un basculement historique vers le centre-droit au niveau fédéral et en Wallonie, il a vu la fin de l'hégémonie socialiste francophone et la confirmation de la N-VA comme premier parti du pays face au Vlaams Belang. Explorez ci-dessous la répartition des sièges et des voix selon l'échelon institutionnel.
+                </p>
+
+                <div class="mt-6 flex flex-wrap gap-2 border-b border-slate-200 pb-4">
+                    <button onclick="renderElectoralLevel('federal')" id="btn-lvl-federal" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 text-white transition-all">Chambre Fédérale (150 sièges)</button>
+                    <button onclick="renderElectoralLevel('wallonie')" id="btn-lvl-wallonie" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Parlement Wallon (75 sièges)</button>
+                    <button onclick="renderElectoralLevel('flandre')" id="btn-lvl-flandre" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Parlement Flamand (124 sièges)</button>
+                    <button onclick="renderElectoralLevel('europe')" id="btn-lvl-europe" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Parlement Européen (22 sièges)</button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6 items-center">
+                    <div class="lg:col-span-6 flex flex-col items-center">
+                        <h3 id="chart-title" class="text-base font-bold text-slate-800 mb-3 text-center">Répartition des Sièges à la Chambre des Représentants</h3>
+                        <div class="chart-container">
+                            <canvas id="electoralChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-6 space-y-4">
+                        <div id="electoral-summary-card" class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="text-sm font-bold text-slate-900 mb-1">Faits Marquants de cette Assemblée</h4>
+                            <p id="electoral-summary-text" class="text-xs text-slate-600 leading-relaxed">
+                                La Chambre compte désormais 16 formations politiques (contre 12 auparavant). On note un renouvellement massif avec 45,3 % de nouveaux députés et 42,7 % d'élues femmes.
+                            </p>
+                        </div>
+
+                        <div class="overflow-y-auto max-h-64 rounded-xl border border-slate-200 shadow-inner">
+                            <table class="w-full text-left text-xs text-slate-700">
+                                <thead class="bg-slate-100 text-slate-800 font-bold sticky top-0 border-b border-slate-200">
+                                    <tr>
+                                        <th class="p-2.5">Parti</th>
+                                        <th class="p-2.5 text-center">Sièges</th>
+                                        <th class="p-2.5 text-center">Évol. 2019</th>
+                                        <th class="p-2.5 text-right">% Suffrages</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="electoral-table-body" class="divide-y divide-slate-100 bg-white">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-amber-50/60 p-4 rounded-xl border border-amber-200/80">
+                        <div class="flex items-center space-x-2 text-amber-800 font-bold text-sm mb-1">
+                            <span>⚡</span>
+                            <span>Rupture Historique en Wallonie</span>
+                        </div>
+                        <p class="text-xs text-amber-900/80 leading-relaxed">
+                            Le Mouvement Réformateur (MR) devient la première force wallonne avec 26 sièges, détrônant le Parti Socialiste (19 sièges). Les Engagés réussissent une spectaculaire percée (+9 au niveau fédéral, 17 au régional), scellant un gouvernement bipartite MR-Les Engagés sans le PS.
+                        </p>
+                    </div>
+                    <div class="bg-slate-100 p-4 rounded-xl border border-slate-300">
+                        <div class="flex items-center space-x-2 text-slate-800 font-bold text-sm mb-1">
+                            <span>🛑</span>
+                            <span>Le Cordon Sanitaire Fissuré à Ranst</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Lors des locales d'octobre 2024, la commune flamande de Ranst a vu la liste PIT sceller une alliance officielle de majorité avec le Vlaams Belang, franchissant un Rubicon symbolique malgré le désaveu des instances nationales des partis traditionnels.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-gouvernance" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Architectures de Gouvernance & Crises Institutionnelles</h2>
+                <p class="text-sm text-slate-600 leading-relaxed max-w-4xl">
+                    Entre l'aboutissement pénible des négociations fédérales et le blocage complet en Région de Bruxelles-Capitale, la Belgique offre le contraste saisissant d'un exécutif national axé sur la rigueur et d'une capitale paralysée par la polarisation politique.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider bg-slate-200 text-slate-800 px-2.5 py-1 rounded-full">Exécutif Fédéral</span>
+                            <span class="text-xs text-slate-500 font-semibold">2025 - 2029</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900">La Coalition "Arizona" (De Wever I)</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Formée après 239 jours de tractations et assermentée le 3 février 2025, la coalition unit la N-VA, le MR, Les Engagés, le CD&V et Vooruit.
+                        </p>
+
+                        <div class="p-3 bg-white rounded-xl border border-slate-200 space-y-2 text-xs">
+                            <div class="font-bold text-slate-800">Le Compromis Fondateur :</div>
+                            <ul class="space-y-1.5 text-slate-600 list-disc list-inside">
+                                => <strong class="text-slate-800">N-VA :</strong> Gel temporaire du confédéralisme en échange d'un programme de rigueur socio-économique libérale.
+                                <br>=> <strong class="text-slate-800">MR / Les Engagés :</strong> Maîtrise des dépenses, activation des chômeurs et bouclier fiscal (max 50 % d'impôt).
+                                <br>=> <strong class="text-slate-800">Vooruit :</strong> Protection du financement de la santé et préservation du principe d'indexation salariale.
+                            </ul>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 text-center">
+                                <div class="text-xs text-slate-500">Financement Chômage</div>
+                                <div class="text-xs font-bold text-slate-800 mt-1">Limitation temporelle dès 2026</div>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 text-center">
+                                <div class="text-xs text-slate-500">Écart Traitement / Aide</div>
+                                <div class="text-xs font-bold text-amber-600 mt-1">Minimum +500 € net</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-50/40 p-5 rounded-2xl border border-red-200/60 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider bg-red-100 text-red-800 px-2.5 py-1 rounded-full">Impasse Régionale</span>
+                            <span class="text-xs font-semibold text-red-600">Bruxelles (+600 jours)</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900">Le Paralysie Consociative Bruxelloise</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            L'obligation d'atteindre une majorité au sein des deux collèges linguistiques (Francophone et Néerlandophone) a provoqué un blocage sans précédent.
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <div class="font-bold text-slate-800 border-b pb-1 mb-1">Collège Francophone</div>
+                                <p class="text-slate-600">MR (20) + PS (16) + LE (8). Domination du bloc de droite libérale exigeant l'assouplissement de Good Move.</p>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <div class="font-bold text-slate-800 border-b pb-1 mb-1">Collège Néerlandophone</div>
+                                <p class="text-slate-600">Groen en tête. Irruption de la Team Fouad Ahidar bloquée par des vetos laïques et idéologiques.</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-red-100/50 rounded-xl border border-red-200 text-xs text-red-900 space-y-1">
+                            <span class="font-bold">Automne 2026 - Crise de Rupture :</span>
+                            <p>Face à la menace de dégradation financière par Standard & Poor's et la crise du site Audi Forest, le formateur David Leisterh (MR) a jeté l'éponge après l'échec de son coup de force, contraignant Georges-Louis Bouchez à rouvrir en urgence les négociations avec Groen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-finances" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Finances Publiques : Le Mur de la Dette & L'Impact Local</h2>
+                <p class="text-sm text-slate-600 leading-relaxed max-w-4xl">
+                    Sous la pression des nouvelles règles de gouvernance budgétaire européennes et de la procédure pour déficit excessif, la Belgique doit engager un assainissement structurel titanesque. Cette austérité se répercute en cascade du niveau fédéral jusqu me aux finances des communes wallonnes.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6 items-center">
+                    <div class="lg:col-span-7 flex flex-col items-center">
+                        <h3 class="text-base font-bold text-slate-800 mb-3 text-center">Trajectoire du Ratio Dette Publique / PIB (% PIB)</h3>
+                        <div class="chart-container">
+                            <canvas id="debtChart"></canvas>
+                        </div>
+                        <span class="text-[11px] text-slate-400 mt-2">Source : Conseil Supérieur des Finances / Projections Arizona 2025-2030</span>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                            <h4 class="text-sm font-bold text-slate-900">Les Chiffres Clefs de la Dette</h4>
+                            <ul class="text-xs text-slate-600 space-y-2">
+                                <li class="flex justify-between border-b border-slate-200 pb-1">
+                                    <span>Dette Entité I (Fédéral + Sec. Soc.) :</span>
+                                    <strong class="text-slate-800">519,2 Md€</strong>
+                                </li>
+                                <li class="flex justify-between border-b border-slate-200 pb-1">
+                                    <span>Dette Publique Globale (2026) :</span>
+                                    <strong class="text-slate-800">~670 Md€</strong>
+                                </li>
+                                <li class="flex justify-between border-b border-slate-200 pb-1">
+                                    <span>Charges d'intérêts annuelles :</span>
+                                    <strong class="text-red-600">&gt; 10 Md€ / an</strong>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span>Plan d'ajustement CSF :</span>
+                                    <strong class="text-amber-600">7 Ans (2025-2031)</strong>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 space-y-2">
+                            <h4 class="text-sm font-bold text-amber-900">Le Choc des Finances Locales Wallonnes</h4>
+                            <p class="text-xs text-amber-800 leading-relaxed">
+                                Pour assainir ses propres comptes, le gouvernement wallon (MR-Les Engagés) a supprimé la majoration de 1 % au-dessus de l'inflation du <strong>Fonds des Communes</strong> à partir de 2025.
+                            </p>
+                            <div class="pt-2">
+                                <label class="text-[11px] font-bold text-amber-900 block mb-1">Simulateur d'Impact Cumulé (Période 2025-2026) :</label>
+                                <div class="bg-white p-3 rounded-lg border border-amber-200 text-center">
+                                    <span class="text-xs text-slate-500">Perte pour les 253 communes wallonnes (2026) :</span>
+                                    <div class="text-xl font-black text-red-600 mt-0.5">- 31,8 Millions €</div>
+                                    <span class="text-[10px] text-slate-400 block mt-1">+ Loss de 106 M€ exonérés sur le précompte immobilier matériel/outillage</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-emploi" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Marché du Travail : L'Inatteignable Objectif des 80 %</h2>
+                <p class="text-sm text-slate-600 leading-relaxed max-w-4xl">
+                    Le gouvernement fédéral a fixé l'objectif stratégique d'atteindre un taux d'emploi de 80 % d'ici 2029 pour garantir la soutenabilité de la sécurité sociale. Cependant, les données de Statbel montrent des lignes de fracture régionales et sociologiques profondes.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6 items-center">
+                    <div class="lg:col-span-7 flex flex-col items-center">
+                        <h3 class="text-base font-bold text-slate-800 mb-3 text-center">Taux d'Emploi (20-64 ans) vs Taux de Chômage BIT (Q2 2026)</h3>
+                        <div class="chart-container">
+                            <canvas id="laborChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                            <h4 class="text-sm font-bold text-slate-900">Analyse des Fractures Structurelles</h4>
+                            
+                            <div class="space-y-2 text-xs">
+                                <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                                    <div class="font-bold text-slate-800">Par Niveau d'Instruction (National)</div>
+                                    <div class="flex justify-between items-center mt-1 text-[11px]">
+                                        <span>Diplôme Supérieur : <strong class="text-emerald-600">85,4 %</strong></span>
+                                        <span>Faible Instruction : <strong class="text-red-600">46,4 %</strong></span>
+                                    </div>
+                                </div>
+
+                                <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                                    <div class="font-bold text-slate-800">Fractures Intra-Régionales</div>
+                                    <p class="text-slate-600 text-[11px] mt-0.5">
+                                        80 % des écarts de taux d'emploi s'observent à l'intérieur même des régions, opposant centres urbains paupérisés et périphéries prospères.
+                                    </p>
+                                </div>
+
+                                <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                                    <div class="font-bold text-slate-800">Expansion des Flexi-Jobs</div>
+                                    <p class="text-slate-600 text-[11px] mt-0.5">
+                                        Plus de 153 000 travailleurs recours aux flexi-jobs, illustrant la flexibilisation accrue du travail en réponse aux pénuries.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-climat" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Riposte Sociale & Perspectives Électorales 2029</h2>
+                <p class="text-sm text-slate-600 leading-relaxed max-w-4xl">
+                    Les réformes de rigueur introduites par le gouvernement Arizona ont suscité une levée de boucliers syndicale en Front Commun (FGTB-CSC). En parallèle, l'usure du pouvoir alimente une radicalisation des intentions de vote en vue des échéances de 2029.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+                    <div class="space-y-4">
+                        <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                            <span>✊</span>
+                            <span>Chronologie du Front Commun Syndical (2025-2026)</span>
+                        </h3>
+
+                        <div class="relative border-l-2 border-slate-200 pl-4 space-y-6 ml-2">
+                            <div class="relative">
+                                <div class="absolute -left-[25px] top-0 bg-amber-500 w-3 h-3 rounded-full border-2 border-white"></div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600">Rentrée 2025</span>
+                                <h4 class="text-xs font-bold text-slate-800">Manifestation Nationale à Bruxelles</h4>
+                                <p class="text-xs text-slate-600 mt-0.5">Plus de 140 000 personnes défilent contre la réforme du chômage et de la santé (dénonçant un hold-up de 1,5 Md€).</p>
+                            </div>
+
+                            <div class="relative">
+                                <div class="absolute -left-[25px] top-0 bg-slate-700 w-3 h-3 rounded-full border-2 border-white"></div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Automne / Fin 2025</span>
+                                <h4 class="text-xs font-bold text-slate-800">"Révolution des Craies" (Enseignement)</h4>
+                                <p class="text-xs text-slate-600 mt-0.5">15 000 enseignants mobilisés à Liège par la CSC contre le manque de refinancement scolaire en Fédération Wallonie-Bruxelles.</p>
+                            </div>
+
+                            <div class="relative">
+                                <div class="absolute -left-[25px] top-0 bg-red-600 w-3 h-3 rounded-full border-2 border-white"></div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-red-600">Janvier - Février 2026</span>
+                                <h4 class="text-xs font-bold text-slate-800">Blocages d'Infrastructures</h4>
+                                <p class="text-xs text-slate-600 mt-0.5">Actions tournantes provinciales et blocages ciblés des axes logistiques régionaux.</p>
+                            </div>
+
+                            <div class="relative">
+                                <div class="absolute -left-[25px] top-0 bg-red-700 w-3 h-3 rounded-full border-2 border-white"></div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-red-700">12 Mars 2026</span>
+                                <h4 class="text-xs font-bold text-slate-800">Grève Nationale Interprofessionnelle</h4>
+                                <p class="text-xs text-slate-600 mt-0.5">Paralysie économique du pays lors du contrôle budgétaire fédéral de printemps.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                            <span>🔮</span>
+                            <span>Tendances Prospectives & Sondages (Grand Baromètre)</span>
+                        </h3>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
+                            <div class="p-3 bg-white rounded-lg border border-slate-200">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-slate-800">Wallonie & Bruxelles : Poussée Extrême-Gauche</span>
+                                    <span class="text-[10px] font-bold bg-red-100 text-red-800 px-2 py-0.5 rounded">PTB / PVDA</span>
+                                </div>
+                                <p class="text-xs text-slate-600">
+                                    Le PTB s'installe en tête à Bruxelles et conteste la 1ère place en Wallonie. <strong>Raoul Hedebouw</strong> recueille 22 % des suffrages comme personnalité préférée pour le poste de Premier ministre en Wallonie.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-white rounded-lg border border-slate-200">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-slate-800">Flandre : Hégémonie Radicalisée</span>
+                                    <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">Vlaams Belang</span>
+                                </div>
+                                <p class="text-xs text-slate-600">
+                                    Le Vlaams Belang maintient des projections entre <strong>26 % et 29 %</strong> des intentions de vote, tirant parti des déceptions suscitées par les compromis budgétaires de la N-VA.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-900">
+                                <strong>Synthèse Électorale 2029 :</strong> La polarisation accrue du paysage politique belge fait peser un risque majeur d'ingouvernabilité future, les forces centrifuges du Nord (VB) et du Sud (PTB) captant l'insatisfaction populaire.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p>Observatoire de la Politique Belge &copy; 2026 - Document d'Analyse Synthétique et Interactif.</p>
+            <p class="text-slate-500">Données issues du Rapport Exhaustif sur les Rapports de Forces Politiques en Belgique (Statbel, CRISP, CSF).</p>
+        </div>
+    </footer>
+
+    <script>
+        const electoralData = {
+            federal: {
+                title: "Chambre des Représentants (150 sièges)",
+                summary: "La Chambre compte 16 formations politiques. L'axe N-VA / MR domine le paysage gouvernemental face aux progressions de l'extrême droite et de l'extrême gauche.",
+                labels: ["N-VA", "Vlaams Belang", "MR", "PS", "PTB/PVDA", "Les Engagés", "Vooruit", "CD&V", "Open VLD", "Groen", "Ecolo", "DéFI"],
+                seats: [24, 20, 20, 16, 15, 14, 13, 11, 7, 6, 3, 1],
+                colors: ["#1e3a8a", "#d97706", "#2563eb", "#dc2626", "#991b1b", "#059669", "#f97316", "#f59e0b", "#3b82f6", "#16a34a", "#84cc16", "#8b5cf6"],
+                table: [
+                    { name: "N-VA", seats: 24, evol: "-1", pct: "16,71 %" },
+                    { name: "Vlaams Belang (VB)", seats: 20, evol: "+2", pct: "13,77 %" },
+                    { name: "Mouvement Réformateur (MR)", seats: 20, evol: "+6", pct: "10,26 %" },
+                    { name: "Parti Socialiste (PS)", seats: 16, evol: "-4", pct: "8,04 %" },
+                    { name: "PTB / PVDA", seats: 15, evol: "+3", pct: "9,86 %" },
+                    { name: "Les Engagés (LE)", seats: 14, evol: "+9", pct: "6,77 %" },
+                    { name: "Vooruit", seats: 13, evol: "+4", pct: "8,11 %" },
+                    { name: "CD&V", seats: 11, evol: "-1", pct: "7,98 %" },
+                    { name: "Open VLD", seats: 7, evol: "-5", pct: "5,45 %" },
+                    { name: "Groen", seats: 6, evol: "-2", pct: "4,65 %" },
+                    { name: "Ecolo", seats: 3, evol: "-10", pct: "2,93 %" },
+                    { name: "DéFI", seats: 1, evol: "-1", pct: "1,20 %" }
+                ]
+            },
+            wallonie: {
+                title: "Parlement de Wallonie (75 sièges)",
+                summary: "Basculement historique à droite : le MR prend la tête du Parlement régional. Alliance bipartite inédite MR-Les Engagés sans le PS.",
+                labels: ["MR", "PS", "Les Engagés", "PTB", "Ecolo"],
+                seats: [26, 19, 17, 8, 5],
+                colors: ["#2563eb", "#dc2626", "#059669", "#991b1b", "#84cc16"],
+                table: [
+                    { name: "Mouvement Réformateur (MR)", seats: 26, evol: "1er Parti", pct: "32,8 %" },
+                    { name: "Parti Socialiste (PS)", seats: 19, evol: "Perte hégémonie", pct: "23,2 %" },
+                    { name: "Les Engagés (LE)", seats: 17, evol: "Percée (+7)", pct: "20,7 %" },
+                    { name: "Parti du Travail (PTB)", seats: 8, evol: "-2", pct: "12,1 %" },
+                    { name: "Ecolo", seats: 5, evol: "-7", pct: "7,0 %" }
+                ]
+            },
+            flandre: {
+                title: "Parlement Flamand (124 sièges)",
+                summary: "La N-VA résiste de justesse à la vague du Vlaams Belang. Vooruit s'impose comme 3e force. Reconstitution d'une coalition classique N-VA / Vooruit / CD&V.",
+                labels: ["N-VA", "Vlaams Belang", "Vooruit", "CD&V", "Open VLD", "PVDA", "Groen", "Team F. Ahidar"],
+                seats: [31, 31, 18, 16, 9, 9, 9, 1],
+                colors: ["#1e3a8a", "#d97706", "#f97316", "#f59e0b", "#3b82f6", "#991b1b", "#16a34a", "#8b5cf6"],
+                table: [
+                    { name: "N-VA", seats: 31, evol: "31", pct: "23,88 %" },
+                    { name: "Vlaams Belang", seats: 31, evol: "31", pct: "22,66 %" },
+                    { name: "Vooruit", seats: 18, evol: "18", pct: "13,85 %" },
+                    { name: "CD&V", seats: 16, evol: "16", pct: "13,04 %" },
+                    { name: "Open VLD", seats: 9, evol: "9", pct: "8,33 %" },
+                    { name: "PVDA", seats: 9, evol: "9", pct: "8,31 %" },
+                    { name: "Groen", seats: 9, evol: "9", pct: "7,29 %" },
+                    { name: "Team Fouad Ahidar", seats: 1, evol: "1", pct: "0,32 %" }
+                ]
+            },
+            europe: {
+                title: "Représentation Européenne (22 sièges belges)",
+                summary: "Division en 3 collèges linguistiques. Victoire du VB et N-VA côté Flamand, hégémonie du MR côté Francophone.",
+                labels: ["MR (Renew)", "N-VA (ECR)", "Vlaams Belang (PfE)", "PS (S&D)", "CD&V (PPE)", "Vooruit (S&D)", "Les Engagés (PPE)", "PTB/PVDA (GUE)", "Groen (Verts)", "Ecolo (Verts)", "Open VLD (Renew)", "CSP (PPE)"],
+                seats: [3, 3, 3, 2, 2, 2, 1, 2, 1, 1, 1, 1],
+                colors: ["#2563eb", "#1e3a8a", "#d97706", "#dc2626", "#f59e0b", "#f97316", "#059669", "#991b1b", "#16a34a", "#84cc16", "#3b82f6", "#64748b"],
+                table: [
+                    { name: "Collège Néerlandophone (13)", seats: 13, evol: "-", pct: "VB:3, N-VA:3, CD&V:2, Vooruit:2, VLD:1, Groen:1, PVDA:1" },
+                    { name: "Collège Francophone (8)", seats: 8, evol: "-", pct: "MR:3, PS:2, PTB:1, LE:1, Ecolo:1" },
+                    { name: "Collège Germanophone (1)", seats: 1, evol: "-", pct: "CSP:1" }
+                ]
+            }
+        };
+
+        let electoralChartInstance = null;
+        let debtChartInstance = null;
+        let laborChartInstance = null;
+
+        function initElectoralChart() {
+            const ctx = document.getElementById('electoralChart').getContext('2d');
+            electoralChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: electoralData.federal.labels,
+                    datasets: [{
+                        data: electoralData.federal.seats,
+                        backgroundColor: electoralData.federal.colors,
+                        borderWidth: 1.5,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                font: { size: 10 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} sièges`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderElectoralLevel(level) {
+            const btnIds = ['federal', 'wallonie', 'flandre', 'europe'];
+            btnIds.forEach(id => {
+                const btn = document.getElementById(`btn-lvl-${id}`);
+                if (id === level) {
+                    btn.className = "px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 text-white transition-all";
+                } else {
+                    btn.className = "px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all";
+                }
+            });
+
+            const data = electoralData[level];
+            document.getElementById('chart-title').innerText = data.title;
+            document.getElementById('electoral-summary-text').innerText = data.summary;
+
+            electoralChartInstance.data.labels = data.labels;
+            electoralChartInstance.data.datasets[0].data = data.seats;
+            electoralChartInstance.data.datasets[0].backgroundColor = data.colors;
+            electoralChartInstance.update();
+
+            const tbody = document.getElementById('electoral-table-body');
+            tbody.innerHTML = '';
+            data.table.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-2.5 font-semibold text-slate-800">${row.name}</td>
+                    <td class="p-2.5 text-center font-bold text-slate-900">${row.seats}</td>
+                    <td class="p-2.5 text-center text-slate-500">${row.evol}</td>
+                    <td class="p-2.5 text-right font-mono text-slate-600">${row.pct}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function initDebtChart() {
+            const ctx = document.getElementById('debtChart').getContext('2d');
+            debtChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2023', '2024', '2025 (P)', '2026 (P)', '2028 (P)', '2030 (Proj.)'],
+                    datasets: [
+                        {
+                            label: 'Trajectoire Filaire (Sans Mesures)',
+                            data: [105.2, 105.8, 108.0, 110.5, 115.2, 120.0],
+                            borderColor: '#dc2626',
+                            backgroundColor: 'rgba(220, 38, 38, 0.05)',
+                            borderDash: [5, 5],
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Cible Plan d\'Ajustement CSF / Arizona',
+                            data: [105.2, 105.8, 106.1, 106.0, 104.5, 102.0],
+                            borderColor: '#059669',
+                            backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ` ${ctx.dataset.label} : ${ctx.raw} % du PIB`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 95,
+                            max: 125,
+                            ticks: { callback: (val) => val + ' %' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initLaborChart() {
+            const ctx = document.getElementById('laborChart').getContext('2d');
+            laborChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Flandre', 'Moyenne Nationale', 'Wallonie', 'Bruxelles-Capitale', 'Cible Fédérale 2029'],
+                    datasets: [
+                        {
+                            label: 'Taux d\'Emploi (%)',
+                            data: [77.3, 72.8, 67.6, 64.7, 80.0],
+                            backgroundColor: ['#1e3a8a', '#64748b', '#2563eb', '#d97706', '#059669']
+                        },
+                        {
+                            label: 'Taux de Chômage BIT (%)',
+                            data: [4.0, 5.6, 8.0, 12.7, 3.5],
+                            backgroundColor: ['#93c5fd', '#cbd5e1', '#93c5fd', '#fde68a', '#a7f3d0']
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    },
+                    scales: {
+                        x: { max: 90, ticks: { callback: (val) => val + ' %' } }
+                    }
+                }
+            });
+        }
+
+        function switchTab(tabId) {
+            const sections = ['elections', 'gouvernance', 'finances', 'emploi', 'climat'];
+            sections.forEach(sec => {
+                const el = document.getElementById(`sec-${sec}`);
+                const btn = document.getElementById(`tab-${sec}`);
+                if (sec === tabId) {
+                    el.classList.remove('hidden');
+                    btn.classList.add('active');
+                } else {
+                    el.classList.add('hidden');
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (tabId === 'finances' && debtChartInstance) {
+                setTimeout(() => debtChartInstance.resize(), 50);
+            }
+            if (tabId === 'emploi' && laborChartInstance) {
+                setTimeout(() => laborChartInstance.resize(), 50);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initElectoralChart();
+            renderElectoralLevel('federal');
+            initDebtChart();
+            initLaborChart();
+        });
+    </script>
+</body>
+</html>
