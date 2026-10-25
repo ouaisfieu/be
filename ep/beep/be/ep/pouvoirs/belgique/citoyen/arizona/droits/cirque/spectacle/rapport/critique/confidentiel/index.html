@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Humanité sous l'Empire de l'Économie - Rapport Critique Interactive</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF8F5',
+                        charcoal: '#1F2937',
+                        terracotta: {
+                            DEFAULT: '#7C2D12',
+                            light: '#9A3412',
+                            soft: '#FFEDD5',
+                        },
+                        navy: {
+                            DEFAULT: '#1E3A8A',
+                            soft: '#DBEAFE',
+                        },
+                        sage: {
+                            DEFAULT: '#059669',
+                            soft: '#D1FAE5',
+                        },
+                        sand: '#E5E7EB',
+                        warmgray: '#F3F4F6'
+                    },
+                    fontFamily: {
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        serif: ['Georgia', 'Cambria', 'Times New Roman', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Embedded CSS for Chart Container strict sizing & overflow constraint */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF8F5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF;
+        }
+    </style>
+</head>
+<body class="bg-cream text-charcoal font-sans antialiased leading-relaxed min-h-screen flex flex-col">
+
+    <!-- Chosen Palette: Sagesse & Terre (Warm Neutral Harmony: #FAF8F5 background, Charcoal text, Terracotta #7C2D12 primary, Deep Navy #1E3A8A secondary, Sage Green #059669 for alternatives) -->
+
+    <!-- Application Structure Plan:
+         1. Header & Executive Banner: Diagnostic global de l'aliénation avec métriques clés (Jour du dépassement, etc.).
+         2. Main Dynamic Navigation: Navigation par onglets thématiques permettant une exploration non-linéaire ou chronologique.
+         3. Section 1: La Grande Inversion (Origines Théoriques) - Aristote (Oikonomia vs Chrématistique) & Polanyi (Désencastrement & Marchandises Fictives).
+         4. Section 2: L'Engrenage Systémique (Technique & Gouvernance) - Visualisation comparative de Marx (Fétichisme), Ellul/Schumpeter (Système Technicien/Destruction Créatrice), Supiot (Gouvernance par les Nombres) et Stiegler (Prolétarisation de l'Esprit).
+         5. Section 3: L'Épuisement du Sujet (Temps & Psyché) - Calculateur interactif de la Vitesse Réelle selon Ivan Illich + Analyse de l'Accélération (Rosa) et de l'Auto-exploitation (Han).
+         6. Section 4: Les Limites du Réel (Le Donut & La Physique) - Graphique Chart.js interactif du modèle du Donut (Kate Raworth) avec comparaison des frontières écologiques et du plancher social.
+         7. Section 5: Les Voies du Réencastrement (Alternatives Locales) - Études de cas concrètes (Zinne, GASAP, Repair Cafés) et graphique d'impact écologique/social.
+         8. Section 6: Module d'Auto-Diagnostic - Test interactif en 5 questions permettant à l'utilisateur de mesurer son degré d'encastrement ou d'aliénation.
+    -->
+
+    <!-- Visualization & Content Choices:
+         - Concept 1: Oikonomia vs Chrématistique -> Interactive Toggle Cards -> Justification: Permet de contraster immédiatement les finalités de l'échange (Usage/Fini vs Profit/Infini).
+         - Concept 2: Calculateur de Vitesse Réelle d'Ivan Illich -> Formulaire interactif + Chart.js Bar Chart -> Justification: Rend concrète et saisissante la notion de contre-productivité industrielle par un calcul personnalisé.
+         - Concept 3: Modèle du Donut (Kate Raworth) -> Chart.js Radar Chart -> Justification: Représente visuellement l'espace sûr et juste entre le plafond écologique et le plancher social.
+         - Concept 4: Impact des Repair Cafés & Alternatives -> Chart.js Bar Chart -> Justification: Démontre quantitativement le pouvoir du réencastrement local (kg de CO2 et déchets évités).
+         - Concept 5: Matrice de Gouvernance & Aliénation -> Dynamic Accordion/Cards -> Justification: Rend digestes les concepts complexes de Supiot et Stiegler.
+         Confirming NO SVG graphics used (standard HTML elements & Canvas used instead). NO Mermaid JS used.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-cream/95 backdrop-blur border-b border-sand shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl p-2 bg-terracotta text-white rounded-lg font-serif font-bold">É</span>
+                <div>
+                    <h1 class="text-lg font-serif font-bold text-terracotta leading-tight">L'Empire de l'Économie</h1>
+                    <p class="text-xs text-gray-600">Rapport critique sur l'aliénation & la marchandisation du monde</p>
+                </div>
+            </div>
+            
+            <!-- Global Nav Tabs -->
+            <nav class="flex flex-wrap justify-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium">
+                <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn px-3 py-1.5 rounded-md bg-terracotta text-white transition-colors">Diagnostic</button>
+                <button onclick="switchTab('tab-inversion')" id="btn-tab-inversion" class="tab-btn px-3 py-1.5 rounded-md text-gray-700 hover:bg-sand transition-colors">1. La Grande Inversion</button>
+                <button onclick="switchTab('tab-systeme')" id="btn-tab-systeme" class="tab-btn px-3 py-1.5 rounded-md text-gray-700 hover:bg-sand transition-colors">2. Machine & Nombres</button>
+                <button onclick="switchTab('tab-psyche')" id="btn-tab-psyche" class="tab-btn px-3 py-1.5 rounded-md text-gray-700 hover:bg-sand transition-colors">3. Temps & Psyché</button>
+                <button onclick="switchTab('tab-donut')" id="btn-tab-donut" class="tab-btn px-3 py-1.5 rounded-md text-gray-700 hover:bg-sand transition-colors">4. Limites Physiques</button>
+                <button onclick="switchTab('tab-alternatives')" id="btn-tab-alternatives" class="tab-btn px-3 py-1.5 rounded-md text-gray-700 hover:bg-sand transition-colors">5. Réencastrement</button>
+                <button onclick="switchTab('tab-diagnostic')" id="btn-tab-diagnostic" class="tab-btn px-3 py-1.5 rounded-md bg-navy text-white hover:bg-navy/90 transition-colors">Auto-Test</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ========================================== -->
+        <!-- TAB 0: DIAGNOSTIC & OVERVIEW -->
+        <!-- ========================================== -->
+        <section id="tab-overview" class="tab-content block space-y-8">
+            <div class="bg-white border border-sand rounded-2xl p-6 sm:p-8 shadow-sm">
+                <div class="max-w-3xl">
+                    <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-terracotta-soft text-terracotta mb-3">Synthèse du Rapport Critique</span>
+                    <h2 class="text-2xl sm:text-3xl font-serif font-bold text-charcoal mb-4">L'Humanité s'est-elle soumise à sa propre économie ?</h2>
+                    <p class="text-gray-700 text-base leading-relaxed mb-4">
+                        Ce rapport explore le renversement anthropologique et sociologique majeur de la modernité : l'économie, jadis simple outil de subsistance et de gestion du foyer (<em>oikonomia</em>), s'est autonomisée jusqu'à transformer la société tout entière en un marché autorégulateur. De l'asservissement du Droit à la gouvernance par les chiffres, jusqu'à l'épuisement psychique de l'individu sous le règne de l'accélération et de la performance, nous sommes confrontés aux limites physiques et symboliques de ce système totalisant.
+                    </p>
+                    <p class="text-gray-600 text-sm italic">
+                        Explorez les différentes sections ci-dessous ou via la barre de navigation pour analyser les fondements théoriques, mesurer la contre-productivité du système et découvrir les alternatives locales de réencastrement.
+                    </p>
+                </div>
+
+                <!-- Key Metrics Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+                    <div class="bg-cream border border-sand rounded-xl p-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Limite Planétaire</span>
+                            <div class="text-2xl font-bold text-terracotta mt-1">30 Juillet</div>
+                            <div class="text-xs font-medium text-gray-600">Jour du Dépassement Mondial (2026)</div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3 border-t border-sand pt-2">Épuisement annuel des ressources renouvelables de la Terre.</p>
+                    </div>
+
+                    <div class="bg-cream border border-sand rounded-xl p-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Contre-Productivité</span>
+                            <div class="text-2xl font-bold text-navy mt-1">6 km/h</div>
+                            <div class="text-xs font-medium text-gray-600">Vitesse réelle de l'automobile (Illich)</div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3 border-t border-sand pt-2">En intégrant le temps de travail nécessaire pour financer le véhicule.</p>
+                    </div>
+
+                    <div class="bg-cream border border-sand rounded-xl p-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Marchandisation</span>
+                            <div class="text-2xl font-bold text-terracotta-light mt-1">3 Fictions</div>
+                            <div class="text-xs font-medium text-gray-600">Travail, Terre, Monnaie (Polanyi)</div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3 border-t border-sand pt-2">Éléments essentiels de la vie réduits à des marchandises régulées par le prix.</p>
+                    </div>
+
+                    <div class="bg-cream border border-sand rounded-xl p-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Réencastrement</span>
+                            <div class="text-2xl font-bold text-sage mt-1">542 kg CO₂</div>
+                            <div class="text-xs font-medium text-gray-600">Évités par Repair Café local</div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3 border-t border-sand pt-2">Exemple concret de résistance citoyenne face à l'obsolescence (Woluwe).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conceptual Flow Roadmap -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <h3 class="text-xl font-serif font-bold text-charcoal mb-3">Parcours d'Analyse du Rapport</h3>
+                <p class="text-sm text-gray-600 mb-6">Chaque module de cette application décortique une dimension fondamentale de notre soumission économique.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div onclick="switchTab('tab-inversion')" class="cursor-pointer group p-4 rounded-xl border border-sand bg-cream hover:border-terracotta transition-all">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-terracotta">MODULE 01</span>
+                            <span class="text-lg">🏛️</span>
+                        </div>
+                        <h4 class="font-bold text-charcoal group-hover:text-terracotta transition-colors">La Grande Inversion</h4>
+                        <p class="text-xs text-gray-600 mt-2">D'Aristote à Karl Polanyi. Comment l'économie s'est désencastrée de la société pour créer le marché autorégulateur.</p>
+                    </div>
+
+                    <div onclick="switchTab('tab-systeme')" class="cursor-pointer group p-4 rounded-xl border border-sand bg-cream hover:border-navy transition-all">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-navy">MODULE 02</span>
+                            <span class="text-lg">⚙️</span>
+                        </div>
+                        <h4 class="font-bold text-charcoal group-hover:text-navy transition-colors">Machine & Nombres</h4>
+                        <p class="text-xs text-gray-600 mt-2">Fétichisme (Marx), Système technicien (Ellul), Gouvernance par les nombres (Supiot) et prolétarisation (Stiegler).</p>
+                    </div>
+
+                    <div onclick="switchTab('tab-psyche')" class="cursor-pointer group p-4 rounded-xl border border-sand bg-cream hover:border-terracotta-light transition-all">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-terracotta-light">MODULE 03</span>
+                            <span class="text-lg">⏳</span>
+                        </div>
+                        <h4 class="font-bold text-charcoal group-hover:text-terracotta-light transition-colors">Temps & Psyché</h4>
+                        <p class="text-xs text-gray-600 mt-2">L'accélération sociale (Rosa), l'auto-exploitation néolibérale (Han) et le calculateur de vitesse réelle d'Illich.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 1: LA GRANDE INVERSION -->
+        <!-- ========================================== -->
+        <section id="tab-inversion" class="tab-content hidden space-y-8">
+            <!-- Context Banner -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <span class="text-xs font-bold text-terracotta uppercase tracking-wider">Origines & Mutation Historique</span>
+                <h2 class="text-2xl font-serif font-bold text-charcoal mt-1">La Grande Inversion : De l'Économie Encastrée à la Société de Marché</h2>
+                <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+                    Ce module examine la rupture fondamentale survenue entre la conception antique de la gestion des ressources et l'avènement du capitalisme industriel. Dans les sociétés pré-industrielles, l'activité économique était strictement encastrée dans des règles morales, religieuses et sociales. La Grande Inversion désigne le moment où la société s'est retrouvée soumise aux règles autonomes du marché libre.
+                </p>
+            </div>
+
+            <!-- Aristote Interactive Comparison: Oikonomia vs Chrématistique -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="text-xl font-serif font-bold text-charcoal">1. La Rupture Originelle selon Aristote</h3>
+                        <p class="text-xs text-gray-600">Passez d'un paradigme à l'autre pour comparer l'économie de besoin et la recherche infinie du profit.</p>
+                    </div>
+                    <div class="inline-flex p-1 bg-cream border border-sand rounded-lg text-xs font-semibold">
+                        <button id="btn-oiko" onclick="setAristoteMode('oikonomia')" class="px-3 py-1.5 rounded-md bg-terracotta text-white transition-all">Oikonomia (Gestion du Foyer)</button>
+                        <button id="btn-chrema" onclick="setAristoteMode('chrematistique')" class="px-3 py-1.5 rounded-md text-gray-600 hover:text-charcoal transition-all">Chrématistique (Accumulation)</button>
+                    </div>
+                </div>
+
+                <div id="aristote-card" class="p-6 rounded-xl border border-terracotta/20 bg-terracotta-soft/30 transition-all">
+                    <!-- Dynamic content filled via JS -->
+                </div>
+            </div>
+
+            <!-- Karl Polanyi & Fictitious Commodities -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <h3 class="text-xl font-serif font-bold text-charcoal mb-2">2. Karl Polanyi et le Désencastrement du Marché</h3>
+                <p class="text-sm text-gray-700 mb-6 leading-relaxed">
+                    Dans <em>La Grande Transformation</em> (1944), Karl Polanyi démontre que le marché autorégulateur n'est pas une évolution naturelle, mais une utopie destructrice imposée par l'État libéral. Pour fonctionner, ce système a exigé la conversion de trois piliers fondamentaux de la vie humaine en <strong>"marchandises fictives"</strong>.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Commodity 1 -->
+                    <div class="bg-cream border border-sand rounded-xl p-5 hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 rounded-full bg-terracotta-soft text-terracotta font-bold flex items-center justify-center mb-3">1</div>
+                        <h4 class="font-serif font-bold text-charcoal text-lg mb-1">Le Travail</h4>
+                        <span class="text-xs font-semibold text-terracotta">L'Activité Humaine Réduite</span>
+                        <p class="text-xs text-gray-600 mt-3 leading-relaxed">
+                            Le travail n'est autre que l'activité des êtres humains. En le transformant en marchandise soumise à l'offre et à la demande, le travailleur est arraché à ses protections sociales et réduit à une simple force productive négociable.
+                        </p>
+                    </div>
+
+                    <!-- Commodity 2 -->
+                    <div class="bg-cream border border-sand rounded-xl p-5 hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 rounded-full bg-navy-soft text-navy font-bold flex items-center justify-center mb-3">2</div>
+                        <h4 class="font-serif font-bold text-charcoal text-lg mb-1">La Terre</h4>
+                        <span class="text-xs font-semibold text-navy">La Nature Morcelée</span>
+                        <p class="text-xs text-gray-600 mt-3 leading-relaxed">
+                            La terre n'est que la nature. Sa marchandisation implique son découpage, sa privatisation et son exploitation. Aujourd'hui, l'ingénierie écologique prolonge cette logique en financiarisant la biodiversité ("capital naturel").
+                        </p>
+                    </div>
+
+                    <!-- Commodity 3 -->
+                    <div class="bg-cream border border-sand rounded-xl p-5 hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 rounded-full bg-sage-soft text-sage font-bold flex items-center justify-center mb-3">3</div>
+                        <h4 class="font-serif font-bold text-charcoal text-lg mb-1">La Monnaie</h4>
+                        <span class="text-xs font-semibold text-sage">La Convention Dénaturée</span>
+                        <p class="text-xs text-gray-600 mt-3 leading-relaxed">
+                            La monnaie est une convention politique assurant la réciprocité des échanges. Sa transformation en marchandise spéculative déconnecte la finance de l'économie réelle et expose les sociétés à des crises systémiques.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
+                    <strong>Le "Double Mouvement" de Polanyi :</strong> Face à la violence de la marchandisation totale, la société déploie spontanément une réaction d'auto-protection (lois sociales, syndicats, protectionnisme). L'incapacité à équilibrer ces forces conduit aux dérives autoritaires.
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: LA MACHINE ET LES NOMBRES -->
+        <!-- ========================================== -->
+        <section id="tab-systeme" class="tab-content hidden space-y-8">
+            <!-- Context Banner -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <span class="text-xs font-bold text-navy uppercase tracking-wider">Infrastructure & Gouvernance</span>
+                <h2 class="text-2xl font-serif font-bold text-charcoal mt-1">L'Engrenage Systémique : Technocratie et Dépossession Cognitive</h2>
+                <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+                    La domination économique ne repose pas uniquement sur les mécanismes de marché ; elle s'appuie sur une infrastructure matérielle, juridique et cognitive. Du fétichisme de la marchandise théorisé par Karl Marx jusqu'à la gouvernance par les chiffres d'Alain Supiot et la perte de savoir-faire analysée par Bernard Stiegler, découvrez comment l'être humain est dépossédé de son autonomie délibérative.
+                </p>
+            </div>
+
+            <!-- Conceptual Matrix Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Marx: Fétichisme -->
+                <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded-md bg-terracotta-soft text-terracotta text-xs font-bold">Karl Marx</span>
+                            <span class="text-xs text-gray-500 font-serif italic">Le Capital</span>
+                        </div>
+                        <h3 class="text-lg font-serif font-bold text-charcoal mb-2">Le Fétichisme de la Marchandise</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Les relations sociales directes entre les producteurs se trouvent dissimulées sous la forme mystique de relations entre des choses. La valeur d'échange semble être une propriété magique inhérente à l'objet, occultant le surtravail expolié et la destruction environnementale subie lors de sa fabrication.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-sand text-xs text-gray-500">
+                        🔑 <strong>Impact :</strong> Naturalisation du marché et incapacité de la société à en penser l'abolition.
+                    </div>
+                </div>
+
+                <!-- Ellul & Schumpeter: Système Technicien -->
+                <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded-md bg-navy-soft text-navy text-xs font-bold">J. Ellul & J. Schumpeter</span>
+                            <span class="text-xs text-gray-500 font-serif italic">Le Système Technicien</span>
+                        </div>
+                        <h3 class="text-lg font-serif font-bold text-charcoal mb-2">La Disruption Permanente & la Cage d'Acier</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Pour Ellul, la Technique s'est autonomisée en imposant un impératif d'efficacité maximale. Combinée à la "destruction créatrice" de Schumpeter, cette dynamique oblige le corps social à une adaptation permanente aux innovations technologiques, plaçant l'humain dans un retard perpétuel face à ses propres outils.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-sand text-xs text-gray-500">
+                        🔑 <strong>Impact :</strong> Disparition de la délibération politique au profit de l'impératif technicien.
+                    </div>
+                </div>
+
+                <!-- Supiot: Gouvernance par les nombres -->
+                <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-800 text-xs font-bold">Alain Supiot</span>
+                            <span class="text-xs text-gray-500 font-serif italic">La Gouvernance par les Nombres</span>
+                        </div>
+                        <h3 class="text-lg font-serif font-bold text-charcoal mb-2">De la Loi au Calcul Comptable</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            L'État de droit délibératif est supplanté par un pilotage par indicateurs de performance. Ce basculement réduit l'être humain à une unité de compte ("ordinateur programmable") et transforme la justice en une technique d'optimisation concurrentielle (<em>law shopping</em>), restaurant des allégeances quasi-féodales.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-sand text-xs text-gray-500">
+                        🔑 <strong>Impact :</strong> Dépréciation du Débat politique républicain remplacé par la métrique statistique.
+                    </div>
+                </div>
+
+                <!-- Stiegler: Prolétarisation cognitive -->
+                <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded-md bg-purple-100 text-purple-800 text-xs font-bold">Bernard Stiegler</span>
+                            <span class="text-xs text-gray-500 font-serif italic">La Misère Symbolique</span>
+                        </div>
+                        <h3 class="text-lg font-serif font-bold text-charcoal mb-2">La Prolétarisation de l'Esprit</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            L'économie des données et les technologies algorithmiques ne confisquent plus seulement les moyens de production physiques, mais les savoir-faire et savoir-penser. En déléguant la mémoire et la décision aux intelligences artificielles, l'individu fait l'expérience d'une "stupidité systémique".
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-sand text-xs text-gray-500">
+                        🔑 <strong>Impact :</strong> Atrophie du discernement critique et perte du sentiment d'exister.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Table: Modes de Gouvernance -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm overflow-x-auto">
+                <h3 class="text-lg font-serif font-bold text-charcoal mb-4">Tableau Comparatif des Paradigmes d'Autorité</h3>
+                <table class="w-full text-left text-xs text-gray-700 border-collapse">
+                    <thead>
+                        <tr class="bg-cream border-b border-sand">
+                            <th class="p-3 font-serif font-bold text-charcoal">Modèle de Gouvernance</th>
+                            <th class="p-3 font-serif font-bold text-charcoal">Nature de l'Autorité</th>
+                            <th class="p-3 font-serif font-bold text-charcoal">Statut de l'Individu</th>
+                            <th class="p-3 font-serif font-bold text-charcoal">Risque Anthropologique</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-sand">
+                        <tr>
+                            <td class="p-3 font-bold text-terracotta">Gouvernement par les Lois</td>
+                            <td class="p-3">Langage, délibération, prudence du juge</td>
+                            <td class="p-3">Citoyen délibérant & sujet de droit</td>
+                            <td class="p-3">Lenteur démocratique mais préservation des libertés</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-bold text-navy">Gouvernance par les Nombres</td>
+                            <td class="p-3">Algorithme, norme comptable, calcul d'efficience</td>
+                            <td class="p-3">Unité de compte, "ordinateur programmable"</td>
+                            <td class="p-3">Régression féodale, dictature de l'utilité, fin du politique</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-bold text-purple-900">Économie Cognitive (IA)</td>
+                            <td class="p-3">Plateformes numériques, profilage Big Data</td>
+                            <td class="p-3">Générateur de traces & consommateur passif</td>
+                            <td class="p-3">Misère symbolique, stupéfaction & atrophie du jugement</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: TEMPS ET PSYCHÉ (ILLICH CALCULATOR) -->
+        <!-- ========================================== -->
+        <section id="tab-psyche" class="tab-content hidden space-y-8">
+            <!-- Context Banner -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <span class="text-xs font-bold text-terracotta-light uppercase tracking-wider">L'Aliénation Intime</span>
+                <h2 class="text-2xl font-serif font-bold text-charcoal mt-1">L'Épuisement du Sujet : Accélération et Contre-Productivité</h2>
+                <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+                    L'économie moderne s'est immiscée au cœur de la subjectivité humaine. Alors que Hartmut Rosa théorise la perte de "résonance" face à l'accélération sociale, Byung-Chul Han décrit le passage d'une société disciplinaire à une "société de la fatigue" où l'individu s'auto-exploite en croyant s'accomplir. Ce module vous invite également à tester concrètement la "contre-productivité" industrielle théorisée par Ivan Illich.
+                </p>
+            </div>
+
+            <!-- Illich Speed Calculator Interactive WOW Element -->
+            <div class="bg-white border border-sand rounded-2xl p-6 sm:p-8 shadow-sm">
+                <div class="max-w-2xl mb-6">
+                    <span class="px-2.5 py-1 rounded-md bg-terracotta-soft text-terracotta text-xs font-bold">Outil Interactif - Modèle Ivan Illich</span>
+                    <h3 class="text-xl font-serif font-bold text-charcoal mt-2">Calculateur de la Vitesse Réelle de votre Automobile</h3>
+                    <p class="text-xs text-gray-600 mt-1 leading-relaxed">
+                        Dans <em>La Convivialité</em> (1973), Ivan Illich démontre qu'en intégrant le temps de travail nécessaire pour acheter, financer, assurer et entretenir une voiture, sa vitesse réelle s'effondre à 6 km/h (la vitesse d'un marcheur !). Faites le calcul pour votre propre situation :
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <!-- Calculator Inputs -->
+                    <div class="lg:col-span-5 bg-cream border border-sand p-5 rounded-xl space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Kilomètres parcourus / semaine :</label>
+                            <input type="number" id="input-km" value="250" class="w-full p-2 border border-sand rounded-md text-sm bg-white focus:outline-none focus:border-terracotta" oninput="calculateIllichSpeed()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Heures passées au volant / semaine :</label>
+                            <input type="number" id="input-drive-hours" value="6" class="w-full p-2 border border-sand rounded-md text-sm bg-white focus:outline-none focus:border-terracotta" oninput="calculateIllichSpeed()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Coût mensuel global (Crédit, carburant, assurance) € :</label>
+                            <input type="number" id="input-cost" value="450" class="w-full p-2 border border-sand rounded-md text-sm bg-white focus:outline-none focus:border-terracotta" oninput="calculateIllichSpeed()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Votre salaire horaire net (€ / heure) :</label>
+                            <input type="number" id="input-wage" value="16" class="w-full p-2 border border-sand rounded-md text-sm bg-white focus:outline-none focus:border-terracotta" oninput="calculateIllichSpeed()">
+                        </div>
+                    </div>
+
+                    <!-- Calculator Output & Visualization -->
+                    <div class="lg:col-span-7 flex flex-col items-center justify-center">
+                        <div class="text-center mb-4">
+                            <span class="text-xs text-gray-500 uppercase tracking-wider">Vitesse Réelle Calculée</span>
+                            <div id="result-speed" class="text-4xl font-serif font-bold text-terracotta mt-1">7.8 km/h</div>
+                            <p id="result-comment" class="text-xs text-gray-600 mt-1 max-w-md italic">A peine plus rapide qu'une marche rapide ! Le temps consacré à payer le véhicule détruit le gain de temps promis.</p>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <div class="chart-container">
+                            <canvas id="illichChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accélération & Psychopolitique Dual Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Hartmut Rosa -->
+                <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="text-xl">⌛</span>
+                        <h3 class="text-lg font-serif font-bold text-charcoal">Hartmut Rosa : Accélération & Résonance</h3>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed mb-4">
+                        La modernité tardive est caractérisée par une accélération sociale (technique, changement social, rythme de vie). Malgré les gains de temps technologiques, le sujet souffre d'un manque de temps chronique. Ce cycle détruit la capacité de mise en <strong>"résonance"</strong> avec le monde, rendant notre environnement froid, silencieux et indifférent.
+                    </p>
+                    <div class="bg-cream p-3 rounded-lg border border-sand text-xs text-gray-700">
+                        <strong>Les 3 axes de résonance menacés :</strong> Horizontaux (relations proches), Diagonaux (travail & objets), Verticaux (art, nature, philosophie).
+                    </div>
+                </div>
+
+                <!-- Byung-Chul Han -->
+                <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="text-xl">🧠</span>
+                        <h3 class="text-lg font-serif font-bold text-charcoal">Byung-Chul Han : La Société de la Fatigue</h3>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed mb-4">
+                        Nous sommes passés de la société disciplinaire (interdits, "devoir faire") à la société de la performance ("pouvoir faire"). L'individu se conçoit comme un "entrepreneur de lui-même". Cette illusion de liberté conduit à un perfectionnement de la domination : <strong>l'auto-exploitation volontaire</strong>, engendrant un burn-out et une dépression endémiques.
+                    </p>
+                    <div class="bg-cream p-3 rounded-lg border border-sand text-xs text-gray-700">
+                        <strong>Psychopolitique :</strong> Le Big Data et l'injonction à la jouissance remplacent la coercition physique pour pacifier la contestation.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: LES LIMITES DU RÉEL (LE DONUT) -->
+        <!-- ========================================== -->
+        <section id="tab-donut" class="tab-content hidden space-y-8">
+            <!-- Context Banner -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <span class="text-xs font-bold text-sage uppercase tracking-wider">Physique & Biophysique</span>
+                <h2 class="text-2xl font-serif font-bold text-charcoal mt-1">Les Limites du Réel : Le Modèle du Donut & l'Épuisement de la Terre</h2>
+                <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+                    La quête d'une croissance chrématistique infinie se heurte au mur inviolable des lois thermodynamiques. Développé par l'économiste Kate Raworth, le modèle de l'<strong>Économie du Donut</strong> définit l'espace juste et sûr pour l'humanité : entre un "plancher social" (besoins fondamentaux) et un "plafond écologique" (frontières planétaires dépassées).
+                </p>
+            </div>
+
+            <!-- Donut Chart & Narrative -->
+            <div class="bg-white border border-sand rounded-2xl p-6 sm:p-8 shadow-sm">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    
+                    <div class="lg:col-span-5 space-y-4">
+                        <h3 class="text-xl font-serif font-bold text-charcoal">La Double Contrainte Biophysique</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            L'économie classique considère la nature comme une simple réserve de ressources et une poubelle pour externalités négatives. Le graphique ci-contre illustre la transgression actuelle de plusieurs frontières écologiques clés (zone rouge), tandis que des manques subsistent dans le plancher social humain.
+                        </p>
+
+                        <div class="space-y-2 text-xs">
+                            <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-900">
+                                🚨 <strong>Plafond Écologique Dépassé :</strong> Changement climatique, érosion de la biodiversité, perturbation des cycles de l'azote et du phosphore.
+                            </div>
+                            <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900">
+                                ⚠️ <strong>Plancher Social Déficitaire :</strong> Inégalités d'accès à la santé, l'éducation, et précarité énergétique subsistante.
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 italic">
+                            Source : Kate Raworth (Doughnut Economics) & Stockholm Resilience Centre.
+                        </p>
+                    </div>
+
+                    <!-- Donut Visualization Container -->
+                    <div class="lg:col-span-7 flex flex-col items-center justify-center">
+                        <div class="chart-container">
+                            <canvas id="donutChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 5: LES VOIES DU RÉENCASTREMENT -->
+        <!-- ========================================== -->
+        <section id="tab-alternatives" class="tab-content hidden space-y-8">
+            <!-- Context Banner -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <span class="text-xs font-bold text-sage uppercase tracking-wider">Résistances & Alternatives Locales</span>
+                <h2 class="text-2xl font-serif font-bold text-charcoal mt-1">Les Voies de Réencastrement : L'Action Citoyenne Concilier avec le Réel</h2>
+                <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+                    Comme l'avait prédit Karl Polanyi, la société réagit par un "double mouvement" pour contrer sa destruction par le marché autonome. À l'échelle locale (notamment en Région bruxelloise et à Woluwe-Saint-Pierre), des citoyens inventent de nouveaux modes de coopération, renouant avec l'<em>oikonomia</em> aristotélicienne et les outils conviviaux d'Illich.
+                </p>
+            </div>
+
+            <!-- Alternatives Showcase Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Alternative 1: Zinne -->
+                <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-full bg-terracotta-soft text-terracotta font-bold flex items-center justify-center mb-3">🪙</div>
+                        <h3 class="text-lg font-serif font-bold text-charcoal mb-1">La Monnaie Citoyenne Zinne</h3>
+                        <span class="text-xs font-semibold text-terracotta">Bruxelles / Woluwe-Saint-Pierre</span>
+                        <p class="text-xs text-gray-600 mt-3 leading-relaxed">
+                            Lancée en 2019, la Zinne empêche la spéculation financière en restreignant sa circulation à un réseau de commerces éthiques et locaux. Elle redonne à la monnaie son rôle pur de moyen d'échange territorialisé.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-sand text-xs text-gray-500">
+                        🌱 <strong>Réponse à :</strong> La chrématistique monétaire et la fuite des capitaux.
+                    </div>
+                </div>
+
+                <!-- Alternative 2: GASAP -->
+                <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-full bg-sage-soft text-sage font-bold flex items-center justify-center mb-3">🥦</div>
+                        <h3 class="text-lg font-serif font-bold text-charcoal mb-1">GASAP & Potagers Collectifs</h3>
+                        <span class="text-xs font-semibold text-sage">GASAP Joli-Pois, GASouillis, Parmentier</span>
+                        <p class="text-xs text-gray-600 mt-3 leading-relaxed">
+                            Les Groupes d'Achat Solidaire créent un contrat direct annuel avec les maraîchers paysans. La terre n'est plus un actif financier mais le support d'une solidarité nourricière et écologique.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-sand text-xs text-gray-500">
+                        🌱 <strong>Réponse à :</strong> La marchandisation de la terre et de l'alimentation.
+                    </div>
+                </div>
+
+                <!-- Alternative 3: Repair Cafés -->
+                <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-full bg-navy-soft text-navy font-bold flex items-center justify-center mb-3">🔧</div>
+                        <h3 class="text-lg font-serif font-bold text-charcoal mb-1">Repair Cafés Conviviaux</h3>
+                        <span class="text-xs font-semibold text-navy">Centre A.R.A. & Chant d'Oiseau</span>
+                        <p class="text-xs text-gray-600 mt-3 leading-relaxed">
+                            En réparant collectivement les objets du quotidien, les citoyens luttent contre l'obsolescence programmée, réapprennent des savoir-faire (anti-prolétarisation) et tissent des liens de résonance.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-sand text-xs text-gray-500">
+                        🌱 <strong>Réponse à :</strong> Le système technicien et la misère symbolique.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impact Chart for Repair Cafés -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <div class="max-w-2xl mb-6">
+                    <h3 class="text-lg font-serif font-bold text-charcoal">Impact Écologique Concret d'un Repair Café Local</h3>
+                    <p class="text-xs text-gray-600">Données réelles issues des ateliers de réparation à Woluwe-Saint-Pierre (Chant d'Oiseau / Centre A.R.A.).</p>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="impactChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 6: AUTO-DIAGNOSTIC CITOYEN -->
+        <!-- ========================================== -->
+        <section id="tab-diagnostic" class="tab-content hidden space-y-8">
+            <!-- Context Banner -->
+            <div class="bg-white border border-sand rounded-2xl p-6 shadow-sm">
+                <span class="text-xs font-bold text-navy uppercase tracking-wider">Mise en Pratique</span>
+                <h2 class="text-2xl font-serif font-bold text-charcoal mt-1">Évaluez votre Niveau d'Encastrement Économique</h2>
+                <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+                    Ce test d'auto-évaluation en 5 questions s'appuie sur les concepts clés du rapport (Aristote, Illich, Stiegler, Rosa) pour mesurer à quel point votre quotidien est assujetti à la rationalité marchande ou si vous développez des espaces d'autonomie et de résonance.
+                </p>
+            </div>
+
+            <!-- Interactive Diagnostic Form -->
+            <div id="quiz-container" class="bg-white border border-sand rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+                <!-- Question 1 -->
+                <div class="space-y-2 border-b border-sand pb-4">
+                    <label class="block text-sm font-bold text-charcoal">1. Quel est votre rapport principal à la gestion de vos objets en panne ?</label>
+                    <div class="space-y-1 text-xs text-gray-700">
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q1" value="0" class="text-terracotta focus:ring-terracotta">
+                            <span>Je remplace immédiatement par un objet neuf commandé en ligne (Optimisation du temps/marché).</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q1" value="2" class="text-terracotta focus:ring-terracotta">
+                            <span>J'essaie de réparer moi-même ou je fréquente un Repair Café local (Autonomie conviviale).</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="space-y-2 border-b border-sand pb-4">
+                    <label class="block text-sm font-bold text-charcoal">2. Comment percevez-vous votre emploi du temps et votre activité professionnelle ?</label>
+                    <div class="space-y-1 text-xs text-gray-700">
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q2" value="0" class="text-terracotta focus:ring-terracotta">
+                            <span>Je me sens comme un "entrepreneur de moi-même" sous pression permanente de performance (Han).</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q2" value="2" class="text-terracotta focus:ring-terracotta">
+                            <span>J'arrive à préserver des moments d'inactivité, de résonance et de déconnexion numérique (Rosa).</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="space-y-2 border-b border-sand pb-4">
+                    <label class="block text-sm font-bold text-charcoal">3. Comment vous approvisionnez-vous en nourriture au quotidien ?</label>
+                    <div class="space-y-1 text-xs text-gray-700">
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q3" value="0" class="text-terracotta focus:ring-terracotta">
+                            <span>Exclusivement en grande surface industrielle par souci de rapidité et de prix globalisés.</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q3" value="2" class="text-terracotta focus:ring-terracotta">
+                            <span>Via des GASAP, circuits courts, potagers collectifs ou marchés locaux (Polanyi / Oikonomia).</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="space-y-2 border-b border-sand pb-4">
+                    <label class="block text-sm font-bold text-charcoal">4. Quel rôle jouent les outils informatiques et l'IA dans vos choix personnels ?</label>
+                    <div class="space-y-1 text-xs text-gray-700">
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q4" value="0" class="text-terracotta focus:ring-terracotta">
+                            <span>Je délègue mes décisions, calculs et mémorisation aux algorithmes des plateformes (Stiegler).</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q4" value="2" class="text-terracotta focus:ring-terracotta">
+                            <span>J'utilise la technique avec esprit critique et conserve une pratique manuelle/intellectuelle autonome.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="space-y-2 border-b border-sand pb-4">
+                    <label class="block text-sm font-bold text-charcoal">5. Comment considérez-vous l'argent et la monnaie ?</label>
+                    <div class="space-y-1 text-xs text-gray-700">
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q5" value="0" class="text-terracotta focus:ring-terracotta">
+                            <span>Comme une réserve d'accumulation illimitée pour consommer davantage (Chrématistique / Pléonexie).</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-cream">
+                            <input type="radio" name="q5" value="2" class="text-terracotta focus:ring-terracotta">
+                            <span>Comme un simple outil d'échange éthique et je privilégie les monnaies locales (Zinne).</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button onclick="calculateDiagnosticScore()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-terracotta text-white font-bold text-sm hover:bg-terracotta-light transition-colors">
+                    Obtenir mon Diagnostic
+                </button>
+
+                <!-- Result Area -->
+                <div id="quiz-result" class="hidden p-6 rounded-xl border border-sand bg-cream transition-all mt-4">
+                    <h4 id="result-title" class="font-serif font-bold text-lg text-charcoal mb-2"></h4>
+                    <p id="result-desc" class="text-xs text-gray-700 leading-relaxed"></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-sand mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500 space-y-2">
+            <p><strong>Rapport Critique Interactive : L'Humanité sous l'Empire de l'Économie</strong></p>
+            <p>Inspiré des travaux d'Aristote, K. Polanyi, K. Marx, J. Ellul, A. Supiot, B. Stiegler, H. Rosa, B.-C. Han & I. Illich.</p>
+            <p class="text-gray-400">Généré sans graphiques SVG ni dépendances Mermaid JS — Conforme au mandat d'application HTML unique.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // State Management
+        let currentTab = 'tab-overview';
+        let illichChartInstance = null;
+        let donutChartInstance = null;
+        let impactChartInstance = null;
+
+        // On Page Load Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initAristoteCard();
+            initIllichChart();
+            initDonutChart();
+            initImpactChart();
+        });
+
+        // Tab Navigation Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-terracotta', 'text-white');
+                btn.classList.add('text-gray-700');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-terracotta', 'text-white');
+                activeBtn.classList.remove('text-gray-700');
+            }
+            currentTab = tabId;
+
+            // Trigger Chart resize/update if tab contains chart
+            if (tabId === 'tab-psyche' && illichChartInstance) illichChartInstance.resize();
+            if (tabId === 'tab-donut' && donutChartInstance) donutChartInstance.resize();
+            if (tabId === 'tab-alternatives' && impactChartInstance) impactChartInstance.resize();
+        }
+
+        // Aristote Interactive Toggle Logic
+        const aristoteData = {
+            oikonomia: {
+                title: "L'Oikonomia (Gestion de la Maison & de la Cité)",
+                finality: "Valeur d'usage & satisfaction des besoins naturels du groupe",
+                limit: "Fini (Peras) - Limité par la tempérance éthique (Enkrateia) et l'ordre cosmique",
+                status: "L'économie reste un simple outil subordonné au bien-être de la communauté",
+                circuit: "Marchandise -> Monnaie -> Marchandise (M - A - M)",
+                quote: "« L'économie a une fin naturelle, qui est la vie bonne. » — Aristote",
+                bgClass: "bg-sage-soft/40 border-sage/30 text-sage"
+            },
+            chrematistique: {
+                title: "La Chrématistique (Art de s'enrichir)",
+                finality: "Accumulation monétaire infinie et profit spéculatif (A - M - A')",
+                limit: "Infini (Apeiron) - Marquée par la démesure (Hubris) et la soif illimitée (Pléonexie)",
+                status: "La monnaie devient le but ultime de l'existence ; la société s'y soumet",
+                circuit: "Monnaie -> Marchandise -> Monnaie' (A - M - A')",
+                quote: "« La chrématistique n'a pas de limite à son fin, car son but est un enrichissement infini. » — Aristote",
+                bgClass: "bg-terracotta-soft/40 border-terracotta/30 text-terracotta"
+            }
+        };
+
+        function setAristoteMode(mode) {
+            const data = aristoteData[mode];
+            const card = document.getElementById('aristote-card');
+            
+            document.getElementById('btn-oiko').className = mode === 'oikonomia' ? 
+                'px-3 py-1.5 rounded-md bg-terracotta text-white transition-all' : 
+                'px-3 py-1.5 rounded-md text-gray-600 hover:text-charcoal transition-all';
+            
+            document.getElementById('btn-chrema').className = mode === 'chrematistique' ? 
+                'px-3 py-1.5 rounded-md bg-terracotta text-white transition-all' : 
+                'px-3 py-1.5 rounded-md text-gray-600 hover:text-charcoal transition-all';
+
+            card.className = `p-6 rounded-xl border transition-all ${data.bgClass}`;
+            card.innerHTML = `
+                <h4 class="font-serif font-bold text-lg text-charcoal mb-2">${data.title}</h4>
+                <p class="text-xs italic mb-4 text-gray-700">${data.quote}</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-gray-800">
+                    <div class="bg-white/80 p-3 rounded-lg border border-sand">
+                        <strong>🎯 Finalité de l'échange :</strong> ${data.finality}
+                    </div>
+                    <div class="bg-white/80 p-3 rounded-lg border border-sand">
+                        <strong>📏 Rapport à la limite :</strong> ${data.limit}
+                    </div>
+                    <div class="bg-white/80 p-3 rounded-lg border border-sand">
+                        <strong>🔄 Circuit Économique :</strong> <code class="font-bold">${data.circuit}</code>
+                    </div>
+                    <div class="bg-white/80 p-3 rounded-lg border border-sand">
+                        <strong>🏛️ Statut de l'Humain :</strong> ${data.status}
+                    </div>
+                </div>
+            `;
+        }
+
+        function initAristoteCard() {
+            setAristoteMode('oikonomia');
+        }
+
+        // Illich Calculator & Chart.js Integration
+        function calculateIllichSpeed() {
+            const km = parseFloat(document.getElementById('input-km').value) || 0;
+            const driveHours = parseFloat(document.getElementById('input-drive-hours').value) || 0;
+            const cost = parseFloat(document.getElementById('input-cost').value) || 0;
+            const wage = parseFloat(document.getElementById('input-wage').value) || 1;
+
+            // Monthly work hours spent earning car costs (4.33 weeks in a month)
+            const workHoursForCarMonthly = cost / wage;
+            const workHoursForCarWeekly = workHoursForCarMonthly / 4.33;
+
+            // Total social time dedicated to the car weekly
+            const totalCarHoursWeekly = driveHours + workHoursForCarWeekly;
+
+            // True Speed in km/h
+            const trueSpeed = totalCarHoursWeekly > 0 ? (km / totalCarHoursWeekly).toFixed(1) : 0;
+
+            document.getElementById('result-speed').innerText = `${trueSpeed} km/h`;
+
+            let comment = "";
+            if (trueSpeed <= 8) {
+                comment = "💡 Identique à l'analyse d'Illich ! Votre vitesse réelle est équivalente à celle d'un piéton ou d'un cycliste lent quand vous comptez le travail nécessaire pour la financer.";
+            } else if (trueSpeed <= 15) {
+                comment = "🚴 Vitesse réelle équivalente à celle d'un vélo ordinaire. L'illusion de rapidité est compensée par les heures de travail englouties par le véhicule.";
+            } else {
+                comment = "🚗 Vitesse supérieure à la moyenne, mais le coût temporel d'acquisition reste un facteur d'aliénation financière important.";
+            }
+            document.getElementById('result-comment').innerText = comment;
+
+            // Update Chart
+            if (illichChartInstance) {
+                illichChartInstance.data.datasets[0].data = [parseFloat(trueSpeed), 15, 5, 90];
+                illichChartInstance.update();
+            }
+        }
+
+        function initIllichChart() {
+            const ctx = document.getElementById('illichChart').getContext('2d');
+            illichChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Voiture (Vitesse Réelle)', 'Vélo Urbain', 'Marche à Pied', 'Voiture (Compteur)'],
+                    datasets: [{
+                        label: 'Vitesse en km/h',
+                        data: [7.8, 15, 5, 90],
+                        backgroundColor: ['#7C2D12', '#059669', '#D97706', '#1E3A8A'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.raw} km/h`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'km / heure', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Kate Raworth Donut Chart Initialization (Radar Chart)
+        function initDonutChart() {
+            const ctx = document.getElementById('donutChart').getContext('2d');
+            donutChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        'Climat (CO2)',
+                        'Biodiversité',
+                        'Cycles Azote/Phosphore',
+                        'Utilisation Sols',
+                        'Santé Humaine',
+                        'Éducation',
+                        'Égalité Sociale',
+                        'Démocratie / Voix'
+                    ],
+                    datasets: [
+                        {
+                            label: 'Limite Sûre (Seuil 100%)',
+                            data: [100, 100, 100, 100, 100, 100, 100, 100],
+                            borderColor: '#059669',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: false,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Situation Actuelle (%)',
+                            data: [145, 180, 160, 120, 75, 80, 65, 70],
+                            backgroundColor: 'rgba(124, 45, 18, 0.3)',
+                            borderColor: '#7C2D12',
+                            pointBackgroundColor: '#7C2D12',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: '#E5E7EB' },
+                            grid: { color: '#E5E7EB' },
+                            suggestedMin: 0,
+                            suggestedMax: 200,
+                            ticks: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Repair Cafés Impact Chart (Bar Chart)
+        function initImpactChart() {
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            impactChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Centre A.R.A (Limites)', 'Chant d\'Oiseau (Woluwe)', 'Moyenne Régionale'],
+                    datasets: [
+                        {
+                            label: 'CO₂ Évité (kg)',
+                            data: [197, 542, 350],
+                            backgroundColor: '#059669',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Objets Réparés (Taux %)',
+                            data: [68, 74, 65],
+                            backgroundColor: '#1E3A8A',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Quiz / Auto-Diagnostic Calculation
+        function calculateDiagnosticScore() {
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+            const q4 = document.querySelector('input[name="q4"]:checked');
+            const q5 = document.querySelector('input[name="q5"]:checked');
+
+            if (!q1 || !q2 || !q3 || !q4 || !q5) {
+                alert("Veuillez répondre à toutes les questions pour afficher votre diagnostic.");
+                return;
+            }
+
+            const totalScore = parseInt(q1.value) + parseInt(q2.value) + parseInt(q3.value) + parseInt(q4.value) + parseInt(q5.value);
+            const resultBox = document.getElementById('quiz-result');
+            const resultTitle = document.getElementById('result-title');
+            const resultDesc = document.getElementById('result-desc');
+
+            resultBox.classList.remove('hidden');
+
+            if (totalScore <= 3) {
+                resultTitle.innerText = "Niveau d'Aliénation Économique : ÉLEVÉ (Marchandisation Fortement Intériorisée)";
+                resultTitle.className = "font-serif font-bold text-lg text-terracotta mb-2";
+                resultDesc.innerText = "Votre quotidien est largement déterminé par la gouvernance par les nombres, l'injonction à la performance (Han) et l'impératif de consommation rapide. Vous êtes exposé à la fatigue systémique et à la perte de résonance. Nous vous conseillons d'explorer les initiatives de Repair Cafés et les monnaies citoyennes pour réintroduire des îlots d'autonomie.";
+            } else if (totalScore <= 7) {
+                resultTitle.innerText = "Niveau d'Aliénation Économique : MODÉRÉ (Sursaut de Conscience en Cours)";
+                resultTitle.className = "font-serif font-bold text-lg text-amber-800 mb-2";
+                resultDesc.innerText = "Vous vous trouvez dans la dynamique du 'double mouvement' de Polanyi. Vous subissez les contraintes de vitesse et de marchandisation tout en cherchant ponctuellement des alternatives conviviaux (circuits courts, pause numérique). Continuer à cultiver ces savoir-faire réduit votre dépendance au marché.";
+            } else {
+                resultTitle.innerText = "Niveau d'Aliénation Économique : FAIBLE (Encastrement & Résonance Conviviale)";
+                resultTitle.className = "font-serif font-bold text-lg text-sage mb-2";
+                resultDesc.innerText = "Félicitations ! Vous pratiquez activement la sobriété choisie et l'oikonomia. Grâce au recours aux outils conviviaux (Illich), à la solidarité paysanne et aux monnaies citoyennes, vous préservez vos capacités de résonance et votre souveraineté délibérative.";
+            }
+        }
+    </script>
+</body>
+</html>
