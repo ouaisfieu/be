@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Architecture des Pouvoirs en Belgique : Entre Théorie et Réalité</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom-color: #d97706;
+            color: #d97706;
+            font-weight: 600;
+            background-color: #fffbeb;
+        }
+    </style>
+</head>
+<!-- Chosen Palette: Warm Slate & Amber Neutral Palette -->
+<!-- Application Structure Plan:
+     L'application est structurée en 6 modules thématiques interactifs accessibles via un menu de navigation supérieur, complétés par une section de recherche et de diagnostic global.
+     1. Vue d'ensemble & Triptyque Constitutionnel (1831) : Présentation des fondements juridiques (Arts. 33 à 40), du rôle du Roi et des organes collatéraux.
+     2. La Particratie & Les Affaires Courantes : Démonstration du basculement sociologique vers la fusion des pouvoirs exécutif et législatif et du régime jurisprudentiel des affaires courantes.
+     3. Fédéralisme & Cour Constitutionnelle : Explication de l'équipollence des normes, de la loyauté fédérale (Art. 143) et simulateur de parité de la Cour constitutionnelle (graphique donut Chart.js).
+     4. Pouvoir Judiciaire & Crises de l'État de Droit : Focus sur le CSJ (Art. 151), l'analyse de la crise Fedasil/CEDH et le conflit d'indépendance de l'APD.
+     5. Le 4e Pouvoir : Presse vs Dépenses Métamédiatiques : Analyse de l'aide à la presse vs l'offensive des partis sur les réseaux sociaux en 2024 avec graphique comparatif dynamique Chart.js.
+     6. Le 5e Pouvoir : Démocratie Délibérative : Exploration des commissions mixtes délibératives et du tirage au sort citoyen.
+     7. Explorateur Global & Moteur de Recherche : Filtre interactif de notions juridiques et cas d'étude (ex: Arrêt 150/2025, Impossibilité de régner 1990, Abdoulaye Camara c. Belgique).
+     Cette structure garantit une exploration multidimensionnelle tout en rendant le texte analytique très accessible. -->
+<!-- Visualization & Content Choices:
+     - Dépenses publicitaires des partis belges sur Meta/Google (Campagne 2024) -> Horizontal Bar Chart (Chart.js/Canvas) -> Permet de constater l'hégémonie budgétaire partisane sur le filtre médiatique.
+     - Parité de la Cour Constitutionnelle -> Donut Chart (Chart.js/Canvas) -> Illustre visuellement la double parité linguistique (6 FR / 6 NL) et socioprofessionnelle (6 Ex-politiques / 6 Juristes).
+     - Répartition de l'Aide Directe à la Presse FW-B -> Pie/Doughnut Chart (Chart.js/Canvas) -> Démontre la concentration monopolistique des subsides (Rossel vs IPM vs Autres).
+     - Organes de contrôle collatéraux & Triptyque -> Cartes HTML/Tailwind dynamiques -> Clic pour révéler les interactions et mécanismes de frein/balancier.
+     - Études de cas (Fedasil, Baudouin 1990, Arrêt 150/2025) -> Fenêtres modales / Accordéons interactifs -> Permet un approfondissement sans encombrer la mise en page.
+     Confirming NO SVG graphics used. NO Mermaid JS used. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<body class="bg-stone-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-amber-100 selection:text-amber-900">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl font-bold tracking-tight text-amber-500">⚖️ Belgique</span>
+                    <span class="text-xs uppercase tracking-widest bg-slate-800 text-amber-400 px-2 py-1 rounded border border-slate-700">Séparation des Pouvoirs</span>
+                </div>
+                <div class="hidden lg:flex space-x-1 text-sm font-medium">
+                    <button onclick="switchTab('tab-triptyque')" id="btn-triptyque" class="tab-btn active px-3 py-2 rounded-t transition border-b-2 border-transparent hover:text-amber-400">1. Modèle 1831</button>
+                    <button onclick="switchTab('tab-particratie')" id="btn-particratie" class="tab-btn px-3 py-2 rounded-t transition border-b-2 border-transparent hover:text-amber-400">2. Particratie</button>
+                    <button onclick="switchTab('tab-federalisme')" id="btn-federalisme" class="tab-btn px-3 py-2 rounded-t transition border-b-2 border-transparent hover:text-amber-400">3. Fédéralisme</button>
+                    <button onclick="switchTab('tab-justice')" id="btn-justice" class="tab-btn px-3 py-2 rounded-t transition border-b-2 border-transparent hover:text-amber-400">4. Justice & Crises</button>
+                    <button onclick="switchTab('tab-presse')" id="btn-presse" class="tab-btn px-3 py-2 rounded-t transition border-b-2 border-transparent hover:text-amber-400">5. 4e Pouvoir (Médias)</button>
+                    <button onclick="switchTab('tab-citoyen')" id="btn-citoyen" class="tab-btn px-3 py-2 rounded-t transition border-b-2 border-transparent hover:text-amber-400">6. 5e Pouvoir (Citoyens)</button>
+                    <button onclick="switchTab('tab-explorer')" id="btn-explorer" class="tab-btn px-3 py-2 rounded-t transition border-b-2 border-transparent hover:text-amber-400">🔍 Explorer</button>
+                </div>
+            </div>
+            <!-- Mobile Navigation -->
+            <div class="lg:hidden flex overflow-x-auto py-2 space-x-2 text-xs border-t border-slate-800 scrollbar-none">
+                <button onclick="switchTab('tab-triptyque')" class="whitespace-nowrap px-3 py-1 bg-slate-800 rounded text-slate-200">1. Modèle 1831</button>
+                <button onclick="switchTab('tab-particratie')" class="whitespace-nowrap px-3 py-1 bg-slate-800 rounded text-slate-200">2. Particratie</button>
+                <button onclick="switchTab('tab-federalisme')" class="whitespace-nowrap px-3 py-1 bg-slate-800 rounded text-slate-200">3. Fédéralisme</button>
+                <button onclick="switchTab('tab-justice')" class="whitespace-nowrap px-3 py-1 bg-slate-800 rounded text-slate-200">4. Justice</button>
+                <button onclick="switchTab('tab-presse')" class="whitespace-nowrap px-3 py-1 bg-slate-800 rounded text-slate-200">5. 4e Pouvoir</button>
+                <button onclick="switchTab('tab-citoyen')" class="whitespace-nowrap px-3 py-1 bg-slate-800 rounded text-slate-200">6. 5e Pouvoir</button>
+                <button onclick="switchTab('tab-explorer')" class="whitespace-nowrap px-3 py-1 bg-amber-600 rounded text-white font-bold">🔍 Explorer</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Hero Banner -->
+        <section class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-6 sm:p-8 mb-8 shadow-lg border border-slate-700">
+            <div class="max-w-3xl">
+                <span class="inline-block px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-xs font-semibold tracking-wide uppercase mb-3 border border-amber-500/30">Analyse Institutionnelle & Sociologique</span>
+                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-3 text-white">L'Architecture Réelle et Fictive des Pouvoirs en Belgique</h1>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                    De la séparation tripartite théorique consacrée en 1831 à la métamorphose particratique, découvrez comment l'État belge équilibre le pouvoir entre coalitions politiques, juges constitutionnels, géants du numérique et assemblées citoyennes.
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
+                    <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                        <div class="text-amber-400 font-bold text-lg">Art. 33</div>
+                        <div class="text-slate-400">Tous les pouvoirs émanent de la Nation</div>
+                    </div>
+                    <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                        <div class="text-amber-400 font-bold text-lg">12 Juges</div>
+                        <div class="text-slate-400">Parité de la Cour Constitutionnelle</div>
+                    </div>
+                    <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                        <div class="text-amber-400 font-bold text-lg">15 M€</div>
+                        <div class="text-slate-400">Dépenses pubs Meta/Google 2024</div>
+                    </div>
+                    <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                        <div class="text-amber-400 font-bold text-lg">8 000+</div>
+                        <div class="text-slate-400">Condamnations Fedasil non exécutées</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1: TRIPTYQUE CONSTITUTIONNEL CLASSIQUE -->
+        <section id="tab-triptyque" class="tab-content space-y-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-stone-200">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">1. Le Modèle Constitutionnel Classique de 1831</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    Conçue à l'origine en 1831 comme le summum du libéralisme politique, la Constitution belge fonde son organisation sur une séparation souple des pouvoirs. L'objectif originel selon l'esprit de Montesquieu est d'éviter la concentration tyrannique en veillant à ce que « le pouvoir arrête le pouvoir », tout en organisant une collaboration indispensable entre les organes fédéraux.
+                </p>
+
+                <!-- Comparative Cards for Trias Politica -->
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-amber-50/50 rounded-xl p-5 border border-amber-200/60 hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-1 rounded">Art. 36</span>
+                            <span class="text-2xl">📜</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">Pouvoir Législatif</h3>
+                        <p class="text-xs text-slate-600 mb-3">Exercé collectivement par le <strong>Roi</strong>, la <strong>Chambre des représentants</strong> et le <strong>Sénat</strong>.</p>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                            <li>Vote et élaboration des lois</li>
+                            <li>Approbation des budgets de l'État</li>
+                            <li>Contrôle politique du gouvernement</li>
+                            <li>Exclusion du Sénat des budgets et naturalisations (Art. 74)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-indigo-50/50 rounded-xl p-5 border border-indigo-200/60 hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-2 py-1 rounded">Art. 37 & 106</span>
+                            <span class="text-2xl">🏛️</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">Pouvoir Exécutif</h3>
+                        <p class="text-xs text-slate-600 mb-3">Attribué au <strong>Roi</strong> et exercé par son <strong>Gouvernement</strong> (Ministres).</p>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                            <li>Exécution des lois via arrêtés royaux</li>
+                            <li>Contreseing ministériel obligatoire (Art. 106)</li>
+                            <li>Inviolabilité royale : le ministre est seul responsable</li>
+                            <li>Initiative législative (projets de loi)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-emerald-50/50 rounded-xl p-5 border border-emerald-200/60 hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-1 rounded">Art. 40</span>
+                            <span class="text-2xl">⚖️</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">Pouvoir Judiciaire</h3>
+                        <p class="text-xs text-slate-600 mb-3">Exercé de manière exclusive par les <strong>Cours et Tribunaux</strong>.</p>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                            <li>Règlement des litiges civils et administratifs</li>
+                            <li>Monopole des sanctions pénales</li>
+                            <li>Inamovibilité et indépendance des juges</li>
+                            <li>Exception d'illégalité des actes administratifs</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Focus: Le Rôle du Roi et l'Épisode de 1990 -->
+                <div class="bg-slate-100 rounded-xl p-5 border border-slate-300">
+                    <h3 class="text-base font-bold text-slate-900 mb-2 flex items-center space-x-2">
+                        <span>👑 Le Chef de l'État : Arbitrage, Influence et Limites Strictes</span>
+                    </h3>
+                    <p class="text-xs text-slate-700 leading-relaxed mb-3">
+                        Bien que le Roi « règne et ne gouverne pas », sa magistrature d'influence est essentielle lors des consultations pour la formation des gouvernements (nomination des informateurs et formateurs). Cependant, la souveraineté démocratique prime systématiquement sur les convictions personnelles du monarque.
+                    </p>
+                    <div class="bg-white rounded-lg p-4 border border-slate-200">
+                        <div class="text-xs font-bold text-amber-700 uppercase mb-1">Étude de Cas Historique : L'Impossibilité de Régner (1990)</div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            En avril 1990, le Roi Baudouin refusant pour motifs de conscience de sanctionner la loi dépénalisant partiellement l'avortement, le Conseil des ministres a constaté « l'impossibilité de régner » du monarque pendant quelques heures. Le gouvernement a lui-même promulgué la loi avant que les Chambres réunies ne mettent fin à cette impossibilité, réaffirmant la primauté absolue du Parlement votant.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organes Collatéraux de Contrôle -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-stone-200">
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Les Organes Collatéraux de Régulation Administrative</h3>
+                <p class="text-xs text-slate-600 mb-4">
+                    Pour éviter les dérives administratives ou financières, la démocratie belge s'appuie sur deux institutions majeures dotées de prérogatives de contrôle indépendantes :
+                </p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="border border-slate-200 rounded-lg p-4 bg-slate-50">
+                        <div class="font-bold text-slate-900 text-sm mb-1 flex items-center justify-between">
+                            <span>Conseil d'État</span>
+                            <span class="text-xs bg-slate-200 text-slate-800 px-2 py-0.5 rounded">Juridiction Admin.</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Section de législation :</strong> Rend des avis juridiques préalables sur les projets et propositions de loi/décret.<br>
+                            <strong>Section du contentieux :</strong> Annule ou suspend les actes administratifs et arrêtés ministériels illégaux ou entachés d'excès de pouvoir.
+                        </p>
+                    </div>
+                    <div class="border border-slate-200 rounded-lg p-4 bg-slate-50">
+                        <div class="font-bold text-slate-900 text-sm mb-1 flex items-center justify-between">
+                            <span>Cour des Comptes</span>
+                            <span class="text-xs bg-slate-200 text-slate-800 px-2 py-0.5 rounded">Émanation du Parlement</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Contrôle la légalité des dépenses publiques, certifie la sincérité des comptes de l'État et transmet aux parlementaires ses « Cahiers d'observations » pour éclairer le contrôle budgétaire de l'exécutif.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: PARTICRATIE & AFFAIRES COURANTES -->
+        <section id="tab-particratie" class="tab-content hidden space-y-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-stone-200">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">2. La Réalité Sociologique : L'Hégémonie de la Particratie</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    Si le texte constitutionnel décrit un régime parlementaire classique, la pratique politique est dominée par la <strong>particratie</strong>. En raison du scrutin proportionnel et de la division linguistique, les coalitions sont inévitables. La décision politique réelle glisse des assemblées élues vers les états-majors des partis et le cabinet restreint du gouvernement (le <i>Kern</i>).
+                </p>
+
+                <!-- Scheme Fusion Exécutif/Législatif -->
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                        <h3 class="font-bold text-slate-900 text-base mb-3 flex items-center space-x-2">
+                            <span>📝 L'Accord de Gouvernement : La Norme Suprême Partisane</span>
+                        </h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            Signé à la virgule près par les présidents de partis de la majorité, l'accord de gouvernement verrouille le comportement des députés. Le Parlement ne fait souvent que ratifier les lois négociées en amont dans les cabinets ministériels.
+                        </p>
+                        <div class="bg-amber-50 p-3 rounded text-xs text-amber-900 border border-amber-200">
+                            <strong>Conséquence :</strong> La séparation classique entre exécutif et parlement s'efface au profit d'une solidarité stricte entre le Gouvernement et sa majorité parlementaire.
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                        <h3 class="font-bold text-slate-900 text-base mb-3 flex items-center space-x-2">
+                            <span>⏳ Le Révélateur : La Période des Affaires Courantes</span>
+                        </h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            Règle coutumière non écrite affinée par le Conseil d'État, les « affaires courantes » s'imposent lorsqu'un gouvernement est démissionnaire. Depouillé de son soutien particratique, l'exécutif voit ses compétences réduites au strict minimum.
+                        </p>
+                        <div class="space-y-1 text-xs">
+                            <div class="bg-white p-2 rounded border border-slate-200"><strong>Gestion journalière :</strong> Payer les fonctionnaires, expédier l'administration.</div>
+                            <div class="bg-white p-2 rounded border border-slate-200"><strong>Urgences impérieuses :</strong> Parer à un péril financier ou sanitaire grave.</div>
+                            <div class="bg-white p-2 rounded border border-slate-200"><strong>Affaires en cours :</strong> Finaliser des procédures quasi achevées.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                    <h4 class="text-sm font-bold text-amber-900">Le Record des 541 Jours (2010-2011)</h4>
+                    <p class="text-xs text-amber-800 mt-1">
+                        Pendant les longues crises politiques belges, l'État continue de fonctionner sur le plan administratif grâce aux affaires courantes, mais le pouvoir d'orientation stratégique et de réformes majeures demeure totalement paralysé à défaut d'un accord de coalition partisane.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: FÉDÉRALISME ET COUR CONSTITUTIONNELLE -->
+        <section id="tab-federalisme" class="tab-content hidden space-y-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-stone-200">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">3. Le Fédéralisme Belge et le Rôle de la Cour Constitutionnelle</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    La Belgique est un État fédéral composé de 3 Régions et 3 Communautés. La séparation des pouvoirs y est déclinée verticalement : les entités fédérées possèdent leurs propres Parlements et Gouvernements. La justice reste quant à elle exclusivement unitaire.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6 items-center mb-8">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base mb-2">Équipollence des Normes & Loyauté Fédérale</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            Une loi fédérale n'est <strong>pas supérieure</strong> à un décret régional : c'est le principe d'<strong>équipollence des normes</strong>. Pour éviter le chaos, l'article 143 de la Constitution consacre le principe de <strong>loyauté fédérale</strong>, interdisant à une entité de perturber gravement l'action des autres.
+                        </p>
+                        <div class="space-y-2 text-xs">
+                            <div class="bg-slate-100 p-3 rounded-lg border border-slate-200">
+                                <strong>Conflit d'intérêts (politique) :</strong> Traité devant le Comité de concertation paritaire (exige un consensus souvent difficile à obtenir).
+                            </div>
+                            <div class="bg-slate-100 p-3 rounded-lg border border-slate-200">
+                                <strong>Conflit de compétences (juridique) :</strong> Tranché de manière contraignante par la Cour constitutionnelle.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Container for Parité Cour Constitutionnelle -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 text-center">Composition de la Cour Constitutionnelle (12 Juges)</h4>
+                        <div class="chart-container">
+                            <canvas id="courChart"></canvas>
+                        </div>
+                        <p class="text-[11px] text-slate-500 text-center mt-2">
+                            Double parité stricte : 6 Francophones / 6 Néerlandophones et 6 Anciens parlementaires / 6 Juristes (magistrats ou professeurs).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Case study Arrêt 150/2025 -->
+                <div class="bg-slate-900 text-white p-5 rounded-xl border border-slate-800">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Jurisprudence Récents</span>
+                        <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Arrêt n° 150/2025</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-white mb-2">Tensions entre Fiscalité Fédérale et Taxe Régionale</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        L'État fédéral avait rendu non déductibles certaines taxes régionales sur les jeux de hasard dans l'impôt des sociétés. Attaqué pour atteinte à la loyauté fédérale par les Régions, le texte a été validé par la Cour constitutionnelle : elle a tracé la frontière stricte entre la « matière imposable » (compétence régionale) et la « base imposable » des revenus (compétence fédérale).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: POUVOIR JUDICIAIRE ET CRISES DE L'ÉTAT DE DROIT -->
+        <section id="tab-justice" class="tab-content hidden space-y-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-stone-200">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">4. Indépendance Judiciaire et Crise de l'État de Droit</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    L'indépendance de la justice face aux pouvoirs exécutif et particratique est une condition sine qua non de l'État de droit. Bien que garantie sur le papier et renforcée par des organes indépendants, cette séparation traverse des épreuves d'une gravité inédite.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <!-- CSJ -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded uppercase">Art. 151 Constitution</span>
+                        <h3 class="text-base font-bold text-slate-900 mt-2 mb-2">Le Conseil Supérieur de la Justice (CSJ)</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            Créé après la crise sociétale de 1996 (Affaire Dutroux) pour dépolitiser la justice. Le CSJ regroupe 44 membres (parité entre 22 magistrats et 22 non-magistrats).
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                            <li>Monopole de la sélection objective des juges et chefs de corps</li>
+                            <li>Audits externes du fonctionnement des cours et tribunaux</li>
+                            <li>Traitement des plaintes des citoyens sur la lenteur judiciaire</li>
+                        </ul>
+                    </div>
+
+                    <!-- APD -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded uppercase">Tensions Administratives</span>
+                        <h3 class="text-base font-bold text-slate-900 mt-2 mb-2">L'Autorité de Protection des Données (APD)</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            Chargée de veiller au respect du RGPD, l'APD a été la cible d'une procédure d'infraction européenne en raison du manque d'indépendance de certains directeurs liés à l'exécutif. Ses arbitrages avec la Cour des marchés illustrent les difficultés à positionner les autorités administratives indépendantes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Case Study Fedasil -->
+                <div class="bg-red-50 border-l-4 border-red-600 p-5 rounded-r-xl">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-bold text-red-950 uppercase tracking-wide">La Crise Fedasil : La Fracturation de l'Exécution des Jugements</h3>
+                        <span class="text-xs font-bold bg-red-200 text-red-900 px-2 py-0.5 rounded">CEDH Camara c. Belgique</span>
+                    </div>
+                    <p class="text-xs text-red-900 leading-relaxed mb-3">
+                        Depuis 2021, l'Agence fédérale Fedasil a été condamnée à plus de <strong>8 000 reprises</strong> par les tribunaux du travail belges et la Cour européenne des droits de l'homme pour non-octroi de l'accueil légal aux demandeurs d'asile.
+                    </p>
+                    <div class="bg-white p-3 rounded border border-red-200 text-xs text-slate-800 space-y-2">
+                        <p>
+                            <strong>Le Refus d'Exécution :</strong> L'exécutif fédéral invoquant une "impossibilité matérielle", a refusé de se conformer à des milliers d'injonctions judiciaires, provoquant des saisies-exécutions dans des cabinets ministériels.
+                        </p>
+                        <p class="text-red-700 font-semibold">
+                            ⚠️ Rupture systémique : Lorsque le pouvoir exécutif choisit sciemment de ne pas exécuter des décisions de justice définitives, la séparation des pouvoirs s'effondre et les cours sont réduites à l'impuissance ultime faute de force publique propre.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: 4E POUVOIR - PRESSE ET DÉPENSES NUMÉRIQUES -->
+        <section id="tab-presse" class="tab-content hidden space-y-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-stone-200">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">5. Le Quatrième Pouvoir : Presse Traditionnelle et Marketing Partisan</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    L'article 25 de la Constitution protège la liberté de la presse et interdit toute censure préalable. Toutefois, la capacité réelle de contre-pouvoir de la presse est fragilisée par sa dépendance économique aux subventions et le contournement systématique des médias par la particratie sur les réseaux sociaux.
+                </p>
+
+                <div class="grid lg:grid-cols-2 gap-8 items-center mb-8">
+                    <!-- Chart Bar Meta/Google Spending -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Dépenses Publicitaires sur Meta & Google (Campagne 2024)</h3>
+                            <span class="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded">Source : AdLens</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="mediaChart"></canvas>
+                        </div>
+                        <p class="text-[11px] text-slate-500 text-center mt-3">
+                            En 2024, les partis belges ont investi 15M€ en pubs ciblées (dont >11M€ sur Meta), faisant de la Belgique un champion européen des dépenses numériques partisanes.
+                        </p>
+                    </div>
+
+                    <!-- Press aid & Analysis -->
+                    <div class="space-y-4">
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-slate-900 text-sm mb-2">Subventions Publiques à la Presse Écrite</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                                En Fédération Wallonie-Bruxelles, 12,45 millions d'euros d'aides directes ont été distribués en 2024. Ce montant est capté de manière quasi monopolistique par deux géants médiatiques : <strong>Rossel</strong> (<i>Le Soir, Sudinfo</i>) et <strong>IPM</strong> (<i>La Libre, La DH</i>).
+                            </p>
+                            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden flex text-[9px] text-white font-bold text-center">
+                                <div class="bg-amber-600 h-full" style="width: 52%" title="Groupe Rossel">Rossel 52%</div>
+                                <div class="bg-indigo-600 h-full" style="width: 38%" title="Groupe IPM">IPM 38%</div>
+                                <div class="bg-slate-400 h-full" style="width: 10%" title="Autres">10%</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-xs text-amber-900 leading-relaxed">
+                            <h4 class="font-bold mb-1">Annihilation du Filtre Médiatique :</h4>
+                            En injectant leurs dotations publiques dans des algorithmes ultra-ciblés sur Facebook, Instagram et Google, les présidents de partis diffusent un discours direct, non contradictoire et dispensé du travail critique de fact-checking des journalistes.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: 5E POUVOIR - DÉMOCRATIE DÉLIBÉRATIVE -->
+        <section id="tab-citoyen" class="tab-content hidden space-y-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-stone-200">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">6. L'Émergence du Cinquième Pouvoir : La Démocratie Délibérative</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    Face à la méfiance citoyenne et à la mainmise particratique sur le Parlement, un « cinquième pouvoir » s'institutionnalise en Belgique : les <strong>Commissions mixtes délibératives</strong> associant parlementaires et citoyens tirés au sort.
+                </p>
+
+                <!-- Process diagram -->
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-6">
+                    <h3 class="font-bold text-slate-900 text-base mb-4 text-center">Fonctionnement d'une Commission Mixte (Bruxelles & Wallonie)</h3>
+                    <div class="grid md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                            <div class="text-amber-500 font-bold text-xl mb-1">1. Tirage au sort</div>
+                            <div class="text-xs text-slate-600">Sélection d'un panel représentatif de citoyens issus de la population civile.</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                            <div class="text-amber-500 font-bold text-xl mb-1">2. Coprésence</div>
+                            <div class="text-xs text-slate-600">Réunion de 30 à 45 citoyens et 10 députés élus dans l'hémicycle.</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                            <div class="text-amber-500 font-bold text-xl mb-1">3. Auditions</div>
+                            <div class="text-xs text-slate-600">Débats contradictoires, auditions d'experts neutres et ateliers de travail.</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                            <div class="text-amber-500 font-bold text-xl mb-1">4. Recommandations</div>
+                            <div class="text-xs text-slate-600">Rédaction de propositions suivies obligatoirement par le Parlement.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-50 border-l-4 border-emerald-600 p-4 rounded-r-lg text-xs text-emerald-900">
+                    <h4 class="font-bold">Un contrepoids à la discipline de parti ?</h4>
+                    <p class="mt-1">
+                        Ces commissions forcent les députés à dialoguer directement avec des citoyens informés, les amenant ponctuellement à s'émanciper des consignes strictes dictées par leur état-major de parti.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: MOTEUR DE RECHERCHE ET EXPLORATEUR DE CAS -->
+        <section id="tab-explorer" class="tab-content hidden space-y-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-stone-200">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">🔍 Explorateur Thématique & Moteur de Recherche</h2>
+                <p class="text-slate-600 text-sm mb-6">
+                    Recherchez un concept, une décision de justice, un organe ou un événement marquant de la séparation des pouvoirs en Belgique.
+                </p>
+
+                <!-- Search Input -->
+                <div class="mb-6">
+                    <input type="text" id="searchInput" onkeyup="filterExplorer()" placeholder="Tapez un terme (ex: Fedasil, AdLens, Baudouin, CSJ, Loyauté, Kern...)" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-slate-800 text-sm">
+                </div>
+
+                <!-- Database Cards Grid -->
+                <div id="explorerGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamic items will be filtered -->
+                    <div class="explorer-card bg-slate-50 p-4 rounded-lg border border-slate-200 hover:border-amber-400 transition" data-keywords="fedasil asile cedh camara justice etat de droit condamnations">
+                        <span class="text-[10px] uppercase font-bold bg-red-100 text-red-800 px-2 py-0.5 rounded">Crise Judiciaire</span>
+                        <h3 class="font-bold text-slate-900 text-sm mt-2">Crise Fedasil / CEDH</h3>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Plus de 8 000 condamnations non exécutées par l'exécutif fédéral. Refus d'obtempérer aux ordres du juge mettant à mal l'État de droit.
+                        </p>
+                    </div>
+
+                    <div class="explorer-card bg-slate-50 p-4 rounded-lg border border-slate-200 hover:border-amber-400 transition" data-keywords="adlens meta google facebook vlaams belang vooruit ptb depenses pubs marketing 2024">
+                        <span class="text-[10px] uppercase font-bold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded">4e Pouvoir</span>
+                        <h3 class="font-bold text-slate-900 text-sm mt-2">Dépenses Métamédiatiques (AdLens)</h3>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            15 millions d'euros investis par les partis belges en 2024 pour diffuser directement leur narratif sans contradicteur.
+                        </p>
+                    </div>
+
+                    <div class="explorer-card bg-slate-50 p-4 rounded-lg border border-slate-200 hover:border-amber-400 transition" data-keywords="baudouin avortement 1990 impossibilite de regner roi sanctions">
+                        <span class="text-[10px] uppercase font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">Monarchie</span>
+                        <h3 class="font-bold text-slate-900 text-sm mt-2">Impossibilité de Régner (1990)</h3>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Mise en retrait temporaire du Roi Baudouin pour des raisons de conscience afin de promulguer la loi sur l'avortement votée par le Parlement.
+                        </p>
+                    </div>
+
+                    <div class="explorer-card bg-slate-50 p-4 rounded-lg border border-slate-200 hover:border-amber-400 transition" data-keywords="csj conseil superieur de la justice art 151 dutroux magistrats depolitisation">
+                        <span class="text-[10px] uppercase font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">Indépendance</span>
+                        <h3 class="font-bold text-slate-900 text-sm mt-2">Conseil Supérieur de la Justice (CSJ)</h3>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Organe paritaire issu de l'article 151 de la Constitution garantissant des nominations dépolitisiées et neutres dans la magistrature.
+                        </p>
+                    </div>
+
+                    <div class="explorer-card bg-slate-50 p-4 rounded-lg border border-slate-200 hover:border-amber-400 transition" data-keywords="cour constitutionnelle parite 12 juges 150/2025 loyaute federale equipollence dechets">
+                        <span class="text-[10px] uppercase font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Régulation Fédérale</span>
+                        <h3 class="font-bold text-slate-900 text-sm mt-2">Cour Constitutionnelle & Arrêt 150/2025</h3>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Arbitre suprême composé de 12 juges paritaires validant l'équilibre des compétences fiscales et le principe de loyauté fédérale.
+                        </p>
+                    </div>
+
+                    <div class="explorer-card bg-slate-50 p-4 rounded-lg border border-slate-200 hover:border-amber-400 transition" data-keywords="affaires courantes gouvernement demissionnaire conseil d'etat 541 jours">
+                        <span class="text-[10px] uppercase font-bold bg-slate-200 text-slate-800 px-2 py-0.5 rounded">Coutume</span>
+                        <h3 class="font-bold text-slate-900 text-sm mt-2">Régime des Affaires Courantes</h3>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Pratique encadrée par le Conseil d'État restreignant l'exécutif à la gestion journalière à défaut de majorité parlementaire active.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>Application interactive sur l'Architecture de la Séparation des Pouvoirs en Belgique</p>
+            <p class="text-slate-500">Conçu selon les théories constitutionnelles belges et les données sociopolitiques récentes (CRISP, AdLens, jurisprudence 2025).</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic & Charts Initialization -->
+    <script>
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all tab content
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+
+            // Reset desktop tab button styling
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show current tab
+            const target = document.getElementById(tabId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            // Set active button
+            const activeBtn = document.getElementById('btn-' + tabId.replace('tab-', ''));
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+        }
+
+        // Search Filter for Explorer Tab
+        function filterExplorer() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.explorer-card');
+
+            cards.forEach(card => {
+                const keywords = card.getAttribute('data-keywords').toLowerCase();
+                const text = card.innerText.toLowerCase();
+                if (keywords.includes(input) || text.includes(input)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Initialize Chart.js Graphs when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Chart Cour Constitutionnelle Parity (Donut)
+            const courCtx = document.getElementById('courChart');
+            if (courCtx) {
+                new Chart(courCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: [
+                            'Anciens Députés FR (3)',
+                            'Juristes / Magistrats FR (3)',
+                            'Anciens Députés NL (3)',
+                            'Juristes / Magistrats NL (3)'
+                        ],
+                        datasets: [{
+                            data: [3, 3, 3, 3],
+                            backgroundColor: ['#d97706', '#f59e0b', '#3b82f6', '#60a5fa'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    font: { size: 10 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ' ' + context.label + ' : 25% de la Cour';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Chart AdLens Media Spending 2024 (Horizontal Bar)
+            const mediaCtx = document.getElementById('mediaChart');
+            if (mediaCtx) {
+                new Chart(mediaCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Vlaams Belang', 'Vooruit', 'PTB / PVDA', 'N-VA', 'MR', 'PS', 'Les Engagés', 'Ecolo / Groen'],
+                        datasets: [{
+                            label: 'Dépenses estimées (Millions €)',
+                            data: [6.1, 2.8, 2.4, 1.8, 0.9, 0.7, 0.4, 0.3],
+                            backgroundColor: [
+                                '#7f1d1d', // VB
+                                '#dc2626', // Vooruit
+                                '#b91c1c', // PTB
+                                '#1e3a8a', // NVA
+                                '#2563eb', // MR
+                                '#e11d48', // PS
+                                '#0d9488', // Engagés
+                                '#16a34a'  // Ecolo
+                            ],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ' ' + context.raw + ' M€ investis (2019-2024)';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Millions d\'Euros (Meta & Google)', font: { size: 10 } },
+                                ticks: { font: { size: 10 } }
+                            },
+                            y: {
+                                ticks: { font: { size: 10 } }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
