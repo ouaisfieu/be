@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse Critique : La Séparation des Pouvoirs en Belgique</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sand: {
+                            50: '#fdfbf7',
+                            100: '#f7f4ed',
+                            200: '#eee7d8',
+                            300: '#e1d4bb',
+                            800: '#544732',
+                            900: '#382f21',
+                        },
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        },
+                        accent: {
+                            red: '#991b1b',
+                            amber: '#d97706',
+                            emerald: '#047857',
+                            indigo: '#4338ca'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #991b1b;
+            color: #991b1b;
+            font-weight: 700;
+            background-color: #f7f4ed;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #eee7d8;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #991b1b;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-sand-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-red-100 selection:text-red-900">
+
+    <!-- Chosen Palette: Warm Sand & Slate Navy (#fdfbf7, #1e293b, accents ambre #d97706 et rouge brique #991b1b pour les alertes sur l'État de droit). -->
+
+    <!-- Application Structure Plan:
+        1. Navigation principale par Onglets (Header fixe) : Permet une exploration non-linéaire ou guidée des 7 axes de la recherche.
+        2. Section Header & Synthèse Exécutive : Phrase clé, métriques majeures (Méfiance, Arrêts non exécutés, Veto Players).
+        3. Onglet 1 : Vue d'Ensemble & Diagnostic Bipolaire (Graphique global de la méfiance, schéma interactif du basculement Tripartite -> Bipolaire).
+        4. Onglet 2 : Origines & Fédéralisme (Tableau chronologique interactif 1831-2014, asymétrie monocamérale).
+        5. Onglet 3 : Particratie & Cabinets Ministériels (Infographie interactive des mécanismes de fusion Exécutif-Législatif et cabinets parallèles).
+        6. Onglet 4 : Fédéralisme Consociatif & Veto Players (Simulateur interactif des Veto Players de Tsebelis / Lijphart et crépuscule du Sénat).
+        7. Onglet 5 : Pouvoirs Spéciaux & Crises (Timeline de l'exception Covid-19 à la Loi Pandémie).
+        8. Onglet 6 : Crise d'Exécution & État de Droit (Zoom sur la crise de l'asile, l'arrêt Camara, le Mémorandum 2024 et la réforme CCE).
+        9. Onglet 7 : Explorateur & Base Documentaire (Recherche par mots-clés, thèses d'auteurs et citations-clés).
+    -->
+
+    <!-- Visualization & Content Choices:
+        - Graphique 1 (Barres Chart.js) : Niveau de méfiance citoyenne envers les institutions (Partis, Gouvernements, Parlements, Justice).
+        - Matrice Interactive (HTML/Tailwind) : Évolution du modèle de 1831 au modèle 2024.
+        - Simulateur d'Inertie Législative (JS Custom) : Démonstration du théorème des Veto Players de Tsebelis.
+        - Fiches d'études de cas interactives : Arrêt Camara c. Belgique, Mémorandum des 3 cours suprêmes, Réforme du CCE.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Navigation Header -->
+    <header class="bg-navy-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">⚖️</span>
+                    <div>
+                        <h1 class="font-bold text-lg md:text-xl leading-tight">La Séparation des Pouvoirs en Belgique</h1>
+                        <p class="text-xs text-slate-400 hidden sm:block">Analyse critique de la littérature politologique & juridique</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-900 text-red-200">
+                        Diagnostics : Crise Existentielle
+                    </span>
+                </div>
+            </div>
+            <!-- Dynamic Navigation Tabs -->
+            <nav class="flex space-x-1 overflow-x-auto custom-scrollbar border-t border-slate-700 py-1 text-xs md:text-sm" id="nav-tabs">
+                <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active px-3 py-2 rounded-t font-medium whitespace-nowrap transition-colors">📊 Diagnostic Global</button>
+                <button onclick="switchTab('history')" id="tab-history" class="tab-btn px-3 py-2 rounded-t font-medium whitespace-nowrap transition-colors text-slate-300 hover:text-white">📜 De 1831 au Fédéralisme</button>
+                <button onclick="switchTab('particracy')" id="tab-particracy" class="tab-btn px-3 py-2 rounded-t font-medium whitespace-nowrap transition-colors text-slate-300 hover:text-white">🗳️ Particratie & Cabinets</button>
+                <button onclick="switchTab('consociational')" id="tab-consociational" class="tab-btn px-3 py-2 rounded-t font-medium whitespace-nowrap transition-colors text-slate-300 hover:text-white">🏛️ Veto Players & Sénat</button>
+                <button onclick="switchTab('crises')" id="tab-crises" class="tab-btn px-3 py-2 rounded-t font-medium whitespace-nowrap transition-colors text-slate-300 hover:text-white">⚠️ Crises & Pouvoirs Spéciaux</button>
+                <button onclick="switchTab('judiciary')" id="tab-judiciary" class="tab-btn px-3 py-2 rounded-t font-medium whitespace-nowrap transition-colors text-slate-300 hover:text-white">🛡️ État de Droit & Juges</button>
+                <button onclick="switchTab('search')" id="tab-search" class="tab-btn px-3 py-2 rounded-t font-medium whitespace-nowrap transition-colors text-slate-300 hover:text-white">🔍 Moteur d'Analyse</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- SECTION: TAB 1 - OVERVIEW & GLOBAL DIAGNOSIS -->
+        <section id="sec-overview" class="tab-content space-y-6">
+            
+            <!-- Introduction Box -->
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-navy-900 mb-3">Synthèse du Diagnostic Politologique</h2>
+                <p class="text-slate-700 leading-relaxed mb-4">
+                    Érigée en principe cardinal par la Constitution de 1831 dans la tradition de Montesquieu, la séparation des pouvoirs en Belgique est aujourd'hui qualifiée par la doctrine politologique et juridique de <strong>structurellement caduque et fonctionnellement redéfinie</strong>. L'architecture tripartite classique (Exécutif, Législatif, Judiciaire) a laissé place à un <strong>affrontement bipolaire</strong> direct entre le bloc politico-administratif particratique et le bloc juridictionnel/supranational.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                    <div class="bg-red-50 p-4 rounded-lg border-l-4 border-accent-red">
+                        <div class="text-xs font-semibold text-red-800 uppercase tracking-wide">Méfiance Citoyenne</div>
+                        <div class="text-3xl font-extrabold text-accent-red mt-1">79 %</div>
+                        <div class="text-xs text-red-700 mt-1">envers les partis politiques (CRISP)</div>
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-lg border-l-4 border-accent-amber">
+                        <div class="text-xs font-semibold text-amber-800 uppercase tracking-wide">Inexécution Judiciaire</div>
+                        <div class="text-3xl font-extrabold text-accent-amber mt-1">+10 000</div>
+                        <div class="text-xs text-amber-700 mt-1">condamnation d'État ignorées (Asile)</div>
+                    </div>
+                    <div class="bg-slate-100 p-4 rounded-lg border-l-4 border-navy-800">
+                        <div class="text-xs font-semibold text-slate-700 uppercase tracking-wide">Multiplicité des Acteurs</div>
+                        <div class="text-3xl font-extrabold text-navy-900 mt-1">4 à 7</div>
+                        <div class="text-xs text-slate-600 mt-1">Veto Players partis par coalition</div>
+                    </div>
+                    <div class="bg-emerald-50 p-4 rounded-lg border-l-4 border-accent-emerald">
+                        <div class="text-xs font-semibold text-emerald-800 uppercase tracking-wide">Sanction Européenne</div>
+                        <div class="text-3xl font-extrabold text-accent-emerald mt-1">CEDH</div>
+                        <div class="text-xs text-emerald-700 mt-1">Arrêt <i>Camara</i> : Carence systémique</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid: Chart & Bipolar Shift Model -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Visual Chart: Institution Trust / Distrust -->
+                <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-navy-900 mb-2">Taux de Méfiance Citoyenne par Institution</h3>
+                        <p class="text-xs text-slate-600 mb-4">
+                            Données agrégées citées par la littérature (CRISP). Les institutions soumises au contrôle particratique souffrent d'une défiance massive, contrairement au pouvoir judiciaire.
+                        </p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="distrustChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 italic text-center mt-2">
+                        Note : La justice conserve une confiance relative (50% de méfiance), perçue comme un dernier rempart.
+                    </p>
+                </div>
+
+                <!-- Bipolar Shift Interactive Diagram -->
+                <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-navy-900 mb-2">La Mutation Paradigmatique : Du Tripartite au Bipolaire</h3>
+                        <p class="text-xs text-slate-600 mb-4">
+                            Cliquez sur un bloc pour analyser les dynamiques actuelles d'absorption et de résistance.
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-4 my-2">
+                        <!-- Pôle 1 -->
+                        <div onclick="selectBipolarPole('politico')" id="pole-politico" class="cursor-pointer p-4 rounded-lg border-2 border-red-200 bg-red-50 hover:bg-red-100 transition-all">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-red-900">1. Le Pôle Politico-Administratif Hégémonique</h4>
+                                <span class="text-xs bg-red-200 text-red-800 px-2 py-0.5 rounded font-mono">Exécutif + Législatif</span>
+                            </div>
+                            <p class="text-xs text-red-800 mt-2">
+                                Fusionné par la particratie, discipliné par les accords de coalition, alimenté par les cabinets ministériels et recourent aux pouvoirs spéciaux lors des crises.
+                            </p>
+                        </div>
+
+                        <div class="text-center text-slate-400 font-bold text-sm">⚡ Tensions & Friction Constitutionnelle ⚡</div>
+
+                        <!-- Pôle 2 -->
+                        <div onclick="selectBipolarPole('judicial')" id="pole-judicial" class="cursor-pointer p-4 rounded-lg border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 transition-all">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-blue-900">2. Le Pôle Juridictionnel & Supranational</h4>
+                                <span class="text-xs bg-blue-200 text-blue-800 px-2 py-0.5 rounded font-mono">Cours & Tribunaux + CEDH/CJUE</span>
+                            </div>
+                            <p class="text-xs text-blue-800 mt-2">
+                                Cour constitutionnelle, Conseil d'État et juges judiciaires adossés au droit européen, luttant contre l'inexécution des jugements et les dérives illibérales.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="pole-detail-box" class="bg-sand-100 p-3 rounded-lg text-xs text-slate-700 italic border border-sand-300">
+                        👉 Cliquez sur l'un des deux pôles ci-dessus pour afficher le détail du rapport de force.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Findings Section -->
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h3 class="text-lg font-bold text-navy-900 mb-3">Les 4 Vecteurs Majeurs de la Redéfinition du Pouvoir</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-4 bg-sand-50 rounded-lg border border-sand-200">
+                        <div class="text-xl mb-1">🗳️</div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-1">Hégémonie Particratique</h4>
+                        <p class="text-xs text-slate-600">Le Parlement est transformé en chambre d'enregistrement par la discipline de vote et les accords de coalition impératifs.</p>
+                    </div>
+                    <div class="p-4 bg-sand-50 rounded-lg border border-sand-200">
+                        <div class="text-xl mb-1">🧩</div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-1">Consociationalisme & Inertie</h4>
+                        <p class="text-xs text-slate-600">La multiplication des <i>veto players</i> communautaires et partisans paralyse la décision ordinaire et neutralise le Sénat.</p>
+                    </div>
+                    <div class="p-4 bg-sand-50 rounded-lg border border-sand-200">
+                        <div class="text-xl mb-1">🦠</div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-1">Gouvernement d'Exception</h4>
+                        <p class="text-xs text-slate-600">Recours abusif aux arrêtés de pouvoirs spéciaux et pérennisation de la suprématie exécutive via la « Loi Pandémie ».</p>
+                    </div>
+                    <div class="p-4 bg-sand-50 rounded-lg border border-sand-200">
+                        <div class="text-xl mb-1">⚖️</div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-1">Désobéissance de l'État</h4>
+                        <p class="text-xs text-slate-600">Refus de l'exécutif d'exécuter des milliers de décisions de justice (Asile), menaçant les fondements de l'État de droit.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECTION: TAB 2 - HISTORY & FEDERALISM -->
+        <section id="sec-history" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-navy-900 mb-2">Du Modèle Originel de 1831 à la Fragmentation Fédérale</h2>
+                <p class="text-slate-700 text-sm leading-relaxed">
+                    Cette section analyse comment la Constitution du 7 février 1831 a instauré un équilibre libéral et bicaméral classique, et comment six réformes de l'État successives (1970-2014) ont éclaté l'exercice du pouvoir sans réviser formellement l'architecture textuelle du principe de séparation.
+                </p>
+            </div>
+
+            <!-- Historical Interactive Table -->
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm overflow-x-auto">
+                <h3 class="text-lg font-bold text-navy-900 mb-4">Évolution Institutionnelle de la Séparation des Pouvoirs</h3>
+                <table class="w-full text-left text-xs text-slate-700 border-collapse">
+                    <thead>
+                        <tr class="bg-navy-900 text-white uppercase text-[11px] tracking-wider">
+                            <th class="p-3">Période</th>
+                            <th class="p-3">Structure de l'État</th>
+                            <th class="p-3">Pouvoir Législatif</th>
+                            <th class="p-3">Pouvoir Exécutif & Rôle du Roi</th>
+                            <th class="p-3">Mécanisme de Checks & Balances</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-sand-200">
+                        <tr class="hover:bg-sand-50">
+                            <td class="p-3 font-bold text-navy-800">1831 - 1970</td>
+                            <td class="p-3">État unitaire décentralisé</td>
+                            <td class="p-3">Bicaméralisme égalitaire (Chambre & Sénat)</td>
+                            <td class="p-3">Le Roi et ses ministres (contreseing). Sanction royale uniforme.</td>
+                            <td class="p-3">Le Sénat tempère la Chambre. Pas de contrôle de constitutionnalité des lois.</td>
+                        </tr>
+                        <tr class="hover:bg-sand-50">
+                            <td class="p-3 font-bold text-navy-800">1970 - 1993</td>
+                            <td class="p-3">Transition vers le Fédéralisme</td>
+                            <td class="p-3">Apparition des Conseils communautaires et régionaux</td>
+                            <td class="p-3">Exécutifs propres aux entités fédérées. Effacement progressif du Roi au régional.</td>
+                            <td class="p-3">Création de la Cour d'Arbitrage (1984) pour régler les conflits de compétences.</td>
+                        </tr>
+                        <tr class="hover:bg-sand-50 bg-red-50/50">
+                            <td class="p-3 font-bold text-red-900">1993 - 2014+</td>
+                            <td class="p-3">État Fédéral consacré (6 réformes)</td>
+                            <td class="p-3">Monocaméralisme régional. Bicaméralisme asymétrique fédéral.</td>
+                            <td class="p-3">Exécutifs régionaux totalement autonomes. Le Roi exclu de la formation des gouvernements fédérés.</td>
+                            <td class="p-3">Élargissement des compétences de la Cour constitutionnelle aux droits fondamentaux (Titre II).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Deep Dive Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                    <h4 class="font-bold text-navy-900 mb-2 flex items-center gap-2">
+                        <span class="text-amber-600">⚡</span> L'Asymétrie Monocamérale Régionale
+                    </h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Alors que le niveau fédéral conserve un bicaméralisme résiduel, les entités fédérées (Parlement wallon, Parlement flamand, etc.) fonctionnent en <strong>monocaméralisme strict</strong>. L'absence d'une seconde chambre régionale de réflexion transfère de facto la responsabilité du contrôle préventif des textes vers des instances juridictionnelles comme le Conseil d'État.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                    <h4 class="font-bold text-navy-900 mb-2 flex items-center gap-2">
+                        <span class="text-amber-600">👑</span> L'Éclatement de la Fonction Royale
+                    </h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Le Chef de l'État n'intervient plus dans l'élaboration des décrets et ordonnances des Régions et Communautés. Les chefs des exécutifs fédérés prêtent simplement serment devant lui, matérialisant un démantèlement fonctionnel de la tête de l'Exécutif unifié d'autrefois (CRISP).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: TAB 3 - PARTICRACY & CABINETS -->
+        <section id="sec-particracy" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-navy-900 mb-2">L'Étouffement par la Particratie et les Cabinets Ministériels</h2>
+                <p class="text-slate-700 text-sm leading-relaxed">
+                    La politologie (Dewachter, De Winter, Deschouwer) définit la Belgique comme un « idéal-type » particratique. Les présidents de parti captent l'ensemble des leviers décisionnels, vidant l'article 42 de la Constitution (liberté du mandat parlementaire) de sa substance.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Particracy Mechanism Card -->
+                <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm lg:col-span-2">
+                    <h3 class="text-lg font-bold text-navy-900 mb-3">Le Circuit de Neutralisation du Parlement</h3>
+                    
+                    <div class="relative border-l-2 border-red-800 pl-6 space-y-6 my-4">
+                        <div class="relative">
+                            <span class="absolute -left-[31px] top-0 bg-red-800 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Négociation de l'Accord de Coalition</h4>
+                            <p class="text-xs text-slate-600">Rédigé à huis clos par les présidents de parti après les élections. Il fixe dans le moindre détail les politiques à mener sur 5 ans.</p>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute -left-[31px] top-0 bg-red-800 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Rédaction en Inter-Cabinets (IFC)</h4>
+                            <p class="text-xs text-slate-600">Les collaborateurs politiques des ministres (« cabinettards ») rédigent les textes normatifs, s'imposant à l'administration statutaire neutre.</p>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute -left-[31px] top-0 bg-red-800 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Discipline de Vote au Parlement</h4>
+                            <p class="text-xs text-slate-600">Les parlementaires de la majorité sont tenus sous peine de sanction d'approuver les projets sans modification substantielle. Le Parlement devient une simple « chambre d'enregistrement ».</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabinets Focus Card -->
+                <div class="bg-sand-100 p-6 rounded-xl border border-sand-300 flex flex-col justify-between">
+                    <div>
+                        <div class="inline-block px-2 py-1 bg-amber-200 text-amber-900 font-mono text-[10px] rounded uppercase mb-2">Gouvernance de l'ombre</div>
+                        <h3 class="text-base font-bold text-navy-900 mb-2">Hypertrophie des Cabinets</h3>
+                        <p class="text-xs text-slate-700 leading-relaxed mb-3">
+                            La Belgique possède une structure politico-administrative unique au monde. Des centaines de collaborateurs politiques non élus concentrent l'expertise et court-circuitent les fonctionnaires statutaires.
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-2 list-disc list-inside">
+                            <li><strong>Politisation de l'État :</strong> Parachutage de collaborateurs dans la haute administration et la magistrature lors des fins de mandat.</li>
+                            <li><strong>Opacité :</strong> Arbitrages réels rendus hors séance publique.</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-white rounded border border-sand-300">
+                        <div class="text-[11px] font-bold text-slate-900">Le Cumul des Mandats</div>
+                        <p class="text-[10px] text-slate-600 mt-1">
+                            Malgré le décret wallon de 2010 sur le décumul, 25% des députés peuvent encore cumuler un mandat exécutif local (bourgmestre/échevin), renforçant l'interpénétration des rôles.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: TAB 4 - CONSOCIATIONALISM & VETO PLAYERS -->
+        <section id="sec-consociational" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-navy-900 mb-2">Consociationalisme, Veto Players et Neutralisation du Sénat</h2>
+                <p class="text-slate-700 text-sm leading-relaxed">
+                    L'application des cadres théoriques d'<strong>Arend Lijphart</strong> (démocratie consociative) et de <strong>George Tsebelis</strong> (teorème des Veto Players) explique l'inertie politique et le recours systématique aux compromis d'apaisement au détriment du débat parlementaire.
+                </p>
+            </div>
+
+            <!-- Interactive Veto Player Simulator -->
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h3 class="text-lg font-bold text-navy-900 mb-2">Simulateur d'Inertie Politique (Théorème de Tsebelis)</h3>
+                <p class="text-xs text-slate-600 mb-4">
+                    Ajustez les paramètres du gouvernement pour observer l'impact sur la capacité à réformer et sur la dévaluation du Parlement.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-sand-50 p-4 rounded-lg border border-sand-200">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Nombre de Partis dans la Coalition :</label>
+                        <input type="range" id="veto-parties" min="2" max="7" value="7" class="w-full accent-red-800" oninput="updateVetoSimulation()">
+                        <div class="text-right text-xs font-mono font-bold text-red-900" id="val-parties">7 partis (ex: Vivaldi)</div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Distance Idéologique / Communautaire :</label>
+                        <input type="range" id="veto-distance" min="1" max="5" value="4" class="w-full accent-amber-600" oninput="updateVetoSimulation()">
+                        <div class="text-right text-xs font-mono font-bold text-amber-900" id="val-distance">Élevée</div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Verrous Constitutionnels (Sonnette d'alarme) :</label>
+                        <select id="veto-lock" class="w-full text-xs p-1.5 border rounded bg-white" onchange="updateVetoSimulation()">
+                            <option value="active">Activés (Parité Conseil des Ministres + Majorité 2/3)</option>
+                            <option value="passive">Standard</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Simulation Result Box -->
+                <div class="mt-4 p-4 rounded-lg bg-navy-900 text-white flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <div class="text-xs text-slate-400 uppercase tracking-wide">Diagnostic d'Inertie Législative</div>
+                        <div class="text-xl font-bold text-amber-400" id="sim-result-title">Paralysie Élevée & Accord Ultra-Verrouillé</div>
+                        <div class="text-xs text-slate-300 mt-1" id="sim-result-desc">
+                            Le compromis émergeant de l'exécutif est si fragile qu'aucun amendement parlementaire n'est toléré.
+                        </div>
+                    </div>
+                    <div class="px-4 py-2 bg-slate-800 rounded border border-slate-700 text-center shrink-0">
+                        <div class="text-[10px] text-slate-400">Taille du Statu Quo</div>
+                        <div class="text-lg font-mono font-bold text-red-400" id="sim-result-score">Quasi-immuable</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Focus on the Senate -->
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h3 class="text-lg font-bold text-navy-900 mb-2">Le Crépuscule du Sénat : Le Sacrifice du Bicaméralisme</h3>
+                <p class="text-xs text-slate-700 leading-relaxed mb-4">
+                    Dans la pensée classique de Montesquieu, le bicaméralisme garantit un contrôle intra-législatif (<i>checks and balances</i>). Comme l'analyse la doctrine (Popelier, Verdussen), la Belgique a sacrifié cette fonction au profit de la pacification communautaire.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="p-3 bg-sand-50 rounded border border-sand-200">
+                        <span class="font-bold text-navy-900">1993 : Premier Élagage</span>
+                        <p class="text-slate-600 mt-1">Perte de l'égalité de pouvoir avec la Chambre sur les lois ordinaires.</p>
+                    </div>
+                    <div class="p-3 bg-sand-50 rounded border border-sand-200">
+                        <span class="font-bold text-navy-900">2014 : 6e Réforme de l'État</span>
+                        <p class="text-slate-600 mt-1">Suppression de l'élection directe. Assemblée non permanente composée de députés régionaux cooptés.</p>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded border border-red-200">
+                        <span class="font-bold text-red-900">Constat : « Mort Annoncée »</span>
+                        <p class="text-red-800 mt-1">Selon Marc Verdussen, la neutralisation du Sénat consacre un monocaméralisme fédéral de fait inféodé aux partis.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: TAB 5 - SPECIAL POWERS & CRISES -->
+        <section id="sec-crises" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-navy-900 mb-2">L'Exécutif face aux Crises : Pouvoirs Spéciaux & Banalisation de l'Exception</h2>
+                <p class="text-slate-700 text-sm leading-relaxed">
+                    La Constitution belge ne prévoyant aucun état d'urgence (Art. 187), la gestion des crises sanitaires et sécuritaires a reposé sur l'octroi répété de pouvoirs spéciaux, consacrant un dessaisissement inédit du Parlement.
+                </p>
+            </div>
+
+            <!-- Timeline of Crisis Legislation -->
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h3 class="text-lg font-bold text-navy-900 mb-4">Chronologie du Glissement Normatif (2020-2021)</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-sand-50 rounded-lg border-l-4 border-amber-500">
+                        <div class="text-xs font-mono font-bold text-amber-800">Mars 2020 - Juin 2020</div>
+                        <h4 class="font-bold text-slate-900 text-sm mt-1">Arrêtés de Pouvoirs Spéciaux</h4>
+                        <p class="text-xs text-slate-600 mt-2">
+                            Habilitation accordée au gouvernement de modifier la loi par Arrêtés Royaux. Restrictions massives des libertés individuelles sans délibération préalable de la Chambre (Bouhon, Miny).
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-sand-50 rounded-lg border-l-4 border-red-500">
+                        <div class="text-xs font-mono font-bold text-red-800">Début 2021</div>
+                        <h4 class="font-bold text-slate-900 text-sm mt-1">Sanction Judiciaire des Référés</h4>
+                        <p class="text-xs text-slate-600 mt-2">
+                            Plusieurs tribunaux de première instance déclarent les mesures liberticides sans base légale suffisante, contraignant le gouvernement à légiférer.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-sand-50 rounded-lg border-l-4 border-navy-800">
+                        <div class="text-xs font-mono font-bold text-navy-900">Juillet 2021</div>
+                        <h4 class="font-bold text-slate-900 text-sm mt-1">Adoption de la « Loi Pandémie »</h4>
+                        <p class="text-xs text-slate-600 mt-2">
+                            Législation cadre pérennisant les facultés d'action de l'exécutif en cas d'urgence. Le contrôle parlementaire reste très largement formel et a posteriori (Clarenne, El Berhoumi).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Critical Doctrine Box -->
+            <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                <h4 class="font-bold text-amber-900 mb-2 flex items-center gap-2">
+                    <span>⚠️</span> L'Accoutumance à l'Effacement du Parlement
+                </h4>
+                <p class="text-xs text-amber-800 leading-relaxed">
+                    La littérature critique dénonce une entreprise d'expiation juridique : sous couvert d'efficacité décisionnelle, le débat législatif est perçu par la classe politique comme une lourdeur procédurale, normalisant ainsi le transfert permanent de la production normative vers des conseils restreints et des groupes d'experts non élus.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION: TAB 6 - RULE OF LAW & JUDICIARY -->
+        <section id="sec-judiciary" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-navy-900 mb-2">La Crise d'Exécution & la Résistance du Pouvoir Judiciaire</h2>
+                <p class="text-slate-700 text-sm leading-relaxed">
+                    Le vecteur le plus alarmant du délitement de la séparation des pouvoirs réside dans le refus conscient et répétitif de l'exécutif de se conformer aux décisions de justice définitives, déclenchant un conflit ouvert avec les plus hautes juridictions du pays.
+                </p>
+            </div>
+
+            <!-- Focus Cases Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- Case 1: Asylum & Camara -->
+                <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm border-t-4 border-t-red-800">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="text-xs font-mono text-red-800 bg-red-100 px-2 py-0.5 rounded">Arrêt Historique CEDH</span>
+                            <h3 class="text-base font-bold text-navy-900 mt-1">La Crise de l'Accueil & l'Arrêt <i>Camara c. Belgique</i> (2023)</h3>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed mb-3">
+                        Malgré plus de <strong>10 000 condamnations judiciaires</strong> ordonnant l'hébergement de demandeurs d'asile sous peine d'astreintes, l'État belge (Fedasil/Secrétariat d'État) a délibérément refusé d'exécuter les jugements.
+                    </p>
+                    <div class="bg-red-50 p-3 rounded text-xs text-red-900 border border-red-200 space-y-1">
+                        <div class="font-bold">Constat de la Cour Européenne (CEDH) :</div>
+                        <p>• Violation de l'Art. 3 (Traitements inhumains) et Art. 6 § 1 (Procès équitable).</p>
+                        <p>• Déclaration d'une <strong>« carence systémique »</strong> et d'un <strong>« refus caractérisé »</strong> de se conformer aux décisions de justice.</p>
+                    </div>
+                </div>
+
+                <!-- Case 2: Memorandum 2024 -->
+                <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm border-t-4 border-t-navy-800">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="text-xs font-mono text-navy-800 bg-slate-100 px-2 py-0.5 rounded">19 Juillet 2024</span>
+                            <h3 class="text-base font-bold text-navy-900 mt-1">Le Mémorandum Commun des 3 Cours Suprêmes</h3>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed mb-3">
+                        Dans une démarche sans précédent, les présidents de la <strong>Cour constitutionnelle</strong>, de la <strong>Cour de cassation</strong> et du <strong>Conseil d'État</strong> sont sortis de leur devoir de réserve.
+                    </p>
+                    <div class="bg-sand-100 p-3 rounded text-xs text-slate-800 border border-sand-300 space-y-1">
+                        <div class="font-bold text-navy-900">Extrait du Mémorandum :</div>
+                        <p class="italic">« Le non-respect persistant des jugements par les autorités publiques est tout simplement inacceptable. Si l'État s'exonère du droit, c'est l'essence du pacte démocratique qui s'effondre. »</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Threatened Judicial Independence: CCE Reform -->
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h3 class="text-lg font-bold text-navy-900 mb-2 flex items-center gap-2">
+                    <span class="text-red-700">🚨</span> Menaces de Domestication : La Projet de Réforme du CCE (2025)
+                </h3>
+                <p class="text-xs text-slate-700 leading-relaxed mb-4">
+                    Le rapport annuel 2025 de l'Institut Fédéral des Droits Humains (IFDH) alerte sur l'accord de gouvernement prévoyant de réformer le <strong>Conseil du Contentieux des Étrangers (CCE)</strong>.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="p-3 bg-red-50 rounded border border-red-200">
+                        <div class="font-bold text-red-900">Projet de Remaniement</div>
+                        <p class="text-red-800 mt-1">Intégration du CCE au sein du SPF Intérieur et remplacement de la nomination à vie des juges par des mandats de 5 ans renouvelables.</p>
+                    </div>
+                    <div class="p-3 bg-slate-100 rounded border border-slate-300">
+                        <div class="font-bold text-slate-900">Analyse Politologique & Juridique</div>
+                        <p class="text-slate-700 mt-1">Conditionner le mandat d'un juge à une évaluation quinquennale par l'exécutif détruit l'indépendance de la justice, s'apparentant aux méthodes des « démocraties illibérales ».</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other systemic defaults -->
+            <div class="bg-sand-100 p-4 rounded-lg border border-sand-300 text-xs text-slate-700">
+                <div class="font-bold text-navy-900 mb-1">Autres Manifestations de la Désobéissance d'État (IFDH / Amnesty) :</div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+                    <div>• <strong>Surpopulation carcérale :</strong> Conditions indignes répétées (Arrêt <i>Vasilescu</i>).</div>
+                    <div>• <strong>Internement :</strong> Défaut de structures psychiatriques adaptées (Groupe <i>L.B.</i>).</div>
+                    <div>• <strong>Affaire Trabelsi :</strong> Extradition exécutée en violation d'une injonction d'appel et de la CEDH.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: TAB 7 - SEARCH & RESEARCH ENGINE -->
+        <section id="sec-search" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-sand-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-navy-900 mb-2">Moteur d'Exploration de la Littérature Académique</h2>
+                <p class="text-slate-700 text-sm leading-relaxed mb-4">
+                    Recherchez parmi les thèses, auteurs, décisions de justice et notions juridico-politiques cités dans le rapport.
+                </p>
+
+                <!-- Search Input -->
+                <div class="relative">
+                    <input type="text" id="searchInput" onkeyup="filterKnowledgeBase()" placeholder="Ex: Camara, Tsebelis, Cabinets, Pouvoirs spéciaux, Lijphart, Verdussen..." class="w-full p-3 pl-10 text-sm border-2 border-sand-300 rounded-lg focus:outline-none focus:border-navy-900 bg-sand-50">
+                    <span class="absolute left-3 top-3.5 text-slate-400">🔍</span>
+                </div>
+            </div>
+
+            <!-- Results Counter -->
+            <div class="text-xs text-slate-500 font-mono px-1" id="search-count">7 entrées académiques disponibles</div>
+
+            <!-- Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="kb-container">
+                <!-- Data items injected via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-navy-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <p class="font-bold text-white">Analyse Critique : État de la Séparation des Pouvoirs en Belgique</p>
+                <p class="text-[11px] text-slate-500">Basé sur la littérature politologique (Dewachter, De Winter, Tsebelis, Lijphart, Popelier, Verdussen) & Rapports IFDH 2025.</p>
+            </div>
+            <div class="text-slate-400 text-right">
+                <span>Système de Navigation & Dashboard Interactif SPA</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Knowledge Base Data
+        const kbData = [
+            {
+                title: "Wilfried Dewachter & Lieven De Winter - L'Idéal-type Particratique",
+                category: "Particratie",
+                keywords: "particratie dewachter de winter discipline parti mandat compromis",
+                content: "Les partis politiques ont capté l'ensemble des leviers du pouvoir. La discipline de parti et les accords de majorité vident le mandat libre du député (Art. 42 Constitution) de sa portée. Le Parlement est réduit à une chambre d'enregistrement."
+            },
+            {
+                title: "George Tsebelis - Théorie des Veto Players",
+                category: "Choix Rationnel",
+                keywords: "veto players tsebelis inertie statu quo coalitions multipartisme",
+                content: "Plus le nombre de veto players (partis de coalition, entités fédérées) est élevé et leurs distances idéologiques grandes, plus le statu quo est difficile à modifier. Cela pousse les gouvernements à contourner le processus législatif ordinaire."
+            },
+            {
+                title: "Arend Lijphart - Modèle Consociatif",
+                category: "Fédéralisme",
+                keywords: "consociationalisme lijphart compromis veto mutuel pacification",
+                content: "La pacification d'une société divisée s'effectue par des veto mutuels, la parité ministérielle et des règles de majorité spéciale. La séparation formelle des pouvoirs passe au second plan derrière la nécessité d'un accord permanent entre communautés."
+            },
+            {
+                title: "CEDH - Arrêt Camara c. Belgique (18 juillet 2023)",
+                category: "Jurisprudence",
+                keywords: "camara cedh asile carence systémique refus caractérisé astreintes fedasil",
+                content: "Condamnation de l'État belge pour le refus obstiné d'exécuter des milliers de jugements ordonnant l'accueil de demandeurs d'asile. La CEDH conclut à une violation des articles 3 et 6 § 1 et dénonce une carence systémique grave."
+            },
+            {
+                title: "Mémorandum des Trois Cours Suprêmes (19 juillet 2024)",
+                category: "État de Droit",
+                keywords: "mémorandum constitutionnelle cassation conseil etat jugements inacceptable",
+                content: "Démarche historique où les présidents de la Cour constitutionnelle, de la Cour de cassation et du Conseil d'État qualifient le non-respect persistant des décisions de justice par le gouvernement de 'tout simplement inacceptable'."
+            },
+            {
+                title: "Frédéric Bouhon & Xavier Miny - Pouvoirs Spéciaux & Crise Covid",
+                category: "Exécutif",
+                keywords: "pouvoirs spéciaux covid bouhon miny loi pandémie arrêtés royaux exception",
+                content: "Analyse du dessaisissement du Parlement durant la crise sanitaire par des arrêtés royaux liberticides sans débat préalable, puis par la 'Loi Pandémie' pérennisant une gestion d'exception dominée par l'exécutif."
+            },
+            {
+                title: "Marc Verdussen - La Cour Constitutionnelle comme Tiers Pouvoir",
+                category: "Judiciaire",
+                keywords: "verdussen cour constitutionnelle tiers pouvoir contre pouvoir juges sénat",
+                content: "La Cour constitutionnelle s'est imposée comme un véritable contre-pouvoir indispensable pour protéger les libertés fondamentales face à la tyrannie de la majorité particratique, compensant la neutralisation du Sénat."
+            }
+        ];
+
+        // Global Chart Instance
+        let distrustChartInstance = null;
+
+        // Init App
+        document.addEventListener('DOMContentLoaded', () => {
+            initDistrustChart();
+            renderKB(kbData);
+        });
+
+        // Tab Switch Logic
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Remove active class from buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('text-slate-300');
+            });
+
+            // Show selected content
+            const targetSec = document.getElementById(`sec-${tabId}`);
+            if (targetSec) targetSec.classList.remove('hidden');
+
+            // Highlight button
+            const targetBtn = document.getElementById(`tab-${tabId}`);
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+                targetBtn.classList.remove('text-slate-300');
+            }
+        }
+
+        // Initialize Chart.js Bar Chart
+        function initDistrustChart() {
+            const ctx = document.getElementById('distrustChart');
+            if (!ctx) return;
+
+            distrustChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Partis Politiques', 'Gouvernements', 'Parlements', 'Justice', 'Administration'],
+                    datasets: [{
+                        label: '% de Méfiance Citoyenne',
+                        data: [79, 68, 59, 50, 44],
+                        backgroundColor: [
+                            'rgba(153, 27, 27, 0.85)',
+                            'rgba(217, 119, 6, 0.85)',
+                            'rgba(217, 119, 6, 0.65)',
+                            'rgba(30, 41, 59, 0.7)',
+                            'rgba(100, 116, 139, 0.6)'
+                        ],
+                        borderColor: [
+                            '#991b1b',
+                            '#d97706',
+                            '#d97706',
+                            '#1e293b',
+                            '#64748b'
+                        ],
+                        borderWidth: 1.5,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Méfiance : ${context.raw}% des citoyens`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Bipolar Pole Selection Handler
+        function selectBipolarPole(pole) {
+            const box = document.getElementById('pole-detail-box');
+            const pPolitico = document.getElementById('pole-politico');
+            const pJudicial = document.getElementById('pole-judicial');
+
+            if (pole === 'politico') {
+                pPolitico.classList.add('ring-2', 'ring-red-600');
+                pJudicial.classList.remove('ring-2', 'ring-blue-600');
+                box.innerHTML = `
+                    <strong class="text-red-900 font-bold">Pôle Politico-Administratif :</strong> 
+                    Concentre le pouvoir réel via la négociation partisane. Il tend à percevoir le droit et le contrôle judiciaire comme des entraves managériales ou politiques, justifiant la désobéissance (Asile) ou l'usage de pouvoirs d'exception au nom de l'efficacité gouvernementale.
+                `;
+            } else {
+                pJudicial.classList.add('ring-2', 'ring-blue-600');
+                pPolitico.classList.remove('ring-2', 'ring-red-600');
+                box.innerHTML = `
+                    <strong class="text-blue-900 font-bold">Pôle Juridictionnel & Supranational :</strong> 
+                    Acteur de résistance adossé à la Constitution et aux traités européens (CEDH, CJUE). Il s'oppose à l'arbitraire exécutif et tente d'imposer le respect des décisions de justice, mais souffre de l'absence de force d'exécution matérielle face à un État récalcitrant.
+                `;
+            }
+        }
+
+        // Veto Players Simulator Update
+        function updateVetoSimulation() {
+            const parties = parseInt(document.getElementById('veto-parties').value);
+            const distance = parseInt(document.getElementById('veto-distance').value);
+            const lock = document.getElementById('veto-lock').value;
+
+            document.getElementById('val-parties').innerText = `${parties} partis`;
+            
+            const distLabels = ['Très faible', 'Faible', 'Moyenne', 'Élevée', 'Extrême'];
+            document.getElementById('val-distance').innerText = distLabels[distance - 1];
+
+            const titleEl = document.getElementById('sim-result-title');
+            const descEl = document.getElementById('sim-result-desc');
+            const scoreEl = document.getElementById('sim-result-score');
+
+            let score = parties * 1.5 + distance * 2 + (lock === 'active' ? 4 : 0);
+
+            if (score > 15) {
+                titleEl.innerText = "Paralysie Maximale & Neutralisation du Parlement";
+                descEl.innerText = "L'exécutif négocie un compromis au millimètre près en cabinet. Le Parlement n'a aucune marge de délibération. Recours privilégié aux pouvoirs spéciaux.";
+                scoreEl.innerText = "Bloqué (Inertie)";
+                scoreEl.className = "text-lg font-mono font-bold text-red-400";
+            } else if (score > 9) {
+                titleEl.innerText = "Inertie Modérée & Discipline Stricte";
+                descEl.innerText = "Le gouvernement parvient à légiférer mais au prix de concessions lourdes et de décrets fourre-tout. L'opposition est marginalisée.";
+                scoreEl.innerText = "Marge Faible";
+                scoreEl.className = "text-lg font-mono font-bold text-amber-400";
+            } else {
+                titleEl.innerText = "Capacité de Réforme Élevée";
+                descEl.innerText = "Gouvernement resserré avec distance idéologique faible. Le débat parlementaire peut théoriquement retrouver une certaine dynamique.";
+                scoreEl.innerText = "Flexible";
+                scoreEl.className = "text-lg font-mono font-bold text-emerald-400";
+            }
+        }
+
+        // Render Knowledge Base Cards
+        function renderKB(data) {
+            const container = document.getElementById('kb-container');
+            if (!container) return;
+
+            container.innerHTML = data.map(item => `
+                <div class="bg-white p-5 rounded-xl border border-sand-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[10px] font-mono uppercase bg-sand-200 text-sand-800 px-2 py-0.5 rounded font-bold">${item.category}</span>
+                    </div>
+                    <h3 class="font-bold text-navy-900 text-sm mb-2">${item.title}</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">${item.content}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('search-count').innerText = `${data.length} entrée(s) trouvée(s)`;
+        }
+
+        // Filter Knowledge Base
+        function filterKnowledgeBase() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = kbData.filter(item => 
+                item.title.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query) ||
+                item.keywords.toLowerCase().includes(query) ||
+                item.content.toLowerCase().includes(query)
+            );
+            renderKB(filtered);
+        }
+    </script>
+</body>
+</html>
