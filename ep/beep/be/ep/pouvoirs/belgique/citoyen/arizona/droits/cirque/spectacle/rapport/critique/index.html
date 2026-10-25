@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Belgique dans le Nouvel Ordre Mondial - Observatoire Stratégique</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        belgium: {
+                            black: '#111827',
+                            yellow: '#D97706',
+                            red: '#DC2626',
+                            sand: '#FDFBF7',
+                            slate: '#0F172A',
+                            accent: '#2563EB',
+                            emerald: '#059669',
+                            amber: '#D97706'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Embedded Chart Container Custom Styles for Strict Constraints */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 420px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+    </style>
+
+    <!-- Chosen Palette: Warm Sand & Slate Professional Neutral with Belgian Flag Accents (Amber/Red/Slate) -->
+    <!-- Application Structure Plan:
+        1. Sticky Header & Strategic Navigation Bar: Allows seamless switching between core analytical domains (Synthèse, Diplomatie, Défense, Géoéconomie, Guerre Financière, Simulateur).
+        2. Dashboard View: High-level metrics comparing historic vs current metrics (PIB mundial share, NATO % targets, Euroclear volume, Biopharma trade).
+        3. Module 1 - Diplomatie & Fédéralisme: Interactive filter for Consular Network redeployment and flow analysis of "In foro interno, in foro externo".
+        4. Module 2 - Mue Sécuritaire & CaMo: Financial trajectory of military budgets, breakdown of CaMo 1 & 2 program investments, and F-35 vs Cyber/Redu defense components.
+        5. Module 3 - Niches Géoéconomiques: Deep dive into 4 critical hubs (IMEC, Biopharma, Princess Elisabeth Island, Umicore) with interactive vulnerability metrics.
+        6. Module 4 - Guerres Financières & Juridiques: Euroclear frozen asset dilemma interactive matrix (confiscation vs windfall tax risks) and ICJ/ICC stance.
+        7. Interactive Strategic Simulator: Allows users to simulate policy choices (e.g., defense target speed, Euroclear asset usage, bio-pharma incentives) and see calculated geopolitical impacts.
+    -->
+    <!-- Visualization & Content Choices:
+        - Relative Weight Shrinkage: Grouped Bar Chart (ONU seats ratio, World GDP %, Military spend %) -> Compare historic decline -> Chart.js (Canvas).
+        - Defense Budget Trajectory (% GDP): Line Chart showing 2017 baseline (0.88%), STAR plan, and 2025/2026 2% NATO target -> Chart.js (Canvas).
+        - CaMo Capabilities Investment Breakdown: Donut Chart -> Show breakdown of 14.4B€ CaMo lifecycle investments -> Chart.js (Canvas).
+        - Geo-Economic Hubs Radar / Bar: Horizontal Bar Chart comparing export volume & European criticality score -> Chart.js (Canvas).
+        - Euroclear Assets & Surprofits: Stacked Bar Chart -> Illustrate 210B€ principal vs annual windfall profits -> Chart.js (Canvas).
+        - NO SVG or Mermaid JS used. All visual indicators use CSS/Tailwind grid/flex UI and Chart.js HTML5 Canvas elements.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-[#FDFBF7] text-slate-800 font-sans antialiased selection:bg-amber-100 selection:text-amber-900 min-h-screen flex flex-col">
+
+    <!-- Top Announcement / Banner -->
+    <div class="bg-slate-900 text-slate-200 text-xs py-2 px-4 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                <span class="font-semibold tracking-wide text-amber-400">RAPPORT D'ANALYSE STRATÉGIQUE GEOPOLITIQUE</span>
+                <span class="text-slate-400 hidden md:inline">| Belgique & Nouvel Ordre Mondial</span>
+            </div>
+            <div class="text-slate-400 text-xs">
+                <span>Dernière mise à jour synthétique : 2025-2026</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="flex h-10 w-3 rounded overflow-hidden shadow">
+                        <div class="w-1/3 bg-slate-900"></div>
+                        <div class="w-1/3 bg-amber-500"></div>
+                        <div class="w-1/3 bg-red-600"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900 tracking-tight">Belgique & Ordre Mondial</h1>
+                        <p class="text-xs text-slate-500">Observatoire Interactif d'Ingénierie Géopolitique & Géoéconomique</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex space-x-1">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-amber-50 text-amber-800 border border-amber-200">
+                        📊 Synthèse
+                    </button>
+                    <button onclick="switchTab('diplomacy')" id="nav-diplomacy" class="nav-btn px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+                        🌐 Diplomatie
+                    </button>
+                    <button onclick="switchTab('defense')" id="nav-defense" class="nav-btn px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+                        🛡️ Défense & CaMo
+                    </button>
+                    <button onclick="switchTab('geoeconomics')" id="nav-geoeconomics" class="nav-btn px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+                        ⚡ Géoéconomie
+                    </button>
+                    <button onclick="switchTab('finance-law')" id="nav-finance-law" class="nav-btn px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+                        ⚖️ Euroclear & Droit
+                    </button>
+                    <button onclick="switchTab('simulator')" id="nav-simulator" class="nav-btn px-3 py-2 text-sm font-medium rounded-lg text-amber-600 hover:text-amber-700 hover:bg-amber-50 transition-colors border border-amber-200/60">
+                        🎛️ Simulateur
+                    </button>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <div class="flex lg:hidden">
+                    <select onchange="switchTab(this.value)" class="bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg p-2 focus:ring-amber-500 focus:border-amber-500">
+                        <option value="dashboard">📊 Synthèse Globale</option>
+                        <option value="diplomacy">🌐 Diplomatie & Fédéralisme</option>
+                        <option value="defense">🛡️ Défense & CaMo</option>
+                        <option value="geoeconomics">⚡ Niches Géoéconomiques</option>
+                        <option value="finance-law">⚖️ Euroclear & Droit Int.</option>
+                        <option value="simulator">🎛️ Simulateur Stratégique</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- SECTION 1: DASHBOARD SYNTHÈSE -->
+        <section id="tab-dashboard" class="tab-content space-y-8">
+            <!-- Intro Paragraph -->
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-semibold">
+                    <span>Vue d'ensemble Macro-Stratégique</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Le paradoxe stratégique d'un État nodal</h2>
+                <p class="text-slate-600 leading-relaxed max-w-4xl text-sm sm:text-base">
+                    L'ordre international subit une fragmentation systémique majeure. Alors que le territoire belge héberge le cœur décisionnel euro-atlantique (UE, OTAN) et des infrastructures financières critiques (Euroclear), le poids relatif propre de la Belgique s'est érodé. Pour maintenir son rang, le pays effectue une mue rapide : réarmement accéléré via le partenariat capacitaire CaMo, verrouillage de ses niches géoéconomiques (IMEC, Biopharma, Énergie offshore, Umicore) et rôle clé d'arbitre juridique international.
+                </p>
+            </div>
+
+            <!-- Metric Cards Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-amber-300 transition-all">
+                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Part du PIB Mondial</div>
+                    <div class="text-3xl font-extrabold text-slate-900 mt-2">0,43 %</div>
+                    <div class="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                        <span>▼ En baisse (vs ~1,0 % post-Guerre froide)</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-2">Source: Données FMI 2024</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-amber-300 transition-all">
+                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Budget Défense 2025</div>
+                    <div class="text-3xl font-extrabold text-slate-900 mt-2">&gt;14,5 Mds $</div>
+                    <div class="text-xs text-emerald-600 mt-1 flex items-center gap-1 font-medium">
+                        <span>▲ Cap sur l'objectif 2,0% OTAN</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-2">Plan STAR & Loi de Programmation</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-amber-300 transition-all">
+                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Avoirs Russes (Euroclear)</div>
+                    <div class="text-3xl font-extrabold text-slate-900 mt-2">210 Mds €</div>
+                    <div class="text-xs text-amber-600 mt-1 flex items-center gap-1 font-medium">
+                        <span>⚠️ Taxe sur surprofits : ~6.6 Mds €</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-2">Chambre de compensation - Bruxelles</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-amber-300 transition-all">
+                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Chiffre d'Affaires Biopharma</div>
+                    <div class="text-3xl font-extrabold text-slate-900 mt-2">74,9 Mds €</div>
+                    <div class="text-xs text-slate-600 mt-1 flex items-center gap-1 font-medium">
+                        <span>🔬 15% du PIB National</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-2">5,3 Mds € de R&D annuelle</p>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Chart 1: Erosion Relative -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Érosion Mathématique de l'Influence Relative</h3>
+                        <p class="text-xs text-slate-500 mt-1">Comparaison de l'empreinte de la Belgique entre l'ère de fondation et 2024 (Source: FMI, ONU, SIPRI).</p>
+                    </div>
+                    <div class="chart-container my-4">
+                        <canvas id="chartErosion"></canvas>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg text-xs text-slate-600 border border-slate-100">
+                        <span class="font-semibold text-slate-800">Constat :</span> Le déclin démographique et économique relatif de l'Europe réduit mécaniquement le poids brut de la diplomatie belge, imposant un passage à une stratégie de "puissance d'influence par niches".
+                    </div>
+                </div>
+
+                <!-- Chart 2: Defense Trajectory -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Trajectoire des Dépenses de Défense (% du PIB)</h3>
+                        <p class="text-xs text-slate-500 mt-1">Du point bas historique au rattrapage de la norme OTAN des 2% (2017-2026).</p>
+                    </div>
+                    <div class="chart-container my-4">
+                        <canvas id="chartDefense"></canvas>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg text-xs text-slate-600 border border-slate-100">
+                        <span class="font-semibold text-slate-800">Tension macroéconomique :</span> Avec une dette publique à &gt;107% du PIB, l'effort militaire crée une friction directe avec les règles budgétaires européennes et les dépenses sociales.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: DIPLOMATIE & FÉDÉRALISME -->
+        <section id="tab-diplomacy" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-900 text-xs font-semibold">
+                    <span>Axe 1 : Architecture Constitutionnelle & Action Extérieure</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Le Fédéralisme Diplomatique : La Doctrine *In Foro Interno, In Foro Externo*</h2>
+                <p class="text-slate-600 leading-relaxed max-w-4xl text-sm sm:text-base">
+                    L'article 167 de la Constitution belge consacre l'exclusivité des compétences des entités fédérées (Régions et Communautés) sur la scène internationale pour leurs matières propres. Ce réseau complexe nécessite un alignement constant via la Conférence Interministérielle (CIPE) et le mécanisme <strong>Coormulti</strong>. Si ce modèle garantit la légitimité démocratique interne, il a montré sa fragilité lors du veto wallon temporaire sur l'accord commercial UE-Canada (CETA) en 2016.
+                </p>
+            </div>
+
+            <!-- CETA Case Study Interactive Focus -->
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 sm:p-8 rounded-2xl shadow-lg space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-700 pb-4">
+                    <div>
+                        <span class="bg-amber-500 text-slate-950 text-xs font-bold px-2.5 py-1 rounded uppercase tracking-wider">Étude de Cas Systemique</span>
+                        <h3 class="text-xl font-bold mt-2">Le Veto Wallon sur le CETA (2016) & Retombées 2024</h3>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-2xl font-extrabold text-amber-400">+64,8 M€</span>
+                        <p class="text-xs text-slate-400">Excédent commercial Wallonie-Canada en 2024</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                        <h4 class="font-bold text-amber-400 mb-2">1. Le Blocage Institutionnel</h4>
+                        <p class="text-slate-300 text-xs leading-relaxed">Le Parlement de Wallonie a refusé de déléguer la signature de l'accord commercial, exigeant des garanties strictes sur le mécanisme d'arbitrage (ICS) et la protection de l'agriculture locale.</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                        <h4 class="font-bold text-amber-400 mb-2">2. La Gestion du Risque</h4>
+                        <p class="text-slate-300 text-xs leading-relaxed">Les structures "Coormulti" et la CIPE ont négocié une déclaration interprétative conjointe belge et européenne pour préserver l'autonomie juridique des normes sanitaires.</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                        <h4 class="font-bold text-amber-400 mb-2">3. L'Approche "Team Belgium"</h4>
+                        <p class="text-slate-300 text-xs leading-relaxed">Le SPF Affaires Étrangères s'est allié aux agences régionales (AWEX, FIT, Hub.brussels) pour focaliser l'action sur la diplomatie économique ciblée (Missions Brésil & Turquie).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consular Network Redeployment Matrix -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Plan de Redéploiement du Réseau Consulaire (2024-2027)</h3>
+                        <p class="text-xs text-slate-500">Rationalisation budgétaire (-25% pouvoir d'achat) et ciblage géopolitique strict du SPF Affaires Étrangères.</p>
+                    </div>
+                    <!-- Filter Buttons -->
+                    <div class="flex flex-wrap gap-2" id="consular-filter-btns">
+                        <button onclick="filterConsular('all')" class="consular-btn text-xs px-3 py-1.5 rounded-full font-medium bg-slate-900 text-white">Tous</button>
+                        <button onclick="filterConsular('Balkans')" class="consular-btn text-xs px-3 py-1.5 rounded-full font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Balkans</button>
+                        <button onclick="filterConsular('Moyen-Orient')" class="consular-btn text-xs px-3 py-1.5 rounded-full font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Moyen-Orient</button>
+                        <button onclick="filterConsular('Afrique')" class="consular-btn text-xs px-3 py-1.5 rounded-full font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Afrique</button>
+                        <button onclick="filterConsular('Amerique-Asie')" class="consular-btn text-xs px-3 py-1.5 rounded-full font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Amériques/Asie</button>
+                    </div>
+                </div>
+
+                <!-- Redeployment Cards Dynamic Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="consular-grid">
+                    <!-- Cards rendered by JS -->
+                </div>
+
+                <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-xs text-amber-900 flex items-start gap-3">
+                    <span class="text-lg">💡</span>
+                    <div>
+                        <span class="font-bold">Complément d'Ingénierie Renseignée :</span> La diplomatie belge s'appuie également sur l'<strong>Institut Egmont</strong> (Institut royal des Relations internationales), fondé en 1947 par Paul van Zeeland, qui sert de cellule de réflexion académique et stratégique permanente (Sahel, Conseil de l'UE, crises migratoires).
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: DÉFENSE & CAMO -->
+        <section id="tab-defense" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-900 text-xs font-semibold">
+                    <span>Axe 2 : Mue Sécuritaire & Intégration Européenne</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Du "Passager Clandestin" à l'Armée de Terre Intégrée</h2>
+                <p class="text-slate-600 leading-relaxed max-w-4xl text-sm sm:text-base">
+                    Après la parenthèse du désarmement unilatéral (point bas de 0,88% du PIB en 2017), le plan <strong>STAR</strong> formalise la réorganisation de la défense. Plutôt que de reconstruire une armée conventionnelle isolée, la Belgique s'arrime à l'Armée de Terre française via le programme <strong>CaMo (Capacité Motorisée)</strong> et pérennise son ancrage atomique américain par le remplacement des chasseurs par des F-35.
+                </p>
+            </div>
+
+            <!-- Grid breakdown CaMo vs F35 vs Cyber/Redu -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- CaMo Card -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Partenariat Franco-Belge</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded">14,4 Mds € (25 ans)</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mt-2">Programme CaMo (1 & 2)</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Interopérabilité doctrinale et matérielle totale avec l'Armée française via l'écosystème SCORPION.
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-2 mt-4">
+                            <li class="flex items-center gap-2">✔️ <strong>382 Blindés Griffon</strong> & <strong>60 EBRC Jaguar</strong></li>
+                            <li class="flex items-center gap-2">✔️ <strong>29 Canons CAESAR MkII</strong> & mortiers MEPAC</li>
+                            <li class="flex items-center gap-2">✔️ Assemblage belge par <strong>MOL</strong></li>
+                            <li class="flex items-center gap-2">✔️ Tourelleaux FN Herstal (fournisseur KNDS France)</li>
+                        </ul>
+                    </div>
+                    <button onclick="showModal('camo')" class="w-full mt-4 py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg transition-colors">
+                        Inspecter l'Impact BITD Belge
+                    </button>
+                </div>
+
+                <!-- Nuclear Sharing / F35 Card -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-wider">Ancrage Atlantiste</span>
+                            <span class="bg-red-100 text-red-800 text-xs font-semibold px-2 py-0.5 rounded">4 Mds € (34 F-35)</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mt-2">Partage Nucléaire & F-35</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Maintien de la capacité de dissuasion nucléaire partagée de l'OTAN sur la base aérienne de Kleine-Brogel (10 à 20 bombes B61/B61-12).
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-2 mt-4">
+                            <li class="flex items-center gap-2">⚠️ Seul le F-35A est certifié pour la bombe B61-12</li>
+                            <li class="flex items-center gap-2">⚠️ Dépendance technologique directe envers Washington</li>
+                            <li class="flex items-center gap-2">⚠️ Contestation politique et citoyenne récurrente</li>
+                        </ul>
+                    </div>
+                    <button onclick="showModal('f35')" class="w-full mt-4 py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg transition-colors">
+                        Analyser le Dilemme Stratégique
+                    </button>
+                </div>
+
+                <!-- Cyber & ESEC Redu Card -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Espace & Cyber</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2 py-0.5 rounded">Bunker Zone 5</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mt-2">ESEC Redu & Cyber Command</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Transformation de l'écosystème spatial luxembourgeois belge en forteresse de cybersécurité spatiale européenne (ESA).
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-2 mt-4">
+                            <li class="flex items-center gap-2">🛡️ Protection des constellations Galileo, IRIS², Copernicus</li>
+                            <li class="flex items-center gap-2">🛡️ Réseau quantique européen EuroQCI</li>
+                            <li class="flex items-center gap-2">🛡️ Nouveau Cyber Command de la Défense Belge</li>
+                        </ul>
+                    </div>
+                    <button onclick="showModal('redu')" class="w-full mt-4 py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg transition-colors">
+                        Explorer le Hub ESEC Redu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Investment Visualizer -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-slate-900">Ventilation de l'Effort Capacitaire Militaire Belge</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div class="chart-container">
+                        <canvas id="chartCamoBreakdown"></canvas>
+                    </div>
+                    <div class="space-y-3 text-xs text-slate-600">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-900">CaMo 1 & 2 (14,4 Mds € lifecycle) :</span> Équipement complet de la composante Terre, intégration réseau SCORPION, armement FN Herstal.
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-900">Composante Air / F-35 (4 Mds €) :</span> Acquisition de 34 avions furtifs de 5ème génération pour les missions conventionnelles et de dissuasion nucléaire OTAN.
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-900">Cyber & Infrastructures Spatiales :</span> Déploiement des capacités d'action dans le domaine cybernétique et renforcement de l'ESEC à Redu.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: GÉOÉCONOMIE -->
+        <section id="tab-geoeconomics" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-semibold">
+                    <span>Axe 3 : Niches Systémiques & Souveraineté Européenne</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Géoéconomie : Les Goulets d'Étranglement Belges</h2>
+                <p class="text-slate-600 leading-relaxed max-w-4xl text-sm sm:text-base">
+                    Dans un contexte de "weaponization" des échanges mondiaux, la Belgique dispose d'actifs géoéconomiques névralgiques. De la R&D sur les microprocesseurs sub-2nm à la logistique vaccinale, en passant par l'interconnexion électrique offshore et le recyclage des métaux critiques, le pays s'impose comme la "salle des machines" de l'autonomie stratégique européenne.
+                </p>
+            </div>
+
+            <!-- Interactive Hub Matrix -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Hub 1: IMEC -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-1 rounded uppercase">Semi-conducteurs</span>
+                            <h3 class="text-xl font-bold text-slate-900 mt-2">IMEC (Louvain)</h3>
+                        </div>
+                        <span class="text-2xl">🔬</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Pôle pré-concurrentiel mondial de gravure sous les 2 nanomètres. Chef d'orchestre du <strong>Chips Act européen</strong> (11 Mds €) et pilote de la ligne expérimentale "NanoIC".
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Enjeu Géopolitique :</span>
+                            <span class="font-bold text-slate-800">Médiateur découplage USA-Chine</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Centres associés :</span>
+                            <span class="font-semibold text-slate-700">CEA-Leti (FR), Fraunhofer (DE)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hub 2: Biopharma Valley -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="bg-rose-100 text-rose-800 text-xs font-bold px-2.5 py-1 rounded uppercase">Santé & Biotechnologies</span>
+                            <h3 class="text-xl font-bold text-slate-900 mt-2">Biopharma Valley</h3>
+                        </div>
+                        <span class="text-2xl">🧪</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        74,9 Mds € de CA (15% du PIB). Hub européen d'essais cliniques et de vaccins. Menacé par l'IRA américain et les coûts énergétiques (perte de &gt;1.500 emplois récents).
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Exportations :</span>
+                            <span class="font-bold text-slate-800">1/10e du budget R&D européen</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Vulnérabilité :</span>
+                            <span class="font-semibold text-rose-700">Désindustrialisation vs USA/Chine</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hub 3: Île Princesse Elisabeth -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded uppercase">Transition Énergétique</span>
+                            <h3 class="text-xl font-bold text-slate-900 mt-2">Île Princesse Elisabeth (Elia)</h3>
+                        </div>
+                        <span class="text-2xl">⚡</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Première île artificielle d'énergie offshore au monde (45 km des côtes). 3,5 GW de capacité éolienne et interconnexion hybride avec le Royaume-Uni (Nautilus) et le Danemark (TritonLink).
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Financement :</span>
+                            <span class="font-bold text-slate-800">REPowerEU / Elia</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Biodiversité :</span>
+                            <span class="font-semibold text-emerald-700">Récifs huîtres plates intégrés</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hub 4: Umicore & Métaux Critiques -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded uppercase">Matières Premières</span>
+                            <h3 class="text-xl font-bold text-slate-900 mt-2">Umicore & Diplomatie ESG</h3>
+                        </div>
+                        <span class="text-2xl">♻️</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Recyclage &gt;95% des métaux critiques (batteries Lithium-ion) à Hoboken/Olen. Partenariats miniers ESG en RDC (Cobalt, Germanium) pour offrir une alternative au monopole chinois.
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Cadre Réglementaire :</span>
+                            <span class="font-bold text-slate-800">Critical Raw Materials Act</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Vecteur d'Action :</span>
+                            <span class="font-semibold text-amber-700">Diplomatie ESG "Team Belgium" (Enabel)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geo-economic Vulnerability & Criticality Chart -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-slate-900">Cartographie d'Impact et de Sensibilité des Niches Géoéconomiques</h3>
+                <p class="text-xs text-slate-500">Comparaison de la valeur économique contributive et de la sensibilité aux chocs géopolitiques mondiaux.</p>
+                <div class="chart-container my-4">
+                    <canvas id="chartGeoeconomics"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: EUROCLEAR & DROIT INTERNATIONAL -->
+        <section id="tab-finance-law" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-white text-xs font-semibold">
+                    <span>Axe 4 : Guerres Juridiques & Financières</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Arbitre Contraint : Euroclear et la Ligne des Cours de La Haye</h2>
+                <p class="text-slate-600 leading-relaxed max-w-4xl text-sm sm:text-base">
+                    En hébergeant la chambre de compensation financière <strong>Euroclear</strong> (42 500 Mds € de titres) et en soutenant fermement la Cour Pénale Internationale (CPI) ainsi que la Cour Internationale de Justice (CIJ), la Belgique se trouve en première ligne de l'arsenalisation du droit et de la finance.
+                </p>
+            </div>
+
+            <!-- Euroclear Interactive Dilemma Matrix -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900">Le Casse-Tête Existenciel d'Euroclear (210 Mds € d'Actifs Russes)</h3>
+                        <p class="text-xs text-slate-500">Arbitrage entre soutien à l'Ukraine et préservation de la stabilité de l'Euro.</p>
+                    </div>
+                    <div class="bg-amber-100 text-amber-900 px-3 py-1.5 rounded-lg text-xs font-bold border border-amber-200">
+                        Taxe sur surprofits générée : ~6,6 Mds € cumulés
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Path A: Direct Confiscation -->
+                    <div class="p-5 rounded-xl border border-red-200 bg-red-50/50 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-red-900 text-sm">Option A : Confiscation Directe du Capital</span>
+                            <span class="bg-red-200 text-red-900 text-[10px] font-bold px-2 py-0.5 rounded">Ressenti US / Kiev</span>
+                        </div>
+                        <p class="text-xs text-red-800 leading-relaxed">
+                            Saisie brute des 210 Mds € pour financer la reconstruction et la défense de l'Ukraine.
+                        </p>
+                        <div class="text-xs text-red-900 space-y-1 bg-white p-3 rounded-lg border border-red-100">
+                            <p>❌ <strong>Péril Juridique :</strong> Violation de l'immunité souveraine des États. Représailles russes de 200 Mds € réclamées.</p>
+                            <p>❌ <strong>Risque Systémique Euro :</strong> Fuite massive des capitaux tiers (Chine, Golfe) redoutée par la BCE.</p>
+                        </div>
+                    </div>
+
+                    <!-- Path B: Windfall Profit Compromise -->
+                    <div class="p-5 rounded-xl border border-emerald-200 bg-emerald-50/50 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-emerald-900 text-sm">Option B : Compromis Belge / UE (Windfall Tax)</span>
+                            <span class="bg-emerald-200 text-emerald-900 text-[10px] font-bold px-2 py-0.5 rounded text-wrap">Solution Retenue</span>
+                        </div>
+                        <p class="text-xs text-emerald-800 leading-relaxed">
+                            Taxation des intérêts d'impayés (2,3 Mds € au S1 2026) transférés vers le fonds européen de prêt à l'Ukraine.
+                        </p>
+                        <div class="text-xs text-emerald-900 space-y-1 bg-white p-3 rounded-lg border border-emerald-100">
+                            <p>✅ <strong>Sécurité Juridique :</strong> Préserve le capital principal sous droit de garde d'Euroclear.</p>
+                            <p>✅ <strong>Mutualisation G7 :</strong> Exigence belge de garantie collective des risques de contentieux.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Chart -->
+                <div class="chart-container my-4">
+                    <canvas id="chartEuroclear"></canvas>
+                </div>
+            </div>
+
+            <!-- International Law Stance (CPI / CIJ / OIF) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- CPI & USA Tension -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <span class="text-xs font-bold text-amber-600 uppercase">Droit Humanitaire</span>
+                    <h4 class="font-bold text-slate-900 text-base">Bouclier Diplomatique CPI</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Face aux menaces de sanctions américaines contre la CPI lors des mandats Gaza, la Belgique (bureau des États parties 2024-2026) a co-organisé la déclaration des 93 pays de soutien à l'indépendance de la Cour.
+                    </p>
+                </div>
+
+                <!-- CIJ Advisory Opinions -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <span class="text-xs font-bold text-blue-600 uppercase">Avis Consultatifs</span>
+                    <h4 class="font-bold text-slate-900 text-base">Plaidoyer à la CIJ</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Plaidoyer formel devant la Cour Internationale de Justice sur l'illégalité des occupations et colonisations prolongées. Pression sociétale interne forte (collectifs ONG / Droit pour Gaza).
+                    </p>
+                </div>
+
+                <!-- Asymmetric Multilateralism OIF & Benelux -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <span class="text-xs font-bold text-emerald-600 uppercase">Multilatéralisme Asymétrique</span>
+                    <h4 class="font-bold text-slate-900 text-base">Réseau OIF & Benelux</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Projection d'influence en Afrique francophone via les 2 sièges à l'OIF (Fédéral + Communauté française / 8,8M de locuteurs) et coordination d'avant-garde au sein du laboratoire Benelux.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: SIMULATEUR STRATÉGIQUE -->
+        <section id="tab-simulator" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-semibold">
+                    <span>Outil Interactif d'Aide à la Décision</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Simulateur de Trajectoire Stratégique Belge 2026-2030</h2>
+                <p class="text-slate-600 leading-relaxed max-w-4xl text-sm sm:text-base">
+                    Ajustez les curseurs d'arbitrage budgétaire et géoéconomique pour évaluer l'impact combiné sur la crédibilité OTAN, la soutenabilité de la dette et l'indépendance technologique.
+                </p>
+            </div>
+
+            <!-- Controls & Results Dynamic Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Sliders Panel -->
+                <div class="lg:col-span-1 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Paramètres de Politiques Publiques</h3>
+
+                    <!-- Control 1: Defense Target -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-medium">
+                            <label for="sim-defense" class="text-slate-700">Objectif Budget Défense (% PIB)</label>
+                            <span id="sim-defense-val" class="font-bold text-amber-600">2,0 %</span>
+                        </div>
+                        <input type="range" id="sim-defense" min="1.4" max="2.5" step="0.1" value="2.0" oninput="updateSimulator()" class="w-full accent-amber-500">
+                        <p class="text-[11px] text-slate-400">Impact sur conformité OTAN vs pression sur déficit social.</p>
+                    </div>
+
+                    <!-- Control 2: Euroclear Stance -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-medium">
+                            <label for="sim-euroclear" class="text-slate-700">Taxation Surprofits Euroclear (%)</label>
+                            <span id="sim-euroclear-val" class="font-bold text-amber-600">100 %</span>
+                        </div>
+                        <input type="range" id="sim-euroclear" min="0" max="100" step="10" value="100" oninput="updateSimulator()" class="w-full accent-amber-500">
+                        <p class="text-[11px] text-slate-400">Part des revenus financiers transférée au prêt d'urgence Ukraine.</p>
+                    </div>
+
+                    <!-- Control 3: R&D Chips Act Support -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-medium">
+                            <label for="sim-rd" class="text-slate-700">Soutien Fédéral IMEC / Biopharma (M€)</label>
+                            <span id="sim-rd-val" class="font-bold text-amber-600">500 M€</span>
+                        </div>
+                        <input type="range" id="sim-rd" min="100" max="1000" step="50" value="500" oninput="updateSimulator()" class="w-full accent-amber-500">
+                        <p class="text-[11px] text-slate-400">Incitations fiscales pour résister à l'IRA américain.</p>
+                    </div>
+                </div>
+
+                <!-- Simulation Output Panel -->
+                <div class="lg:col-span-2 bg-slate-900 text-white p-6 sm:p-8 rounded-2xl shadow-xl flex flex-col justify-between space-y-6">
+                    <div>
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                            <h3 class="text-xl font-bold text-white">Résultats Évalués de la Simulation</h3>
+                            <span class="bg-amber-500/20 text-amber-300 text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/30">Calculateur Prédictif</span>
+                        </div>
+
+                        <!-- Scores Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                            <div class="bg-slate-800/90 p-4 rounded-xl border border-slate-700">
+                                <span class="text-xs text-slate-400 block font-medium">Indice de Crédibilité OTAN</span>
+                                <span id="res-otan" class="text-2xl font-extrabold text-amber-400 mt-1 block">85 / 100</span>
+                                <span id="res-otan-sub" class="text-[10px] text-slate-400 mt-1 block">Conforme aux attentes alliées</span>
+                            </div>
+
+                            <div class="bg-slate-800/90 p-4 rounded-xl border border-slate-700">
+                                <span class="text-xs text-slate-400 block font-medium">Impact Dette Publique (% PIB)</span>
+                                <span id="res-dette" class="text-2xl font-extrabold text-red-400 mt-1 block">108.4 %</span>
+                                <span id="res-dette-sub" class="text-[10px] text-slate-400 mt-1 block">Tension budgétaire accrue</span>
+                            </div>
+
+                            <div class="bg-slate-800/90 p-4 rounded-xl border border-slate-700">
+                                <span class="text-xs text-slate-400 block font-medium">Aide Annuelle Ukraine</span>
+                                <span id="res-ukraine" class="text-2xl font-extrabold text-emerald-400 mt-1 block">2.3 Mds €</span>
+                                <span id="res-ukraine-sub" class="text-[10px] text-slate-400 mt-1 block">Financée via Euroclear</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strategic Advice Box -->
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 text-xs leading-relaxed text-slate-300 space-y-2">
+                        <span class="font-bold text-amber-400 uppercase tracking-wider block">Évaluation de Synthese :</span>
+                        <p id="sim-analysis-text">
+                            La configuration actuelle équilibre la réaffirmation sécuritaire atlantique et la stabilité du système financier européen. Les investissements R&D permettent de contenir la désindustrialisation vaccinale.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Dialog for Deep Dives -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl relative border border-slate-200">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-xl font-bold">✕</button>
+            <div id="modal-content" class="space-y-4">
+                <!-- Injected via Javascript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <p class="font-semibold text-slate-200">Observatoire Géopolitique & Strategic Intelligence - Belgique</p>
+                <p class="text-slate-500 mt-1">Généré à partir du rapport d'analyse stratégique 2025-2026. Aucune donnée d'origine externe altérée.</p>
+            </div>
+            <div class="flex space-x-4">
+                <span class="px-2 py-1 bg-slate-800 text-slate-300 rounded">SPF Affaires Étrangères</span>
+                <span class="px-2 py-1 bg-slate-800 text-slate-300 rounded">Institut Egmont</span>
+                <span class="px-2 py-1 bg-slate-800 text-slate-300 rounded">Plan STAR</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Store Application State
+        const state = {
+            currentTab: 'dashboard',
+            consularFilter: 'all'
+        };
+
+        // Data arrays for Consular Redeployment Network
+        const consularData = [
+            {
+                region: 'Balkans',
+                action: 'Ouverture d\'ambassade à Tirana (Albanie) / Fermeture à Sarajevo',
+                rationale: 'Stabilisation du flanc sud-est européen, gestion des flux migratoires et anticipation de l\'élargissement UE.',
+                tag: 'Renforcement Tirana'
+            },
+            {
+                region: 'Moyen-Orient',
+                action: 'Nomination d\'un ambassadeur dédié pour la Syrie (Beyrouth) / Fermeture Koweït City',
+                rationale: 'Positionnement proactif sur la reconstruction régionale, le suivi des réfugiés et la sécurité du Levant.',
+                tag: 'Priorité Syrie'
+            },
+            {
+                region: 'Afrique',
+                action: 'Fermeture des postes à Bamako (Mali), Maputo (Mozambique) et Conakry (Guinée)',
+                rationale: 'Réévaluation face au recul de l\'influence européenne au Sahel et réaffectation sécuritaire.',
+                tag: 'Rationalisation Sahel'
+            },
+            {
+                region: 'Amerique-Asie',
+                action: 'Fermeture de La Havane (Cuba), Rio de Janeiro (Brésil) et Guangzhou (Chine)',
+                rationale: 'Concentration des moyens consulaires sur les ambassades principales (Brasilia, Pékin) en contexte d\'hostilité commerciale.',
+                tag: 'Pôles Principaux'
+            }
+        ];
+
+        // Chart Instance References
+        let chartErosionInstance = null;
+        let chartDefenseInstance = null;
+        let chartCamoBreakdownInstance = null;
+        let chartGeoeconomicsInstance = null;
+        let chartEuroclearInstance = null;
+
+        // Tab Navigation Logic
+        function switchTab(tabId) {
+            state.currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Update Desktop Nav Styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-50', 'text-amber-800', 'border', 'border-amber-200');
+                btn.classList.add('text-slate-600');
+            });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.add('bg-amber-50', 'text-amber-800', 'border', 'border-amber-200');
+                activeNav.classList.remove('text-slate-600');
+            }
+
+            // Lazy Render Charts on Visibility
+            setTimeout(() => {
+                if (tabId === 'dashboard' && !chartErosionInstance) renderDashboardCharts();
+                if (tabId === 'defense' && !chartCamoBreakdownInstance) renderDefenseCharts();
+                if (tabId === 'geoeconomics' && !chartGeoeconomicsInstance) renderGeoeconomicsCharts();
+                if (tabId === 'finance-law' && !chartEuroclearInstance) renderEuroclearChart();
+            }, 50);
+        }
+
+        // Consular Filter Logic
+        function filterConsular(category) {
+            state.consularFilter = category;
+            const container = document.getElementById('consular-grid');
+            container.innerHTML = '';
+
+            const filtered = category === 'all' 
+                ? consularData 
+                : consularData.filter(item => item.region === category);
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2 transition-all hover:bg-white hover:border-amber-300 hover:shadow-sm';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-amber-700 uppercase">${item.region}</span>
+                        <span class="text-[10px] bg-amber-100 text-amber-900 font-semibold px-2 py-0.5 rounded">${item.tag}</span>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-sm">${item.action}</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">${item.rationale}</p>
+                `;
+                container.appendChild(card);
+            });
+
+            // Update Filter Button States safely
+            document.querySelectorAll('.consular-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+                // Match button by category if event is not present
+                if (event && event.currentTarget === btn) {
+                    btn.classList.remove('bg-slate-100', 'text-slate-700');
+                    btn.classList.add('bg-slate-900', 'text-white');
+                } else if (!event && btn.getAttribute('onclick').includes(`'${category}'`)) {
+                    btn.classList.remove('bg-slate-100', 'text-slate-700');
+                    btn.classList.add('bg-slate-900', 'text-white');
+                }
+            });
+        }
+
+        // Modal Handler
+        function showModal(type) {
+            const modal = document.getElementById('detail-modal');
+            const content = document.getElementById('modal-content');
+
+            if(type === 'camo') {
+                content.innerHTML = `
+                    <div class="inline-block px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded">Zoom Capacitaire</div>
+                    <h3 class="text-xl font-bold text-slate-900">Retombées Industrielles et BITD du Programme CaMo</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Le partenariat CaMo ne réside pas dans un achat passif. Il structure la base industrielle de défense belge :
+                    </p>
+                    <div class="space-y-2 text-xs text-slate-700">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong>MOL (Staden) :</strong> Assemblage final des véhicules blindés Griffon et Serval sur le sol national.
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong>FN Herstal :</strong> Fournisseur exclusif des tourelleaux téléopérés de nouvelle génération pour les blindés belges ET pour les chars Leclerc rénovés de l'Armée française.
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong>Thales Belgium :</strong> Intégration des radios tactiques et de la bulle de combat SCORPION. Premier fournisseur étranger du groupe KNDS France.
+                        </div>
+                    </div>
+                `;
+            } else if(type === 'f35') {
+                content.innerHTML = `
+                    <div class="inline-block px-2.5 py-1 bg-red-100 text-red-800 text-xs font-bold rounded">Analyse Doctrinale</div>
+                    <h3 class="text-xl font-bold text-slate-900">Le Choix du F-35 et la Dissuasion Élargie</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        L'acquisition des 34 chasseurs F-35A pour environ 4 Mds € répond à une contrainte stratégique d'Alliance :
+                    </p>
+                    <div class="space-y-2 text-xs text-slate-700">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong>Nuclear Sharing OTAN :</strong> La base de Kleine-Brogel abrite 10 à 20 bombes thermonucléaires B61. Le F-35A est l'unique chasseur certifié pour emporter la nouvelle variante B61-12.
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong>Friction de Souveraineté :</strong> Ce choix consacre la dépendance envers la maintenance américaine, alors que les risques de désengagement des USA inquiètent les stratégistes (études IFRI).
+                        </div>
+                    </div>
+                `;
+            } else if(type === 'redu') {
+                content.innerHTML = `
+                    <div class="inline-block px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded">Cyber & Espace</div>
+                    <h3 class="text-xl font-bold text-slate-900">ESEC Redu : Le Bunker Spatial Européen</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Implanté en province de Luxembourg depuis 1968, l'ESEC (European Space Security and Education Centre) est désormais la forteresse cyber de l'ESA :
+                    </p>
+                    <div class="space-y-2 text-xs text-slate-700">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong>Bunker Zone 5 :</strong> Abrite le Cyber Security Centre (ECSC) de l'ESA face aux risques de brouillage et de piratage d'infrastructures orbitales.
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong>Protection des Constellations :</strong> Surveillance en temps réel des flux de Galileo (GPS européen), Copernicus et de la constellation de connectivité sécurisée IRIS².
+                        </div>
+                    </div>
+                `;
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        // Simulator Logic
+        function updateSimulator() {
+            const defenseVal = parseFloat(document.getElementById('sim-defense').value);
+            const euroclearVal = parseFloat(document.getElementById('sim-euroclear').value);
+            const rdVal = parseFloat(document.getElementById('sim-rd').value);
+
+            document.getElementById('sim-defense-val').innerText = `${defenseVal.toFixed(1)} %`;
+            document.getElementById('sim-euroclear-val').innerText = `${euroclearVal} %`;
+            document.getElementById('sim-rd-val').innerText = `${rdVal} M€`;
+
+            // Dynamic Metric Calculations
+            const otanScore = Math.min(100, Math.round((defenseVal / 2.0) * 85 + (rdVal / 1000) * 15));
+            const detteImpact = (107.0 + (defenseVal - 1.5) * 1.8 + (rdVal / 500) * 0.4).toFixed(1);
+            const ukraineAid = ((2.3 * (euroclearVal / 100))).toFixed(2);
+
+            document.getElementById('res-otan').innerText = `${otanScore} / 100`;
+            document.getElementById('res-dette').innerText = `${detteImpact} %`;
+            document.getElementById('res-ukraine').innerText = `${ukraineAid} Mds €`;
+
+            // Textual feedback dynamic generation
+            let text = "";
+            if(defenseVal >= 2.0 && euroclearVal >= 80) {
+                text = "Configuration optimale de crédibilité atlantique et européenne. La Belgique remplit l'engagement OTAN tout en alimentant massivement le fonds d'urgence ukrainien. Pression sur les finances publiques à surveiller.";
+            } else if(defenseVal < 1.8) {
+                text = "Risque de retour des critiques pour 'free-riding' au sein de l'OTAN. L'économie budgétaire soulage la dette mais affaiblit la position diplomatique belge lors des sommets de l'Alliance.";
+            } else {
+                text = "Équilibre intermédiaire. La progression budgétaire de la Défense s'effectue sous tension constitutionnelle et macroéconomique stricte.";
+            }
+            document.getElementById('sim-analysis-text').innerText = text;
+        }
+
+        // Render Chart.js Visualizations
+        function renderDashboardCharts() {
+            // Chart 1: Erosion Relative
+            const ctx1 = document.getElementById('chartErosion').getContext('2d');
+            chartErosionInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Sièges ONU (Ratio)', 'Part PIB Mondial (%)', 'Dépenses Militaires (% Mondial)'],
+                    datasets: [
+                        {
+                            label: 'Post-Guerre Froide / Origine',
+                            data: [1.96, 1.00, 0.85],
+                            backgroundColor: '#94A3B8'
+                        },
+                        {
+                            label: 'Situation 2024',
+                            data: [0.51, 0.43, 0.32],
+                            backgroundColor: '#D97706'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw} % / ratio`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Chart 2: Defense Trajectory
+            const ctx2 = document.getElementById('chartDefense').getContext('2d');
+            chartDefenseInstance = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: ['2017', '2019', '2021', '2022 (STAR)', '2024', '2025-2026 (Cible)'],
+                    datasets: [{
+                        label: 'Dépenses Défense (% du PIB)',
+                        data: [0.88, 0.93, 1.02, 1.18, 1.54, 2.00],
+                        borderColor: '#DC2626',
+                        backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: false,
+                            min: 0.5,
+                            max: 2.2
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderDefenseCharts() {
+            const ctx3 = document.getElementById('chartCamoBreakdown').getContext('2d');
+            chartCamoBreakdownInstance = new Chart(ctx3, {
+                type: 'doughnut',
+                data: {
+                    labels: ['CaMo 1 & 2 (Terrestre)', 'Chasseurs F-35A (Air)', 'Cyber Command & ESEC Redu', 'Autre / Soutien'],
+                    datasets: [{
+                        data: [14.4, 4.0, 1.2, 2.5],
+                        backgroundColor: ['#2563EB', '#DC2626', '#059669', '#64748B']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ~${context.raw} Mds €`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderGeoeconomicsCharts() {
+            const ctx4 = document.getElementById('chartGeoeconomics').getContext('2d');
+            chartGeoeconomicsInstance = new Chart(ctx4, {
+                type: 'bar',
+                data: {
+                    labels: ['IMEC (Semi-cond.)', 'Biopharma Valley', 'Île Princesse Elisabeth', 'Umicore Recyclage'],
+                    datasets: [
+                        {
+                            label: 'Poids Économique / Stratégique (Note /10)',
+                            data: [9.5, 9.0, 8.5, 8.0],
+                            backgroundColor: '#0F172A'
+                        },
+                        {
+                            label: 'Indice de Sensibilité Géopolitique (Note /10)',
+                            data: [9.8, 8.2, 7.5, 8.8],
+                            backgroundColor: '#D97706'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, max: 10 }
+                    }
+                }
+            });
+        }
+
+        function renderEuroclearChart() {
+            const ctx5 = document.getElementById('chartEuroclear').getContext('2d');
+            chartEuroclearInstance = new Chart(ctx5, {
+                type: 'bar',
+                data: {
+                    labels: ['Avoirs Russes Immobilisés', 'Surprofits Cumulés Reversés (Compromis UE)'],
+                    datasets: [{
+                        label: 'Montant en Milliards d\'Euros (Mds €)',
+                        data: [210.0, 6.6],
+                        backgroundColor: ['#1E293B', '#059669']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Initialize App on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            filterConsular('all');
+            renderDashboardCharts();
+            updateSimulator();
+        });
+    </script>
+</body>
+</html>
