@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observatoire des Cabinets Ministériels & Intégrité Exécutive en Belgique</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Styles for Chart Containers & Specific UI Refinements -->
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-active {
+            border-bottom: 3px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        .tab-inactive {
+            border-bottom: 3px solid transparent;
+            color: #64748b;
+        }
+        .tab-inactive:hover {
+            color: #334155;
+            border-bottom: 3px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+    <!-- Chosen Palette: Warm Slate & Governance Palette (Slate-50 background, Slate-900 text, Indigo-600 primary action, Amber-500 warning/alert, Emerald-600 compliance success) -->
+    <!-- Application Structure Plan: Tabbed interactive application designed around 5 analytical pillars: 
+         1. Tableau de bord synthétique (KPIs, mise en contexte et enjeux fondamentaux).
+         2. Cartographie des Effectifs & Budgets (Répartition par niveau de pouvoir, quotas ETP Wallonie/FWB 2024-2026, coût du détachement).
+         3. Audit GRECO & Angle Mort Déontologique (Évaluation du 5e cycle, procédure Règle 32, 6 failles systémiques).
+         4. Privatisation de la Loi & Consultance (Audit Cour des comptes 2.5 Mrd€, externalisation juridique, neutralisation des AIR).
+         5. Benchmark Européen & Plan de Réformes (Comparatif international interactif, 4 piliers de sortie de crise). 
+         Ce découpage non linéaire privilégie la clarté pédagogique et la mise en relation immédiate entre chiffres et défaillances réglementaires. -->
+    <!-- Visualization & Content Choices: 
+         - Graphiques Chart.js (Canvas) : Répartition budgétaire et ETP par entité, Taux de conformité GRECO, Dépenses de consultance externe.
+         - Tableaux interactifs : Tableau dynamique des ministres wallons/FWB 2024-2026 avec filtres par parti/compétence ; Matrice comparative européenne.
+         - Cartes d'évaluation interactives : Modal/Accordéons pour l'exploration des 6 failles réglementaires GRECO.
+         - NO SVG graphics, NO Mermaid JS used. HTML/CSS styling for icon badges and indicators. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-indigo-600 text-white font-bold text-lg shadow">
+                        🇧🇪
+                    </span>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">Observatoire de la Démocratie Belge</h1>
+                        <p class="text-xs text-slate-500 font-medium">Cabinets ministériels, déontologie & privatisation de la norme</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200">
+                        Status GRECO : Règle 32 révisée ⚠️
+                    </span>
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                        Mise à jour 2025–2026
+                    </span>
+                </div>
+            </div>
+
+            <!-- Primary Navigation Tabs -->
+            <nav class="flex space-x-4 overflow-x-auto no-scrollbar border-t border-slate-100" id="main-nav">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-active py-3 px-3 text-xs sm:text-sm whitespace-nowrap transition-colors">
+                    📊 Tableau de Bord
+                </button>
+                <button onclick="switchTab('cartography')" id="tab-cartography" class="tab-inactive py-3 px-3 text-xs sm:text-sm whitespace-nowrap transition-colors">
+                    🏛️ Cartographie & Budgets
+                </button>
+                <button onclick="switchTab('greco')" id="tab-greco" class="tab-inactive py-3 px-3 text-xs sm:text-sm whitespace-nowrap transition-colors">
+                    ⚖️ Angle Mort GRECO
+                </button>
+                <button onclick="switchTab('consultancy')" id="tab-consultancy" class="tab-inactive py-3 px-3 text-xs sm:text-sm whitespace-nowrap transition-colors">
+                    💼 Privatisation & Consultance
+                </button>
+                <button onclick="switchTab('benchmark')" id="tab-benchmark" class="tab-inactive py-3 px-3 text-xs sm:text-sm whitespace-nowrap transition-colors">
+                    🌍 Benchmark & Réformes
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- SECTION 1: DASHBOARD -->
+        <section id="section-dashboard" class="space-y-8">
+            <!-- Section Intro -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-3">
+                <h2 class="text-2xl font-bold text-slate-900">Synthèse Générale : L'Hypertrophie du Pouvoir Exécutif en Belgique</h2>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                    L'architecture institutionnelle belge repose sur une exception démocratique : le rôle hypertrophié des cabinets ministériels (plus de <strong>2 000 collaborateurs</strong> dits « cabinettards » sous la législature 2019–2024). Agissant comme une administration parallèle non élue, ces entourages colonisent la conception des lois, court-circuitent les administrations permanentes et opèrent dans un vide réglementaire régulièrement sanctionné par le <strong>GRECO</strong> et la <strong>Cour des comptes</strong>.
+                </p>
+            </div>
+
+            <!-- Metrics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Collaborateurs Ministériels</span>
+                        <div class="text-3xl font-extrabold text-indigo-600 mt-2">&gt; 2 000</div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-2">Répartis entre 54 ministres (2019–2024)</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Conformité GRECO (5e Cycle)</span>
+                        <div class="text-3xl font-extrabold text-amber-500 mt-2">36,3 %</div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-2">8 recommandations sur 22 (Fin 2025)</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Consultance Fédérale (2020-2022)</span>
+                        <div class="text-3xl font-extrabold text-rose-600 mt-2">2,5 Mrd €</div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-2">78,2 % des marchés non justifiés (Cour des comptes)</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Détachement Administratif</span>
+                        <div class="text-3xl font-extrabold text-slate-800 mt-2">46 % à 65 %</div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-2">Coûts salariaux masqués dans l'administration</p>
+                </div>
+            </div>
+
+            <!-- Grid Charts & Key Insights -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Overview Chart Container -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <h3 class="font-bold text-slate-900 text-base">Efforts de Sobriété 2024–2026 (ETP Autorisés)</h3>
+                        <span class="text-xs font-medium bg-indigo-50 text-indigo-700 px-2 py-1 rounded">Wallonie & FWB</span>
+                    </div>
+                    <p class="text-xs text-slate-500">
+                        Comparaison des plafonds d'Équivalents Temps Plein (ETP) entre les gouvernements 2019-2024 (Di Rupo/Jeholet) et 2024-2029 (Dolimont/Degryse).
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="dashboardOverviewChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Executive Summary Cards -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Les 3 Diagnostics Clés de l'Enquête</h3>
+                        <div class="mt-4 space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-xs font-bold">1</span>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate-900">Le court-circuit particratique</h4>
+                                    <p class="text-xs text-slate-600 mt-1">
+                                        Les réunions inter-cabinets (IKW) et les présidents de partis contrôlent la fabrique des lois au détriment du contrôle parlementaire et de la haute administration.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">2</span>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate-900">L'angle mort éthique sanctionné</h4>
+                                    <p class="text-xs text-slate-600 mt-1">
+                                        Sous le coup de la <strong>Règle 32 révisée du GRECO</strong>, la Belgique refuse toujours d'encadrer le recrutement discrétionnaire, le pantouflage et le lobbying auprès de l'exécutif.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">3</span>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate-900">La privatisation de la norme</h4>
+                                    <p class="text-xs text-slate-600 mt-1">
+                                        L'assèchement des compétences administratives pousse les ministères à externaliser la rédaction même des lois à des cabinets d'avocats privés (ex. dossier Eubelius à 496 000 €).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-600 flex justify-between items-center">
+                        <span>Découvrez la cartographie complète des effectifs par région :</span>
+                        <button onclick="switchTab('cartography')" class="text-indigo-600 font-bold hover:underline">Explorer &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: CARTOGRAPHY & BUDGETS -->
+        <section id="section-cartography" class="hidden space-y-8">
+            <!-- Section Intro -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-3">
+                <h2 class="text-2xl font-bold text-slate-900">Anatomie & Chiffrage de l'Hypertrophie Ministérielle</h2>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                    Cette section détaille les effectifs et enveloppes budgétaires des cabinets aux niveaux fédéral et régional. Explorez l'impact du régime de <strong>détachement administratif</strong> qui masque une part importante des coûts réels, ainsi que le détail des quotas ETP issus des réformes de sobriété de 2024–2026.
+                </p>
+            </div>
+
+            <!-- Regional Headcount & Budget Comparison -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Headcount Chart Container -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Effectifs Moyens par Membre de l'Exécutif (2019-2024)</h3>
+                    <p class="text-xs text-slate-500">Moyenne du nombre de collaborateurs directs par ministre/secrétaire d'État.</p>
+                    <div class="chart-container">
+                        <canvas id="headcountRegionalChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Detachment Cost Explainer -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Le Trompe-l'œil Budgétaire du Détachement</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Les budgets de cabinets affichés sont artificiellement sous-estimés par le recours massif aux <strong>fonctionnaires détachés</strong>. Ces agents conservent leur traitement au sein de leur administration d'origine (SPF ou régionales) et ne reçoivent du cabinet qu'une simple allocation complémentaire.
+                        </p>
+                        <div class="mt-4 grid grid-cols-2 gap-3 text-center">
+                            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                <span class="block text-2xl font-bold text-indigo-600">65,2 %</span>
+                                <span class="text-xs text-slate-500">Détachés au Cabinet du Budget Fédéral (2024–2025)</span>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                <span class="block text-2xl font-bold text-slate-800">46,5 %</span>
+                                <span class="text-xs text-slate-500">Détachés en Région Bruxelloise (2019–2024)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-amber-800">
+                        <strong>Impact pervers :</strong> Ce mécanisme appauvrit l'administration permanente de ses cadres qualifiés tout en simulant une modération budgétaire de l'exécutif.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Table: Wallonie & FWB Ministerial Quotas (2024-2029) -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">Répartition des Quotas ETP : Gouvernements Wallon & FWB (2024–2029)</h3>
+                        <p class="text-xs text-slate-500">Mécanisme des « ministres à double casquette » (10 personnes physiques pour 14 portefeuilles).</p>
+                    </div>
+                    <!-- Filter -->
+                    <div class="flex items-center space-x-2">
+                        <label for="party-filter" class="text-xs font-semibold text-slate-600">Filtrer par parti :</label>
+                        <select id="party-filter" onchange="filterMinisterTable()" class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="ALL">Tous les partis (MR & Les Engagés)</option>
+                            <option value="MR">MR</option>
+                            <option value="LE">Les Engagés</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs" id="minister-table">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold uppercase tracking-wider">
+                                <th class="p-3">Ministre</th>
+                                <th class="p-3">Parti</th>
+                                <th class="p-3">Portefeuille Région Wallonne (RW)</th>
+                                <th class="p-3 text-center">ETP (RW)</th>
+                                <th class="p-3">Portefeuille Communauté Française (FWB)</th>
+                                <th class="p-3 text-center">ETP (FWB)</th>
+                                <th class="p-3 text-center font-bold bg-indigo-50 text-indigo-900">Total ETP</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700" id="minister-table-body">
+                            <!-- Dynamic Content Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-slate-400 italic">
+                    Source: Arrêtés des Gouvernements wallon (15/07/2024) et FWB (19/07/2024). Baisse globale de 657 à 570 ETP (-13,3 %).
+                </p>
+            </div>
+        </section>
+
+
+        <!-- SECTION 3: GRECO AUDIT & LEGAL BLIND SPOT -->
+        <section id="section-greco" class="hidden space-y-8">
+            <!-- Section Intro -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-3">
+                <h2 class="text-2xl font-bold text-slate-900">L'Angle Mort Réglementaire : Sanction du GRECO & Règle 32</h2>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                    Dans son rapport d'évaluation du 5e cycle (publié fin 2025 - <code>GrecoRC5(2025)22</code>), le Conseil de l'Europe dresse un constat sévère : la Belgique n'a satisfait qu'à <strong>36,3 % des recommandations</strong> concernant les Hautes Fonctions de l'Exécutif. Cette inertie a réactivé la <strong>Règle 32 révisée</strong> (procédure renforcée de non-conformité).
+                </p>
+            </div>
+
+            <!-- GRECO Status Chart & 6 Flaws Overview -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- GRECO Doughnut Chart Container -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 lg:col-span-1">
+                    <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Statut des 22 Recommandations</h3>
+                    <div class="chart-container">
+                        <canvas id="grecoComplianceChart"></canvas>
+                    </div>
+                    <div class="text-xs text-slate-500 space-y-1">
+                        <p>🟢 Satisfaisant : 8 (36,3 %)</p>
+                        <p>🟠 Partiellement : 10 (45,5 %)</p>
+                        <p>🔴 Non mise en œuvre : 4 (18,2 %)</p>
+                    </div>
+                </div>
+
+                <!-- Interactive 6 Flaws Cards -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 lg:col-span-2">
+                    <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Les 6 Failles Majeures de l'Encadrement Exécutif</h3>
+                    <p class="text-xs text-slate-500">Cliquez sur un domaine pour explorer la défaillance juridique belge et les exigences européennes :</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="flaws-container">
+                        <!-- Dynamic Injection of Flaws Cards via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flaw Detail Modal View Container (Dynamic) -->
+            <div id="flaw-detail-card" class="bg-indigo-900 text-white rounded-xl p-6 shadow-md transition-all hidden">
+                <div class="flex justify-between items-start border-b border-indigo-700 pb-3">
+                    <h4 class="text-lg font-bold" id="flaw-detail-title">Titre de la faille</h4>
+                    <button onclick="closeFlawDetail()" class="text-indigo-300 hover:text-white font-bold text-sm">✕ Fermer</button>
+                </div>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div>
+                        <span class="font-semibold text-indigo-300 uppercase tracking-wider block mb-1">État du droit positif belge :</span>
+                        <p id="flaw-detail-belgium" class="leading-relaxed text-indigo-100"></p>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-indigo-300 uppercase tracking-wider block mb-1">Constat & Recommandation GRECO :</span>
+                        <p id="flaw-detail-greco" class="leading-relaxed text-indigo-100"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 4: PRIVATIZATION & CONSULTANCY -->
+        <section id="section-consultancy" class="hidden space-y-8">
+            <!-- Section Intro -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-3">
+                <h2 class="text-2xl font-bold text-slate-900">Privatisation de la Norme & Dépendance envers la Consultance</h2>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                    En privant l'administration permanente de ses fonctions stratégiques, les gouvernements se sont placés sous la perfusion des cabinets de conseil et d'avocats privés. L'audit de la Cour des comptes de novembre 2025 révèle une facture de <strong>2,5 milliards d'euros</strong> au seul niveau fédéral entre 2020 et 2022.
+                </p>
+            </div>
+
+            <!-- Audit Metrics & Eubelius Case Study -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Consultancy Breakdown Chart Container -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 lg:col-span-2">
+                    <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Dépenses de Consultance Auditées par la Cour des comptes (2020–2022)</h3>
+                    <p class="text-xs text-slate-500">Ventilation par secteur de prestation à l'État Fédéral (Total: 2,5 Mrd € TVAC).</p>
+                    <div class="chart-container">
+                        <canvas id="consultancyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Case Study Box: Eubelius -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 border-b border-slate-100 pb-3">
+                            <span class="px-2 py-0.5 bg-rose-100 text-rose-800 rounded font-bold text-xs">Cas d'école</span>
+                            <h3 class="font-bold text-slate-900 text-base">Affaire Eubelius</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+                            Lors de débats à la Chambre (compte rendu <code>55-ic257x</code>), le gouvernement a reconnu avoir versé <strong>496 000 €</strong> au cabinet d'avocats privé Eubelius pour rédiger un projet de loi de garantie bancaire.
+                        </p>
+                        <div class="mt-4 p-3 bg-slate-50 border-l-4 border-rose-500 text-xs text-slate-700 italic space-y-1">
+                            <p>« Le cabinet privé a tout réalisé de A à Z : définition du besoin, rédaction juridique, passage au Conseil d'État et publication. »</p>
+                            <span class="block font-bold text-right text-slate-500 font-sans sm:not-italic">— Aveu ministériel en Commission</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500 border-t border-slate-100 pt-3">
+                        <strong>Enjeu constitutionnel :</strong> Dilution de la responsabilité politique et privatisation irrémédiable des compétences de la souveraineté.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regulatory Impact Analysis (RIA) Lethargy -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">La Léthargie des Analyses d'Impact de la Réglementation (AIR)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <span class="font-bold text-slate-900 block mb-1">1. Neutralisation en amont</span>
+                        <p class="text-slate-600">L'AIR (test Kafka, EIDDD) suppose une administration préparant rationnellement les textes. En Belgique, les projets émanant des cabinets, l'AIR est réduite à une formalité <em>a posteriori</em>.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <span class="font-bold text-slate-900 block mb-1">2. Arbitrages verrouillés</span>
+                        <p class="text-slate-600">Les choix politiques et juridiques sont scellés lors des réunions inter-cabinets (IKW) avant même que l'évaluation scientifique ou administrative ne commence.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <span class="font-bold text-slate-900 block mb-1">3. Absence de sanction</span>
+                        <p class="text-slate-600">Le Conseil d'État et la Cour constitutionnelle ne sanctionnent qu'exceptionnellement l'absence ou la faiblesse des études d'impact préalables.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 5: BENCHMARK & REFORMS -->
+        <section id="section-benchmark" class="hidden space-y-8">
+            <!-- Section Intro -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-3">
+                <h2 class="text-2xl font-bold text-slate-900">Benchmark Européen & Pistes de Réforme Structurelle</h2>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                    La Belgique constitue une exception comparée aux autres démocraties européennes. Découvrez ci-dessous la matrice comparative des modèles exécutifs ainsi que les <strong>4 piliers de réformes</strong> indispensables pour restaurer l'intégrité démocratique et la qualité de la loi.
+                </p>
+            </div>
+
+            <!-- European Benchmark Matrix -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Matrice Comparative des Entourages Ministériels en Europe</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold uppercase">
+                                <th class="p-3">Pays / Modèle</th>
+                                <th class="p-3">Conseillers par Ministre</th>
+                                <th class="p-3">Rédaction des Lois</th>
+                                <th class="p-3">Encadrement Éthique & Lobbying</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            <tr class="bg-rose-50/50">
+                                <td class="p-3 font-bold text-slate-900">🇧🇪 Belgique (Modèle particratique)</td>
+                                <td class="p-3"><strong>32 à 50+</strong> (jusqu'à 76 pour le PM)</td>
+                                <td class="p-3">Cabinets ministériels & sous-traitants privés</td>
+                                <td class="p-3 font-semibold text-rose-700">Aucun encadrement strict (Règle 32 GRECO)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-900">🇫🇷 France (Modèle napoléonien)</td>
+                                <td class="p-3">Plafond légal : <strong>15</strong> (Ministre), <strong>10</strong> (Délégué)</td>
+                                <td class="p-3">Administrations centrales sous suivi du cabinet</td>
+                                <td class="p-3 text-emerald-700 font-medium">Contrôle strict HATVP (Patrimoine, Intérêts)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-900">🇩🇪 Allemagne (Modèle wébérien)</td>
+                                <td class="p-3">Pas de cabinet (Assistenzeinheiten ~ 7,8 %)</td>
+                                <td class="p-3">Bureaucratie ministérielle permanente (Referate)</td>
+                                <td class="p-3">Statut de la fonction publique (Bundesbeamtengesetz)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-900">🇳🇱 Pays-Bas / 🇩🇰 Danemark (Nordique)</td>
+                                <td class="p-3"><strong>1 conseiller</strong> (PA) à 3 max.</td>
+                                <td class="p-3">Administration neutre et permanente</td>
+                                <td class="p-3 text-emerald-700 font-medium">Transparence salariale totale & Registres</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-900">🇬🇧 Royaume-Uni (Westminster)</td>
+                                <td class="p-3"><strong>2 à 5 SpAds</strong> (0,02 % du Civil Service)</td>
+                                <td class="p-3">Civil Service impartial</td>
+                                <td class="p-3 text-emerald-700 font-medium">Model Contract & Code pour SpAds</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- The 4 Pillars of Structural Reform -->
+            <div class="space-y-4">
+                <h3 class="font-bold text-slate-900 text-base">Les 4 Piliers pour Sortir de l'Angle Mort et Rééquilibrer l'État</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2 border-l-4 border-l-indigo-600">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-sm text-slate-900">Pilier 1 : Plafonnement & Réinternalisation</span>
+                            <span class="text-xs px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded font-semibold">Structurel</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Plafonner légalement le nombre de conseillers (max. 10 à 15), supprimer les cellules de politique générale des vice-Premiers ministres au profit d'un secrétariat gouvernemental neutre, et rapatrier les budgets de consultance vers l'embauche de légistes internes.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2 border-l-4 border-l-emerald-600">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-sm text-slate-900">Pilier 2 : Conformité Intégrale GRECO</span>
+                            <span class="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold">Éthique</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Soumettre les ministres eux-mêmes au Code de déontologie, doter la Commission de déontologie de pouvoirs de sanction, encadrer le recrutement, et imposer une période de carence d'un an (anti-pantouflage) contrôlée par la Cour des comptes.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2 border-l-4 border-l-amber-500">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-sm text-slate-900">Pilier 3 : Empreinte Législative & Lobbying</span>
+                            <span class="text-xs px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold">Transparence</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Instaurer un registre exécutif obligatoire des lobbyistes et publier une fiche d'empreinte législative (<em>legislative footprint</em>) annexée à chaque projet de loi mentionnant tout consultant privé ou groupe d'intérêt intervenu.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2 border-l-4 border-l-rose-600">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-sm text-slate-900">Pilier 4 : CADA Contraignante & Archives</span>
+                            <span class="text-xs px-2 py-0.5 bg-rose-100 text-rose-800 rounded font-semibold">Droit de savoir</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Accorder un pouvoir décisionnel contraignant à la CADA fédérale et réformer la loi sur les archives de 1955 pour interdire la destruction systématique des courriels et notes internes de cabinets lors des alternances.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <p class="font-bold text-slate-200 text-sm">Observatoire de la Démocratie Belge & Intégrité Exécutive</p>
+                    <p class="mt-1">Basé sur les rapports d'évaluation du GRECO (5e cycle, 2025), la Cour des comptes et le CRISP.</p>
+                </div>
+                <div class="text-right">
+                    <p>Développement SPA interactif — Données révisées 2025–2026</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // Data Store
+        const ministerData = [
+            { name: "Adrien Dolimont", party: "MR", rwRole: "Ministre-Président (Budget, Finances, Bien-être anim.)", rwETP: 68, fwbRole: "Ministre de la Recherche", fwbETP: 0, total: 68 },
+            { name: "Élisabeth Degryse", party: "LE", rwRole: "—", rwETP: 0, fwbRole: "Ministre-Présidente (Enseignement sup, Culture)", fwbETP: 68, total: 68 },
+            { name: "Valérie Lescrenier", party: "LE", rwRole: "Ministre du Tourisme, Patrimoine, Petite enfance", rwETP: 33, fwbRole: "Vice-Présidente (Enfance, Jeunesse, Justice)", fwbETP: 47, total: 80 },
+            { name: "Jacqueline Galant", party: "MR", rwRole: "Ministre de la FP, Simplification, Sports", rwETP: 33, fwbRole: "Ministre des Sports, FP, Médias", fwbETP: 33, total: 66 },
+            { name: "François Desquesnes", party: "LE", rwRole: "Vice-Président (Aménagement, Mobilité, P. Locaux)", rwETP: 55, fwbRole: "—", fwbETP: 0, total: 55 },
+            { name: "Pierre-Yves Jeholet", party: "MR", rwRole: "Vice-Président (Économie, Emploi, Numérique)", rwETP: 55, fwbRole: "—", fwbETP: 0, total: 55 },
+            { name: "Valérie Glatigny", party: "MR", rwRole: "—", rwETP: 0, fwbRole: "Vice-Présidente (Enseignement obligatoire)", fwbETP: 55, total: 55 },
+            { name: "Yves Coppieters", party: "LE", rwRole: "Ministre de la Santé, Environnement, Social", rwETP: 41, fwbRole: "Ministre de la Santé, Égalité des chances", fwbETP: 0, total: 41 },
+            { name: "Cécile Neven", party: "MR", rwRole: "Ministre de l'Énergie, Plan Climat, Logement", rwETP: 41, fwbRole: "—", fwbETP: 0, total: 41 },
+            { name: "Anne-Catherine Dalcq", party: "MR", rwRole: "Ministre de l'Agriculture et de la Ruralité", rwETP: 41, fwbRole: "—", fwbETP: 0, total: 41 }
+        ];
+
+        const grecoFlawsData = [
+            {
+                id: "recruitment",
+                title: "1. Recrutement Discrétionnaire",
+                status: "Partiellement mis en œuvre",
+                belgium: "Publication des noms sur composition.belgium.be actée, mais refus d'encadrer les critères de recrutement en invoquant la confiance politique.",
+                greco: "Exige un encadrement strict des conditions de recrutement et d'emploi pour prévenir les risques de conflits d'intérêts (Rec. i)."
+            },
+            {
+                id: "ethics",
+                title: "2. Ministres Exclus du Code Éthique",
+                status: "Partiellement mis en œuvre",
+                belgium: "Code étendu aux collaborateurs de cabinet, mais les ministres eux-mêmes restent exclus et sans sanctions non répressives.",
+                greco: "Exige d'inclure les ministres dans le cadre déontologique et de doter la Commission de déontologie d'un pouvoir de sanction (Rec. iii & iv)."
+            },
+            {
+                id: "archives",
+                title: "3. Destruction des Archives & CADA",
+                status: "Non / Partiellement",
+                belgium: "La CADA fédérale n'émet que des avis non contraignants. La loi de 1955 permet l'effacement des courriels et notes en fin de mandat.",
+                greco: "Exige la conservation obligatoire des archives de cabinets et un accès effectif aux documents administratifs (Rec. v)."
+            },
+            {
+                id: "lobbying",
+                title: "4. Absence de Registre de Lobbying",
+                status: "Non mis en œuvre",
+                belgium: "Le registre de la Chambre ne s'applique ni au Sénat ni au Gouvernement ni aux cabinets ministériels.",
+                greco: "Exige un registre exécutif obligatoire et une empreinte législative (legislative footprint) traçant l'influence des tiers (Rec. vii & viii)."
+            },
+            {
+                id: "revolving",
+                title: "5. Portes Tournantes (Pantouflage)",
+                status: "Non avancé",
+                belgium: "Le gouvernement a déclaré en 2025 qu'il 'n'était pas opportun d'introduire des règles' d'activités post-emploi.",
+                greco: "Constat d'absence de toute avancée sur la mise en place d'un délai de carence (cooling-off period) (Rec. xi)."
+            },
+            {
+                id: "patrimony",
+                title: "6. Opacité Patrimoniale",
+                status: "Non mis en œuvre",
+                belgium: "Refus explicite des autorités d'étendre la déclaration aux passifs/conjoints et d'instaurer un contrôle proactif par la Cour des comptes.",
+                greco: "Déplore le refus d'instaurer une publication rapide et un contrôle effectif des déclarations de patrimoine (Rec. xii & xiii)."
+            }
+        ];
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const tabs = ['dashboard', 'cartography', 'greco', 'consultancy', 'benchmark'];
+            tabs.forEach(id => {
+                const section = document.getElementById(`section-${id}`);
+                const tabBtn = document.getElementById(`tab-${id}`);
+                if (id === tabId) {
+                    section.classList.remove('hidden');
+                    tabBtn.className = 'tab-active py-3 px-3 text-xs sm:text-sm whitespace-nowrap transition-colors';
+                } else {
+                    section.classList.add('hidden');
+                    tabBtn.className = 'tab-inactive py-3 px-3 text-xs sm:text-sm whitespace-nowrap transition-colors';
+                }
+            });
+        }
+
+        // Render Minister Table
+        function renderMinisterTable(data) {
+            const tbody = document.getElementById('minister-table-body');
+            tbody.innerHTML = '';
+            data.forEach(m => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-900">${m.name}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.party === 'MR' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}">
+                            ${m.party}
+                        </span>
+                    </td>
+                    <td class="p-3">${m.rwRole}</td>
+                    <td class="p-3 text-center font-semibold">${m.rwETP}</td>
+                    <td class="p-3">${m.fwbRole}</td>
+                    <td class="p-3 text-center font-semibold">${m.fwbETP}</td>
+                    <td class="p-3 text-center font-bold bg-indigo-50/50 text-indigo-900">${m.total} ETP</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterMinisterTable() {
+            const val = document.getElementById('party-filter').value;
+            if (val === 'ALL') {
+                renderMinisterTable(ministerData);
+            } else {
+                renderMinisterTable(ministerData.filter(m => m.party === val));
+            }
+        }
+
+        // Render GRECO Flaws Cards
+        function renderGrecoFlaws() {
+            const container = document.getElementById('flaws-container');
+            container.innerHTML = '';
+            grecoFlawsData.forEach(flaw => {
+                const card = document.createElement('div');
+                card.className = 'p-3 bg-slate-50 border border-slate-200 rounded-lg hover:border-indigo-400 cursor-pointer transition-all flex flex-col justify-between';
+                card.onclick = () => showFlawDetail(flaw);
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="font-bold text-xs text-slate-900">${flaw.title}</h4>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded font-semibold ${flaw.status.includes('Partiellement') ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'}">
+                                ${flaw.status.includes('Partiellement') ? 'Partiel' : 'Bloqué'}
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 line-clamp-2">${flaw.belgium}</p>
+                    </div>
+                    <span class="text-[10px] text-indigo-600 font-bold mt-2 inline-block">Cliquer pour détails &rarr;</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function showFlawDetail(flaw) {
+            const detailCard = document.getElementById('flaw-detail-card');
+            document.getElementById('flaw-detail-title').innerText = flaw.title;
+            document.getElementById('flaw-detail-belgium').innerText = flaw.belgium;
+            document.getElementById('flaw-detail-greco').innerText = flaw.greco;
+            detailCard.classList.remove('hidden');
+            detailCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function closeFlawDetail() {
+            document.getElementById('flaw-detail-card').classList.add('hidden');
+        }
+
+        // Charts Initialization (Chart.js)
+        function initCharts() {
+            // Chart 1: Dashboard Overview (Wallonie/FWB ETP Cut)
+            const ctx1 = document.getElementById('dashboardOverviewChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Région Wallonne', 'Fédération Wallonie-Bruxelles', 'Total Cumulé'],
+                    datasets: [
+                        {
+                            label: 'Législature 2019–2024',
+                            data: [397, 260, 657],
+                            backgroundColor: '#94a3b8'
+                        },
+                        {
+                            label: 'Législature 2024–2029 (-13,3 %)',
+                            data: [367, 203, 570],
+                            backgroundColor: '#4f46e5'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `${context.dataset.label}: ${context.raw} ETP`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart 2: Regional Headcount Average Per Minister
+            const ctx2 = document.getElementById('headcountRegionalChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Bruxelles-Capitale', 'Gouvernement Fédéral', 'Région Wallonne', 'Flandre'],
+                    datasets: [{
+                        label: 'Moyenne de collaborateurs / ministre',
+                        data: [43.0, 41.9, 49.6, 32.0],
+                        backgroundColor: ['#e11d48', '#4f46e5', '#0284c7', '#f59e0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: (ctx) => `${ctx.raw} collaborateurs/ministre` } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart 3: GRECO Compliance Doughnut
+            const ctx3 = document.getElementById('grecoComplianceChart').getContext('2d');
+            new Chart(ctx3, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Satisfaisant (8)', 'Partiellement (10)', 'Non mise en œuvre (4)'],
+                    datasets: [{
+                        data: [8, 10, 4],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Chart 4: Consultancy Federal Audit Breakdown (Cour des comptes 2020-2022)
+            const ctx4 = document.getElementById('consultancyChart').getContext('2d');
+            new Chart(ctx4, {
+                type: 'pie',
+                data: {
+                    labels: ['Consultance IT & Systèmes (2,0 Mrd €)', 'Prestations In-House (619 M€)', 'Stratégie, Management & Juridique (492 M€)'],
+                    datasets: [{
+                        data: [2000, 619, 492],
+                        backgroundColor: ['#3b82f6', '#64748b', '#ec4899']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw} M€` } }
+                    }
+                }
+            });
+        }
+
+        // Initialize App on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMinisterTable(ministerData);
+            renderGrecoFlaws();
+            initCharts();
+        });
+    </script>
+</body>
+</html>
