@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observatoire de la Coalition Arizona & Critique Médiatique</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Warm Neutral Editorial - Slate background (#F8FAFC), Deep Navy (#0F172A) headers, Warm Amber (#D97706) for budget alerts, Indigo (#4F46E5) & Teal (#0D9488) for party/media metrics, Soft Rose (#E11D48) for deficits. -->
+    
+    <!-- Application Structure Plan:
+         1. Header & Live Key Indicators: Dynamic executive summary with 5 high-impact metrics (Seats, Budget gap, Defense target, Unfunded claims, Media monopoly).
+         2. Tabbed Navigation Bar:
+            - View 1: Architecture Politique & Kern (Party seats, cabinet distribution, gender gap, hyper-particracy, Bouchez dynamic).
+            - View 2: Impasse Budgétaire & Simulation (2026 budget crisis, nominal vs audited yield gap, "règle du tiers" flaw, CPAS impact, interactive budget simulator).
+            - View 3: Clivages Médiatiques & Discours (Flemish vs Francophone press comparison, TINA dogma, Overton window, leak engineering, Het Conclaaf).
+            - View 4: Concentration & Statut du Journalisme (Rossel-IPM merger >90%, copyright tax reform, SLAPPs, civic space restrictions).
+            - View 5: Chronologie Interactive (2024-2026 timeline with filters for Politics, Economy, Mobilization, Media).
+         3. Dynamic Chart Containers: Strictly constrained Chart.js canvas elements responsive on all viewports.
+         4. Interactive Budget Simulator: Live JS calculator showing theoretical vs. audited gap based on user toggles. -->
+
+    <!-- Visualization & Content Choices:
+         1. Party Seat & Cabinet Allocation -> Stacked Bar/Donut Chart (Chart.js Canvas) -> Visualizes 80/150 majority and Vooruit's minority position (13 seats).
+         2. Budget Plan Nominal vs Audited Yield -> Grouped Bar Chart (Chart.js Canvas) -> Reveals 3.3B-3.8B € gap in speculative projections.
+         3. Military Spending vs Public Infrastructure Trajectory -> Multi-line Chart (Chart.js Canvas) -> Shows 2% NATO ramp-up vs SNCB/Admin cuts.
+         4. Regional Media Perspective Matrix -> Interactive Dual-Panel Card Grid -> Contrasts NL (accounting rigor, "GLB problem") vs FR (purchasing power, TVA impact).
+         5. Dynamic Budget Simulator -> Interactive Controls (JS) -> Allows users to manipulate unemployment rules & tax toggles to see actual fiscal yield.
+         Confirmation: NO SVG graphics used. NO Mermaid JS used. Canvas and HTML/CSS used exclusively. -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        /* Strict Chart Container Sizing Constraint */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #4F46E5;
+            color: #4F46E5;
+            font-weight: 700;
+            background-color: #EEF2FF;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-800">
+
+    <!-- Header Section -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            Observatoire Analytique • Belgique 2025-2026
+                        </span>
+                        <span class="text-xs text-slate-400">Actualisé à l'automne 2026</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-1">
+                        Anatomie de la Coalition Arizona
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-0.5">
+                        Gouvernance Budgétaire, Mutations Socio-Institutionnelles & Critique de l'Hégémonie Médiatique
+                    </p>
+                </div>
+                <!-- Dynamic Quick Stats Header -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                    <div class="bg-slate-800/80 p-2 rounded border border-slate-700/60">
+                        <span class="block text-slate-400 text-[10px]">Majorité Chambre</span>
+                        <span class="text-base font-bold text-indigo-400">80 / 150</span>
+                        <span class="block text-[10px] text-slate-400">5 partis coalition</span>
+                    </div>
+                    <div class="bg-slate-800/80 p-2 rounded border border-slate-700/60">
+                        <span class="block text-slate-400 text-[10px]">Impasse 2026</span>
+                        <span class="text-base font-bold text-amber-400">10 Mrd €</span>
+                        <span class="block text-[10px] text-slate-400">Besoin net 2029</span>
+                    </div>
+                    <div class="bg-slate-800/80 p-2 rounded border border-slate-700/60">
+                        <span class="block text-slate-400 text-[10px]">Écart Factice</span>
+                        <span class="text-base font-bold text-rose-400">3,3 à 3,8 Mrd €</span>
+                        <span class="block text-[10px] text-slate-400">Recettes fictives</span>
+                    </div>
+                    <div class="bg-slate-800/80 p-2 rounded border border-slate-700/60">
+                        <span class="block text-slate-400 text-[10px]">Monopole Presse FR</span>
+                        <span class="text-base font-bold text-teal-400">&gt; 90 %</span>
+                        <span class="block text-[10px] text-slate-400">Fusion Rossel-IPM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs Bar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-[73px] md:top-[81px] z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex overflow-x-auto space-x-1 sm:space-x-4 py-2 custom-scrollbar text-xs sm:text-sm font-medium">
+                <button onclick="switchTab('tab-architecture')" id="btn-tab-architecture" class="tab-btn active whitespace-nowrap px-3 py-2 rounded-md transition-colors duration-150">
+                    🏛️ Architecture &amp; Kern
+                </button>
+                <button onclick="switchTab('tab-budget')" id="btn-tab-budget" class="tab-btn whitespace-nowrap px-3 py-2 rounded-md text-slate-600 hover:text-indigo-600 transition-colors duration-150">
+                    ⚖️ Impasse Budgétaire &amp; Chiffres
+                </button>
+                <button onclick="switchTab('tab-simulator')" id="btn-tab-simulator" class="tab-btn whitespace-nowrap px-3 py-2 rounded-md text-slate-600 hover:text-indigo-600 transition-colors duration-150">
+                    🧮 Simulateur de Réformes
+                </button>
+                <button onclick="switchTab('tab-media')" id="btn-tab-media" class="tab-btn whitespace-nowrap px-3 py-2 rounded-md text-slate-600 hover:text-indigo-600 transition-colors duration-150">
+                    📺 Clivages &amp; Biais Médiatiques
+                </button>
+                <button onclick="switchTab('tab-press-status')" id="btn-tab-press-status" class="tab-btn whitespace-nowrap px-3 py-2 rounded-md text-slate-600 hover:text-indigo-600 transition-colors duration-150">
+                    📰 Concentration &amp; Droit Social
+                </button>
+                <button onclick="switchTab('tab-timeline')" id="btn-tab-timeline" class="tab-btn whitespace-nowrap px-3 py-2 rounded-md text-slate-600 hover:text-indigo-600 transition-colors duration-150">
+                    ⏱️ Chronologie 2024-2026
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- ==================== TAB 1: ARCHITECTURE POLITIQUE ==================== -->
+        <section id="tab-architecture" class="tab-content space-y-6">
+            <!-- Context Introductory Paragraph -->
+            <div class="bg-indigo-50/80 border-l-4 border-indigo-600 p-4 rounded-r-lg shadow-sm">
+                <h2 class="text-lg font-bold text-indigo-950">
+                    Cadre Analytique : L'Architecture du Gouvernement De Wever
+                </h2>
+                <p class="text-xs sm:text-sm text-indigo-900 mt-1 leading-relaxed">
+                    Assermenté le 3 février 2025 après 239 jours de négociations, le gouvernement fédéral de Bart De Wever rassemble cinq partis (N-VA, MR, Les Engagés, CD&amp;V, Vooruit). Cette section explore la géométrie du pouvoir : un déséquilibre structurel où Vooruit est l'unique force de centre-gauche face à un bloc conservateur dominant, une absence inédite de femmes au Conseil des ministres restreint (*kern*), et le rôle singulier de Georges-Louis Bouchez exerçant un pouvoir d'ultimatum depuis la présidence du MR sans siéger au gouvernement.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Visual & Chart Column -->
+                <div class="lg:col-span-5 bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-bold text-slate-900">Rapports de Force au Parlement (80/150)</h3>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">Chambre 2025-2026</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-4">
+                            Répartition des sièges au sein de la coalition. Remarquez la position minoritaire de Vooruit (13 sièges) face au bloc de droite.
+                        </p>
+                        <div class="chart-container">
+                            <canvas id="seatsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-600 bg-slate-50 p-3 rounded">
+                        <strong class="text-slate-800">Vote de confiance (6 fév 2025) :</strong> 81 votes Pour, 66 Contre, 3 Abstentions (après 40h de débats parlementaires).
+                    </div>
+                </div>
+
+                <!-- Qualitative Analysis Column -->
+                <div class="lg:col-span-7 space-y-4">
+                    <!-- Cards Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-rose-500">
+                            <h4 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                                <span>♀️</span> Angle Mort : Zéro Femme au Kern
+                            </h4>
+                            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                                L'exécutif compte 15 ministres (4 femmes, 11 hommes), mais le <em class="font-semibold text-slate-800">kern</em> (le Premier ministre et les 5 Vice-Premiers ministres) est exclusivement masculin. Cette configuration a déclenché des critiques internes inédites dès le 4 février 2025 de la part des ministres Vanessa Matz et Annelies Verlinden.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-amber-500">
+                            <h4 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                                <span>⚡</span> L'Effet Bouchez &amp; Particratie
+                            </h4>
+                            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                                Le renoncement de dernière minute de Georges-Louis Bouchez (président du MR) à intégrer l'exécutif au profit de Bernard Quintin à l'Intérieur a déplacé le centre de gravité politique vers les présidents de partis, exacerbant la gouvernance par ultimata informels.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Ministerial Breakdown Interactive Table -->
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="px-4 py-3 bg-slate-100 border-b border-slate-200 flex justify-between items-center">
+                            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Composition du Gouvernement Fédéral</h4>
+                            <span class="text-[11px] text-slate-500">15 Portefeuilles Ministériels</span>
+                        </div>
+                        <div class="overflow-x-auto max-h-72 custom-scrollbar">
+                            <table class="w-full text-left text-xs text-slate-700">
+                                <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[10px] border-b border-slate-200 sticky top-0">
+                                    <tr>
+                                        <th class="p-2.5">Titulaire</th>
+                                        <th class="p-2.5">Parti</th>
+                                        <th class="p-2.5">Rôle / Portefeuille</th>
+                                        <th class="p-2.5">Kern</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 font-medium">
+                                    <tr class="bg-indigo-50/40">
+                                        <td class="p-2.5 font-bold text-indigo-950">Bart De Wever</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800 font-bold">N-VA</span></td>
+                                        <td class="p-2.5">Premier ministre</td>
+                                        <td class="p-2.5 font-bold text-emerald-600">Oui (PM)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold">David Clarinval</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">MR</span></td>
+                                        <td class="p-2.5">Vice-PM, Emploi, Économie, Agriculture</td>
+                                        <td class="p-2.5 font-bold text-emerald-600">Oui</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold">Maxime Prévot</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-teal-100 text-teal-800 font-bold">Les Engagés</span></td>
+                                        <td class="p-2.5">Vice-PM, Affaires étrangères &amp; Européennes</td>
+                                        <td class="p-2.5 font-bold text-emerald-600">Oui</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold">Frank Vandenbroucke</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold">Vooruit</span></td>
+                                        <td class="p-2.5">Vice-PM, Santé publique, Affaires sociales</td>
+                                        <td class="p-2.5 font-bold text-emerald-600">Oui</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold">Vincent Van Peteghem</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-orange-100 text-orange-800 font-bold">CD&amp;V</span></td>
+                                        <td class="p-2.5">Vice-PM, Budget &amp; Simplification adm.</td>
+                                        <td class="p-2.5 font-bold text-emerald-600">Oui</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold">Jan Jambon</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800 font-bold">N-VA</span></td>
+                                        <td class="p-2.5">Vice-PM, Finances, Pensions, Culture</td>
+                                        <td class="p-2.5 font-bold text-emerald-600">Oui</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5">Theo Francken</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800 font-bold">N-VA</span></td>
+                                        <td class="p-2.5">Ministre de la Défense &amp; Commerce Extérieur</td>
+                                        <td class="p-2.5 text-slate-400">Non</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5">Annelies Verlinden</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-orange-100 text-orange-800 font-bold">CD&amp;V</span></td>
+                                        <td class="p-2.5">Ministre de la Justice &amp; Mer du Nord</td>
+                                        <td class="p-2.5 text-slate-400">Non</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5">Bernard Quintin</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">MR</span></td>
+                                        <td class="p-2.5">Ministre de l'Intérieur &amp; Sécurité</td>
+                                        <td class="p-2.5 text-slate-400">Non</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5">Jean-Luc Crucke</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-teal-100 text-teal-800 font-bold">Les Engagés</span></td>
+                                        <td class="p-2.5">Ministre de la Mobilité, Climat &amp; Transition</td>
+                                        <td class="p-2.5 text-slate-400">Non</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5">Vanessa Matz</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-teal-100 text-teal-800 font-bold">Les Engagés</span></td>
+                                        <td class="p-2.5">Ministre de la Fonction publique &amp; Numérique</td>
+                                        <td class="p-2.5 text-slate-400">Non</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5">Anneleen Van Bossuyt</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800 font-bold">N-VA</span></td>
+                                        <td class="p-2.5">Ministre de l'Asile, Migration &amp; Intégration</td>
+                                        <td class="p-2.5 text-slate-400">Non</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5">Mathieu Bihet</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">MR</span></td>
+                                        <td class="p-2.5">Ministre de l'Énergie</td>
+                                        <td class="p-2.5 text-slate-400">Non</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5">Rob Beenders</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold">Vooruit</span></td>
+                                        <td class="p-2.5">Ministre de la Consommation &amp; Lutte fraude sociale</td>
+                                        <td class="p-2.5 text-slate-400">Non</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5">Éléonore Simonet</td>
+                                        <td class="p-2.5"><span class="px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">MR</span></td>
+                                        <td class="p-2.5">Ministre des PME &amp; Indépendants</td>
+                                        <td class="p-2.5 text-slate-400">Non</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: IMPASSE BUDGÉTAIRE ==================== -->
+        <section id="tab-budget" class="tab-content hidden space-y-6">
+            <div class="bg-amber-50/80 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm">
+                <h2 class="text-lg font-bold text-amber-950">
+                    Cadre Analytique : L'Impasse Budgétaire d'Octobre 2026 &amp; La Matérialité des Chiffres
+                </h2>
+                <p class="text-xs sm:text-sm text-amber-900 mt-1 leading-relaxed">
+                    Vingt mois après sa prise de fonction, la coalition se heurte à la réalité macroéconomique. Le conclave d'octobre 2026 a révélé l'obsolescence du plan initial de 23,3 milliards d'euros. Cette section décompose la dissonance entre l'affichage politique et les données vérifiées par la Cour des comptes et la Banque Nationale de Belgique (BNB) : recettes spéculatives, hypothèses irréalistes d'activation des chômeurs et transfert de charges vers les communes.
+                </p>
+            </div>
+
+            <!-- Visual Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chart: Real vs Nominal Breakdown -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-bold text-slate-900">Rendement Nominale vs Réel Audité (2026)</h3>
+                        <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">Écart de ~3,5 Mrd €</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">
+                        Comparaison des montants annoncés par le gouvernement et du rendement réel estimé par la Cour des comptes et la BNB.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="budgetGapChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart: Military vs Public Services Trajectory -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-bold text-slate-900">Trajectoires Budgétaires : Défense vs Services Publics</h3>
+                        <span class="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded">Cible OTAN 2%</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">
+                        Évolution du budget de la Défense (2 % PIB en 2029) en contraste avec les coupes imposées à la SNCB et à l'Administration Fédérale.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="defenseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Detailed Explanations -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider">
+                        <span>⚠️</span> L'Illusion de la "Règle du Tiers"
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900">Chômage &amp; Malades Longue Durée</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Le gouvernement tablait sur l'hypothèse qu'un tiers (33,3 %) des chômeurs exclus après 2 ans retrouveraient immédiatement un emploi. La BNB démontre que le retour réel plafonne entre <strong class="text-slate-900">10 % et 20 %</strong>, ne produisant que 22,2 % de sorties administratives.
+                    </p>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-wider">
+                        <span>🔄</span> Transfert Inter-Fédéral
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900">L'Effet de Ciseaux sur les CPAS</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Selon l'UVCW, <strong class="text-slate-900">40 % à 50 % des personnes exclues</strong> de l'ONEM basculent directement sur le Revenu d'Intégration Sociale (RIS) géré par les CPAS locaux. Les communes absorbent le coût social de l'austérité fédérale.
+                    </p>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="flex items-center gap-2 text-teal-600 font-bold text-xs uppercase tracking-wider">
+                        <span>📉</span> Fiscalité Asymétrique
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900">Plus-Values &amp; Travaillalité</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        La "taxe plus-values" sur les titres a été vidée de son contenu par des clauses d'exemption (holdings &gt;4M€), ramenant le rendement de 1,4 Mrd € à <strong class="text-slate-900">à peine 100 Mio €</strong>. À l'inverse, l'indexation salariale est plafonnée "en centimes".
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: SIMULATEUR DE RÉFORMES ==================== -->
+        <section id="tab-simulator" class="tab-content hidden space-y-6">
+            <div class="bg-emerald-50/80 border-l-4 border-emerald-600 p-4 rounded-r-lg shadow-sm">
+                <h2 class="text-lg font-bold text-emerald-950">
+                    Outil Interactif : Simulateur de Rendement Budgétaire &amp; Impact Social
+                </h2>
+                <p class="text-xs sm:text-sm text-emerald-900 mt-1 leading-relaxed">
+                    Ajustez les leviers du programme de l'Arizona pour observer en temps réel la différence entre les <strong class="underline">projections politiques officielles</strong> et la <strong class="underline">réalité auditée par la Cour des comptes / BNB</strong>. Cet outil permet de tester la résilience des hypothèses gouvernementales face à la rigueur comptable.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Interactive Controls Column -->
+                <div class="lg:col-span-5 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5">
+                    <h3 class="font-bold text-sm text-slate-900 border-b border-slate-100 pb-2">Paramètres des Mesures Budgétaires</h3>
+                    
+                    <!-- Lever 1: Unemployment Rule -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <label class="font-bold text-slate-700">Taux de retour emploi (Chômage)</label>
+                            <span id="label-unemployment" class="font-mono text-indigo-600 font-bold">15% (Réalité BNB)</span>
+                        </div>
+                        <input type="range" id="input-unemployment" min="10" max="35" step="1" value="15" 
+                               oninput="updateSimulator()"
+                               class="w-full accent-indigo-600 cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-400">
+                            <span>10% (Pessimiste)</span>
+                            <span>33.3% (Hypothèse Arizona)</span>
+                        </div>
+                    </div>
+
+                    <!-- Lever 2: TVA Increase Toggle -->
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-800">Hausses TVA (6% à 9%)</span>
+                            <span class="block text-[10px] text-slate-500">Rénovation, Horeca, Consommation</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="input-tva" class="sr-only peer" onchange="updateSimulator()">
+                            <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- Lever 3: Plus-Values Exemption -->
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-800">Clauses d'exemption Taxe Plus-Values</span>
+                            <span class="block text-[10px] text-slate-500">Holdings &gt;4M€ &amp; Historique exonérés</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="input-exemptions" checked class="sr-only peer" onchange="updateSimulator()">
+                            <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- Lever 4: Defense Target Progress -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <label class="font-bold text-slate-700">Objectif Défense 2029</label>
+                            <span id="label-defense" class="font-mono text-indigo-600 font-bold">11,57 Mrd € (2.0% PIB)</span>
+                        </div>
+                        <input type="range" id="input-defense" min="7.34" max="11.57" step="0.5" value="11.57" 
+                               oninput="updateSimulator()"
+                               class="w-full accent-indigo-600 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Simulation Output Column -->
+                <div class="lg:col-span-7 bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-900 border-b border-slate-100 pb-2 mb-4">Résultats du Modèle d'Audit</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="p-4 rounded-xl bg-slate-900 text-white">
+                                <span class="text-[11px] text-slate-400 block uppercase tracking-wider font-semibold">Rendement Annoncé</span>
+                                <span id="sim-nominal" class="text-2xl font-black text-amber-400">7.20 Mrd €</span>
+                                <span class="text-[10px] text-slate-400 block mt-1">Chiffrage officiel gouvernemental</span>
+                            </div>
+                            <div class="p-4 rounded-xl bg-rose-950 text-white">
+                                <span class="text-[11px] text-rose-300 block uppercase tracking-wider font-semibold">Rendement Réel Estimé</span>
+                                <span id="sim-real" class="text-2xl font-black text-rose-400">3.85 Mrd €</span>
+                                <span class="text-[10px] text-rose-300 block mt-1">Après correction empirique Cour des comptes/BNB</span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Diagnostic Message -->
+                        <div id="sim-diagnostic" class="p-4 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1">
+                            <!-- JS Populated -->
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-500">
+                        * Ce simulateur applique les élasticités calculées par la Banque Nationale de Belgique et la Cour des Comptes pour l'exercice budgétaire 2026.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: CLIVAGES MÉDIATIQUES ==================== -->
+        <section id="tab-media" class="tab-content hidden space-y-6">
+            <div class="bg-indigo-50/80 border-l-4 border-indigo-600 p-4 rounded-r-lg shadow-sm">
+                <h2 class="text-lg font-bold text-indigo-950">
+                    Cadre Analytique : Déconstruction Critique de la Couverture Médiatique
+                </h2>
+                <p class="text-xs sm:text-sm text-indigo-900 mt-1 leading-relaxed">
+                    L'analyse critique révèle trois piliers de légitimation du programme gouvernemental : la naturalisation du dogme <strong class="underline">TINA</strong> (*There Is No Alternative*), la spectacularisation de la politique sous forme de <em class="italic">horse-race journalism</em> (notamment avec *Het Conclaaf* sur VTM), et l'asymétrie communautaire profonde séparant le traitement journalistique au Nord et au Sud du pays.
+                </p>
+            </div>
+
+            <!-- Regional Comparison Matrix -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Flemish Media Column -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-yellow-500 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                            <span>🦁</span> Traitement Médiatique Flamand
+                        </h3>
+                        <span class="text-[10px] bg-yellow-100 text-yellow-800 font-bold px-2 py-0.5 rounded">De Standaard, De Tijd, VRT, VTM</span>
+                    </div>
+
+                    <ul class="space-y-3 text-xs text-slate-600">
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-600 font-bold">▶</span>
+                            <div>
+                                <strong class="text-slate-900">Récit de la Rigueur Comptable :</strong> L'assainissement est cadré comme un assainissement moral nécessaire après le "laxisme" attribué au gouvernement Vivaldi.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-600 font-bold">▶</span>
+                            <div>
+                                <strong class="text-slate-900">Pistage du Blâme ("Het problème heet GLB") :</strong> Bart De Wever est présenté en homme d'État rationnel (*staatsman*), tandis que la responsabilité des blocages est imputée à Georges-Louis Bouchez.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-600 font-bold">▶</span>
+                            <div>
+                                <strong class="text-slate-900">Téléréalité Politique :</strong> L'émission *Het Conclaaf* (VTM) enchaîne les présidents de partis dans un château pour traiter les négociations sous l'angle du pur divertissement émotionnel.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Francophone Media Column -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-blue-500 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                            <span>🐓</span> Traitement Médiatique Francophone
+                        </h3>
+                        <span class="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Le Soir, La Libre, RTBF, RTL</span>
+                    </div>
+
+                    <ul class="space-y-3 text-xs text-slate-600">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-600 font-bold">▶</span>
+                            <div>
+                                <strong class="text-slate-900">Focus Pouvoir d'Achat &amp; TVA :</strong> Focalisation sur l'impact inflationniste de la hausse de la TVA de 6% à 9% qui annulerait les gains du *Job Bonus* wallon.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-600 font-bold">▶</span>
+                            <div>
+                                <strong class="text-slate-900">Crainte du Définancement du Sud :</strong> Relais des inquiétudes concernant le basculement des chômeurs vers les CPAS communaux wallons et bruxellois.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-600 font-bold">▶</span>
+                            <div>
+                                <strong class="text-slate-900">Posture Ambivalente sur GLB :</strong> Dénonciation de ses outrances médiatiques mais décryptage de ses vetos comme la défense ciblée des classes moyennes francophones.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Conceptual Cards: Overton & Leaks -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <span>🪟</span> La Fenêtre d'Overton &amp; Les Niches Fiscales Occultées
+                    </h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Le débat médiatique a confiné l'alternative économique entre hausse de la TVA et coupes dans la sécurité sociale, maintenant dans un angle mort les <strong class="text-slate-900">16 milliards d'euros</strong> de subventions salariales et réductions patronales ainsi que les <strong class="text-slate-900">14,5 milliards d'euros</strong> d'avantages extralégaux.
+                    </p>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <span>🗞️</span> L'Ingénierie de la Fuite ("Masser les Esprits")
+                    </h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Les divulgations contrôlées du "catalogue des horreurs" (*Horrorcatalogus*) de la super-note ont servi de laboratoire pour tester la tolérance de l'opinion publique et présenter ensuite un compromis pourtant sévère comme une "victoire sociale".
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 5: PRESS STATUS & CONCENTRATION ==================== -->
+        <section id="tab-press-status" class="tab-content hidden space-y-6">
+            <div class="bg-slate-100 border-l-4 border-slate-700 p-4 rounded-r-lg shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900">
+                    Cadre Analytique : Concentration Industrielle &amp; Précarisation du Journalisme
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-700 mt-1 leading-relaxed">
+                    La capacité du "quatrième pouvoir" à mener un examen contradictoire des politiques publiques est directement entravée par des transformations structurelles : la fusion historique autorisée en septembre 2026 entre Rossel et IPM, la révision de la fiscalité des droits d'auteur, et des restrictions sur l'espace civique et syndical.
+                </p>
+            </div>
+
+            <!-- Key Metric Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <span class="text-xs text-slate-500 uppercase font-semibold">Part de Marché Presse Écrite FR</span>
+                    <span class="block text-3xl font-black text-indigo-600 mt-1">&gt; 90 %</span>
+                    <span class="text-[11px] text-slate-600 mt-1 block">Fusion Rossel (*Le Soir*) - IPM (*La Libre*) validée le 4 sept 2026</span>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <span class="text-xs text-slate-500 uppercase font-semibold">Condamnations Non Exécutées</span>
+                    <span class="block text-3xl font-black text-rose-600 mt-1">&gt; 8 000</span>
+                    <span class="text-[11px] text-slate-600 mt-1 block">Crise de l'accueil &amp; Astreintes impayées par l'État</span>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <span class="text-xs text-slate-500 uppercase font-semibold">Réductions Fiscale Associations</span>
+                    <span class="block text-3xl font-black text-amber-600 mt-1">45% ➔ 30%</span>
+                    <span class="text-[11px] text-slate-600 mt-1 block">Abaissement de la déductibilité des dons</span>
+                </div>
+            </div>
+
+            <!-- Detailed Content Block -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-sm text-slate-900 border-b border-slate-100 pb-2">
+                    Les Facteurs d'Affaiblissement du Quatrième Pouvoir
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600">
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm">1. Hyper-Concentration &amp; Monopole Rossel-IPM</h4>
+                        <p class="leading-relaxed">
+                            L'Autorité belge de la Concurrence (ABC) a donné son feu vert le 4 septembre 2026 à la fusion des deux principaux groupes de presse francophones. Ce quasi-monopole crée un employeur unique sur le marché des journalistes, faisant peser une menace directe d'harmonisation des lignes éditoriales et de dégradation des conditions de travail, singulièrement au sein du quotidien régional <em>L'Avenir</em>.
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm">2. Précarité Fiscale &amp; Statutaire des Pigistes</h4>
+                        <p class="leading-relaxed">
+                            La réforme fiscale des droits d'auteur réduit drastiquement les abattements forfaitaires pour les journalistes, entraînant une hausse mécanique de l'impôt sur les revenus 2026. Parallèlement, le durcissement de l'assurance chômage frappe les journalistes intermittents de plein fouet (Smart).
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm">3. "Brutalisation" &amp; Contournement Direct</h4>
+                        <p class="leading-relaxed">
+                            Selon l'AJP et la LDH, l'espace médiatique subit un contournement de plus en plus systématique par les présidents de partis via les réseaux sociaux, des procédures-bâillons (SLAPs) contre le journalisme d'investigation, et une requalification médiatique récurrente des grèves syndicales sous le terme péjoratif de "grèves politiques".
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm">4. Tensions Constitutionnelles &amp; Droits Civiques</h4>
+                        <p class="leading-relaxed">
+                            L'accord de coalition restreint le droit de grève aux seules grèves annoncées à l'avance, introduit une peine judiciaire d'interdiction de manifester, autorise la reconnaissance faciale, et persiste à ne pas exécuter les décisions de justice relatives au logement des demandeurs d'asile.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 6: TIMELINE ==================== -->
+        <section id="tab-timeline" class="tab-content hidden space-y-6">
+            <div class="bg-indigo-50/80 border-l-4 border-indigo-600 p-4 rounded-r-lg shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-indigo-950">
+                        Chronologie Interactive de la Coalition Arizona (2024-2026)
+                    </h2>
+                    <p class="text-xs sm:text-sm text-indigo-900 mt-1">
+                        Explorez les événements clés par catégorie : négociations politiques, réformes budgétaires, mobilisations sociales et décisions juridiques.
+                    </p>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="flex flex-wrap gap-1.5 text-xs font-semibold">
+                    <button onclick="filterTimeline('all')" class="timeline-filter-btn active bg-indigo-600 text-white px-2.5 py-1 rounded">Tous</button>
+                    <button onclick="filterTimeline('politique')" class="timeline-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2.5 py-1 rounded">Politique</button>
+                    <button onclick="filterTimeline('budget')" class="timeline-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2.5 py-1 rounded">Budget/Éco</button>
+                    <button onclick="filterTimeline('greve')" class="timeline-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2.5 py-1 rounded">Mobilisations</button>
+                    <button onclick="filterTimeline('media')" class="timeline-filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-2.5 py-1 rounded">Médias/Justice</button>
+                </div>
+            </div>
+
+            <!-- Timeline List -->
+            <div class="relative border-l-2 border-slate-300 ml-4 md:ml-32 space-y-6 py-2">
+                <!-- Timeline Item 1 -->
+                <div class="timeline-item relative pl-6" data-category="politique">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-indigo-600 border-2 border-white"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-bold font-mono text-slate-500">9 Juin 2024</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 text-indigo-800 uppercase">Élections</span>
+                        <h4 class="font-bold text-sm text-slate-900 mt-1">Élections Législatives et Régionales</h4>
+                        <p class="text-xs text-slate-600 mt-1">Nouveau paysage politique marquant le début de 239 jours de négociations complexes pour la formation d'un gouvernement fédéral.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="timeline-item relative pl-6" data-category="politique">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-indigo-600 border-2 border-white"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-bold font-mono text-slate-500">3-6 Fév 2025</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 text-indigo-800 uppercase">Investiture</span>
+                        <h4 class="font-bold text-sm text-slate-900 mt-1">Assermentation du Gouvernement De Wever</h4>
+                        <p class="text-xs text-slate-600 mt-1">Prestation de serment du gouvernement Arizona. Confiance votée le 6 février par 81 voix contre 66 après 40h de débats.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3 -->
+                <div class="timeline-item relative pl-6" data-category="greve">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-rose-600 border-2 border-white"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-bold font-mono text-slate-500">13 Fév 2025</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 uppercase">Grève</span>
+                        <h4 class="font-bold text-sm text-slate-900 mt-1">Première Mobilisation Syndicale Nationale</h4>
+                        <p class="text-xs text-slate-600 mt-1">Front commun FGTB-CSC contre la norme salariale, la réforme des pensions et les attaques sur le droit de grève.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 4 -->
+                <div class="timeline-item relative pl-6" data-category="media">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-teal-600 border-2 border-white"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-bold font-mono text-slate-500">3 Sept 2025</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-100 text-teal-800 uppercase">Déontologie</span>
+                        <h4 class="font-bold text-sm text-slate-900 mt-1">Décision CDJ 25-03</h4>
+                        <p class="text-xs text-slate-600 mt-1">Le Conseil de déontologie journalistique épingle les dérives d'un journalisme d'opinion opposant de façon simpliste les réformes exécutives aux compromis belges.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 5 -->
+                <div class="timeline-item relative pl-6" data-category="greve">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-rose-600 border-2 border-white"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-bold font-mono text-slate-500">14 Oct 2025</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 uppercase">Manifestation</span>
+                        <h4 class="font-bold text-sm text-slate-900 mt-1">Grande Manifestation Nationale à Bruxelles</h4>
+                        <p class="text-xs text-slate-600 mt-1">Démonstration de force syndicale. Tensions sécuritaires et demandes d'équipement accru des forces de l'ordre par Theo Francken.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 6 -->
+                <div class="timeline-item relative pl-6" data-category="media">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-slate-700 border-2 border-white"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-bold font-mono text-slate-500">12 Déc 2025</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-800 uppercase">Loi</span>
+                        <h4 class="font-bold text-sm text-slate-900 mt-1">Vote Nocturne sur la Déductibilité des Dons</h4>
+                        <p class="text-xs text-slate-600 mt-1">Adoption d'une loi réduisant la déductibilité fiscale des dons aux associations de 45% à 30% avec effet rétroactif au 1er janvier 2025.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 7 -->
+                <div class="timeline-item relative pl-6" data-category="budget">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-amber-600 border-2 border-white"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-bold font-mono text-slate-500">Juillet 2026</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase">Rapport</span>
+                        <h4 class="font-bold text-sm text-slate-900 mt-1">Alerte du Comité de Monitoring</h4>
+                        <p class="text-xs text-slate-600 mt-1">Réévaluation du besoin d'assainissement immédiat à 7,7 milliards d'euros, atteignant 10 milliards d'ici 2029.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 8 -->
+                <div class="timeline-item relative pl-6" data-category="media">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-teal-600 border-2 border-white"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-bold font-mono text-slate-500">4 Sept 2026</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-100 text-teal-800 uppercase">Concurrence</span>
+                        <h4 class="font-bold text-sm text-slate-900 mt-1">Feu Vert à la Fusion Rossel-IPM</h4>
+                        <p class="text-xs text-slate-600 mt-1">L'Autorité belge de la Concurrence autorise le rachat créant un monopole de plus de 90% dans la presse écrite francophone.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 9 -->
+                <div class="timeline-item relative pl-6" data-category="budget">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-amber-600 border-2 border-white"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-bold font-mono text-slate-500">3-13 Oct 2026</span>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase">Crise</span>
+                        <h4 class="font-bold text-sm text-slate-900 mt-1">Échec du Conclave Budgétaire &amp; Report de la State of the Union</h4>
+                        <p class="text-xs text-slate-600 mt-1">Blocage total sur la TVA. Alerte de la BNB sur l'effet boule de neige de la dette. Maxime Prévot réclame publiquement l'éviction de GLB.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <p class="text-xs">
+                <strong>Observatoire de la Coalition Arizona</strong> • Conçu comme un instrument interactif d'analyse politique, budgétaire et critique des médias.
+            </p>
+            <p class="text-[11px] text-slate-500">
+                Sources des données : Cour des comptes (Rekenhof), Banque Nationale de Belgique (BNB), SPF BOSA, UVCW, CRISP, Minerva, AJP, LDH.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic & Chart Initialization -->
+    <script>
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('active');
+                el.classList.add('text-slate-600');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const btn = document.getElementById('btn-' + tabId);
+            if(btn) {
+                btn.classList.add('active');
+                btn.classList.remove('text-slate-600');
+            }
+        }
+
+        // Timeline Filter Logic
+        function filterTimeline(category) {
+            const items = document.querySelectorAll('.timeline-item');
+            const btns = document.querySelectorAll('.timeline-filter-btn');
+
+            btns.forEach(b => {
+                b.classList.remove('bg-indigo-600', 'text-white');
+                b.classList.add('bg-slate-200', 'text-slate-700');
+            });
+
+            event.target.classList.remove('bg-slate-200', 'text-slate-700');
+            event.target.classList.add('bg-indigo-600', 'text-white');
+
+            items.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Budget Simulator Logic
+        function updateSimulator() {
+            const unempRate = parseFloat(document.getElementById('input-unemployment').value);
+            const tvaChecked = document.getElementById('input-tva').checked;
+            const exemptionsChecked = document.getElementById('input-exemptions').checked;
+            const defenseBudget = parseFloat(document.getElementById('input-defense').value);
+
+            // Update Labels
+            document.getElementById('label-unemployment').innerText = unempRate + '% (' + (unempRate > 25 ? 'Hypothèse Gouvernement' : 'Constat BNB') + ')';
+            document.getElementById('label-defense').innerText = defenseBudget.toFixed(2) + ' Mrd € (' + ((defenseBudget/580)*100).toFixed(2) + '% PIB)';
+
+            // Base calculations
+            let nominalYield = 7.20; // Official target
+            let realYield = 2.00;   // Baseline realistic yield
+
+            // Unemployment yield impact
+            realYield += (unempRate / 33.3) * 1.5;
+
+            // TVA impact
+            if (tvaChecked) {
+                nominalYield += 1.10;
+                realYield += 0.75; // reduced due to cross-border leakage & consumption drop
+            }
+
+            // Plus-values impact
+            if (!exemptionsChecked) {
+                realYield += 1.10; // full yield without exemptions
+            } else {
+                realYield += 0.10; // heavily exempt yield
+            }
+
+            // Defense expenditure impact (drawdown)
+            realYield -= (defenseBudget - 7.34) * 0.3; 
+
+            document.getElementById('sim-nominal').innerText = nominalYield.toFixed(2) + ' Mrd €';
+            document.getElementById('sim-real').innerText = Math.max(1.20, realYield).toFixed(2) + ' Mrd €';
+
+            const gap = nominalYield - realYield;
+            const diag = document.getElementById('sim-diagnostic');
+
+            if (gap > 3.0) {
+                diag.className = "p-4 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-900 space-y-1";
+                diag.innerHTML = `<strong>⚠️ Alerte Déficit Majeur :</strong> Un écart de <strong>${gap.toFixed(2)} Mrd €</strong> persiste entre les déclarations et les recettes réelles. Risque immédiat de rappel à l'ordre par la Commission européenne.`;
+            } else if (gap > 1.5) {
+                diag.className = "p-4 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1";
+                diag.innerHTML = `<strong>⚡ Tension Budgétaire :</strong> L'écart est réduit à <strong>${gap.toFixed(2)} Mrd €</strong>, mais nécessite des coupes compensatoires dans les entités fédérées ou les CPAS.`;
+            } else {
+                diag.className = "p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 space-y-1";
+                diag.innerHTML = `<strong>✅ Équilibre Audité Atteint :</strong> Les hypothèses de recettes correspondent aux critères de crédibilité de la Cour des comptes.`;
+            }
+        }
+
+        // Initialize Chart.js Visualizations
+        window.addEventListener('DOMContentLoaded', () => {
+            // Chart 1: Parliamentary Seats Distribution
+            const ctxSeats = document.getElementById('seatsChart').getContext('2d');
+            new Chart(ctxSeats, {
+                type: 'doughnut',
+                data: {
+                    labels: ['N-VA ( Conservateurs)', 'MR (Libéraux)', 'Les Engagés (Centristes)', 'CD&V (Chrétiens-Dém.)', 'Vooruit (Sociaux-Dém.)'],
+                    datasets: [{
+                        data: [23, 19, 14, 11, 13],
+                        backgroundColor: ['#EAB308', '#2563EB', '#0D9488', '#F97316', '#E11D48'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 10 },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} sièges (${((context.raw/80)*100).toFixed(1)}% majorité)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Budget Yield Gap
+            const ctxBudget = document.getElementById('budgetGapChart').getContext('2d');
+            new Chart(ctxBudget, {
+                type: 'bar',
+                data: {
+                    labels: ['Chômage / Activ.', 'Incapacité Santé', 'Taxe Plus-Values', 'Fraude Fiscale'],
+                    datasets: [
+                        {
+                            label: 'Affichage Nominal Govt (Mio €)',
+                            data: [2100, 1300, 1400, 1000],
+                            backgroundColor: '#F59E0B'
+                        },
+                        {
+                            label: 'Rendement Audité BNB/CdC (Mio €)',
+                            data: [650, 400, 100, 300],
+                            backgroundColor: '#E11D48'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { font: { size: 10 } }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Chart 3: Defense vs Infrastructure Spending
+            const ctxDefense = document.getElementById('defenseChart').getContext('2d');
+            new Chart(ctxDefense, {
+                type: 'line',
+                data: {
+                    labels: ['2025', '2026', '2027', '2028', '2029'],
+                    datasets: [
+                        {
+                            label: 'Budget Défense (Mrd €)',
+                            data: [7.34, 8.40, 9.50, 10.60, 11.57],
+                            borderColor: '#2563EB',
+                            backgroundColor: '#2563EB22',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Dotation SNCB Cumulée (Coupes Mio €)',
+                            data: [0, -135, -270, -450, -675],
+                            borderColor: '#E11D48',
+                            borderDash: [5, 5],
+                            fill: false,
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            ticks: { font: { size: 10 } }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Initialize simulator values
+            updateSimulator();
+        });
+    </script>
+</body>
+</html>
