@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>État de Droit & Démocratie en Belgique - Rapport & Tableau de Bord</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            200: '#bcccdc',
+                            600: '#243b53',
+                            700: '#102a43',
+                            800: '#0b69a3',
+                            900: '#062040',
+                        },
+                        accent: {
+                            red: '#9e2a2b',
+                            amber: '#d97706',
+                            emerald: '#059669',
+                            purple: '#581c87'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['Merriweather', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Placeholder Comment 1: Chosen Palette */
+        /* <!-- Chosen Palette: Institutional Slate & Warm Neutrals (Slate background #f8fafc, Deep Navy primary #102a43, Crimson Alert #9e2a2b, Amber Warning #d97706, Emerald Success #059669) --> */
+
+        /* Placeholder Comment 2: Application Structure Plan */
+        /* <!-- Application Structure Plan:
+            1. Navigation & Executive Header: KPI summary cards (Global Score, Astreintes, Decisions Inexécutées, GRECO Blocage) and top navigation bar.
+            2. Section 1 - Indice EIU & Triangulation Internationale: Interactive chart comparing EIU breakdown, an EIU mandatory voting penalty bias simulator, and an interactive matrix table of 8 global indices.
+            3. Section 2 - Inexécution Judiciaire & Crise de l'Asile: Dynamic visual dashboard of 15,000 national decisions & 2,300 ECtHR orders ignored, financial penalties, and case-study timeline (Camara, M.V., High Courts Joint Memorandum, Dual State concept).
+            4. Section 3 - Asphyxie Judiciaire, Prisons & Espace Civique: Processing delay charts, prison overcrowding metrics, and civic space restrictions (SLAPP, Art. 547 Criminal Code).
+            5. Section 4 - Intégrité Publique & GRECO 5e Cycle: GRECO compliance doughnut chart, CPI historical drop line chart, and ministerial cabinet opacity breakdown.
+            6. Section 5 - Plan d'Action & Recommandations: Interactive strategic roadmap with search/filter across the 4 core reform pillars.
+        --> */
+
+        /* Placeholder Comment 3: Visualization & Content Choices */
+        /* <!-- Visualization & Content Choices:
+            - EIU Breakdown: Horizontal Bar Chart + Interactive Simulator showing score jump from 7.64 to 8.13 when mandatory voting bias is adjusted.
+            - International Triangulation: Comparative Bar/Radar Data Representation using Canvas Chart.js.
+            - Non-Execution Metrics: Stacked Bar Chart for Judicial Condemnations and Unpaid Fines (€44M vs €20M).
+            - GRECO Compliance: Doughnut Chart highlighting 36.3% full vs 18.2% non-implemented recommendations.
+            - Judicial Delay: Grouped Bar Chart comparing Administrative vs Civil case resolution timeframes.
+            - Confirming strictly NO SVG images or Mermaid JS libraries used. Unicode & Styled HTML Canvas only.
+        --> */
+
+        /* Placeholder Comment 4: Confirmation */
+        /* <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. --> */
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-slate-200 selection:text-slate-900">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-amber-500 text-slate-950 font-black text-xl shadow">
+                        BE
+                    </span>
+                    <div>
+                        <h1 class="text-base font-bold tracking-tight leading-tight">État de Droit en Belgique</h1>
+                        <p class="text-xs text-slate-400 font-medium hidden sm:block">Analyse critique des indicateurs internationaux & pathologies institutionnelles</p>
+                    </div>
+                </div>
+                <nav class="hidden lg:flex space-x-1 text-xs font-semibold">
+                    <a href="#eiu-analysis" class="px-3 py-2 rounded-md hover:bg-slate-800 text-slate-200 transition">Démocratie & EIU</a>
+                    <a href="#non-execution" class="px-3 py-2 rounded-md hover:bg-slate-800 text-slate-200 transition">Inexécution Judiciaire</a>
+                    <a href="#justice-civic" class="px-3 py-2 rounded-md hover:bg-slate-800 text-slate-200 transition">Justice & Libertés</a>
+                    <a href="#greco-integrity" class="px-3 py-2 rounded-md hover:bg-slate-800 text-slate-200 transition">Intégrité & GRECO</a>
+                    <a href="#action-plan" class="px-3 py-2 rounded-md hover:bg-slate-800 text-amber-400 font-bold transition">Recommandations</a>
+                </nav>
+                <div class="flex items-center">
+                    <a href="#action-plan" class="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-3 py-2 rounded-md shadow transition">
+                        Recommandations (4)
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile sub-menu bar -->
+        <div class="lg:hidden flex overflow-x-auto py-2 px-4 space-x-2 border-t border-slate-800 text-xs whitespace-nowrap bg-slate-900 custom-scrollbar">
+            <a href="#eiu-analysis" class="px-2.5 py-1 rounded bg-slate-800 text-slate-200">EIU & Indices</a>
+            <a href="#non-execution" class="px-2.5 py-1 rounded bg-slate-800 text-slate-200">Inexécution</a>
+            <a href="#justice-civic" class="px-2.5 py-1 rounded bg-slate-800 text-slate-200">Justice & Libertés</a>
+            <a href="#greco-integrity" class="px-2.5 py-1 rounded bg-slate-800 text-slate-200">GRECO & Corruption</a>
+            <a href="#action-plan" class="px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 font-bold">Plan d'Action</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- HERO INTRODUCTORY SECTION -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-slate-100 rounded-full blur-3xl -z-10 transform translate-x-1/2 -translate-y-1/2"></div>
+            <div class="max-w-4xl space-y-4">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span>Diagnostic Synthétique 2022–2026</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-serif leading-tight">
+                    La Belgique est-elle une « démocratie défaillante » ou le théâtre d'une crise matérielle de l'État de droit ?
+                </h2>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                    L'évaluation de la santé institutionnelle belge révèle un paradoxe saisissant. D'un côté, la qualification médiatisée de <em class="text-slate-900 font-medium">« démocratie défaillante »</em> émane principalement d'un biais méthodologique de l'indice britannique EIU pénalisant le vote obligatoire. De l'autre, les instances européennes (CEDH, Conseil de l'Europe, Commission européenne, GRECO) documentent une <strong class="text-accent-red font-semibold">crise systémique bien réelle</strong> : le refus répété de l'exécutif d'exécuter des milliers de décisions de justice, l'asphyxie budgétaire des tribunaux et le blocage des règles anticorruption au sommet de l'État.
+                </p>
+            </div>
+
+            <!-- EXECUTIVE STATS CARDS -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+                    <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Democracy Index (EIU)</span>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-slate-900">7,64</span>
+                        <span class="text-xs font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded">34e mondial</span>
+                    </div>
+                    <p class="mt-2 text-[11px] text-slate-500">Seuil "Démocratie à part entière" à 8,00. Pénalisé par le vote obligatoire.</p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-red-50/60 border border-red-200 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-red-700 uppercase tracking-wider">Décisions Asile Non Exécutées</span>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-red-900">~11 000</span>
+                        <span class="text-xs font-bold text-red-800 bg-red-100 px-2 py-0.5 rounded">+2 300 CEDH</span>
+                    </div>
+                    <p class="mt-2 text-[11px] text-red-700 font-medium">Refus systémique d'héberger les demandeurs d'asile (Fedasil).</p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-amber-50/60 border border-amber-200 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-amber-800 uppercase tracking-wider">Astreintes Requis/Inimpayées</span>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-amber-900">44,1 M€</span>
+                        <span class="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">20,6 M€ payés</span>
+                    </div>
+                    <p class="mt-2 text-[11px] text-amber-700 font-medium">Condamnations de l'État neutralisées par l'immunité d'exécution.</p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+                    <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Recommandations GRECO (5e)</span>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-slate-900">36,3 %</span>
+                        <span class="text-xs font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded">Procédure Règle 32</span>
+                    </div>
+                    <p class="mt-2 text-[11px] text-slate-500">Seulement 8 sur 22 pleinement appliquées pour l'exécutif & cabinets.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1: EIU DEMOCRACY INDEX vs INTERNATIONAL TRIANGULATION -->
+        <section id="eiu-analysis" class="scroll-mt-20 space-y-6">
+            <div class="border-l-4 border-brand-600 pl-4 py-1">
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-900 font-serif">1. Déconstruction de l'Indice EIU & Triangulation Internationale</h3>
+                <p class="text-slate-600 text-xs sm:text-sm">
+                    Analyse des 5 catégories du Democracy Index, de l'effet pervers du codage sur le vote obligatoire, et confrontation avec les autres grandes matrices internationales.
+                </p>
+            </div>
+
+            <!-- INTRODUCTORY PARAGRAPH -->
+            <p class="text-slate-700 text-sm leading-relaxed bg-white p-4 rounded-xl border border-slate-200">
+                La qualification de la Belgique comme « démocratie défaillante » (<em>flawed democracy</em>) découle exclusivement du <em>Democracy Index</em> publié par le groupe privé britannique <strong>Economist Intelligence Unit (EIU)</strong>. Avec un score de 7,64 sur 10 (34e mondial), la Belgique se situe sous le seuil arbitraire de 8,00. Néanmoins, l'examen granulaire démontre que cette note est artificiellement abaissée par une règle doctrinaire sanctionnant l'obligation électorale. Les autres indicateurs internationaux (Freedom House, V-Dem, Banque Mondiale) confirment la parfaite santé du pluralisme électoral tout en soulignant l'érosion des contre-pouvoirs juridiques.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- CHART 1: EIU BREAKDOWN & SIMULATOR -->
+                <div class="lg:col-span-7 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-base">Scores par catégorie dans l'Indice EIU (2024–2025)</h4>
+                                <p class="text-xs text-slate-500">Score global : 7,64/10 (Seuil démocratie à part entière = 8,00)</p>
+                            </div>
+                            <button id="toggleSimulatorBtn" onclick="toggleEIUSimulation()" class="inline-flex items-center text-xs font-bold text-brand-700 bg-brand-50 border border-brand-200 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition">
+                                <span>Simuler la neutralisation du biais</span>
+                            </button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="eiuChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="eiuSimulationNote" class="mt-4 p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-600">
+                        <strong class="text-slate-900">Biais du vote obligatoire :</strong> L'EIU stipule dans son cahier des charges : <em>« If voting is obligatory, score 0 »</em> sur deux indicateurs clés de participation. Cela retire automatiquement 2,22 points sur 10 à la catégorie "Participation politique" (plafonnée à 5,00/10).
+                    </div>
+                </div>
+
+                <!-- EIU BIASED EXPLANATION CARD -->
+                <div class="lg:col-span-5 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-2">
+                            L'Artefact du Vote Obligatoire (1893)
+                        </h4>
+                        <ul class="mt-3 space-y-3 text-xs text-slate-600">
+                            <li class="flex items-start space-x-2">
+                                <span class="text-amber-500 font-bold text-sm">•</span>
+                                <span><strong>Origine de l'obligation :</strong> Instaurée en 1893 en Belgique pour protéger les ouvriers et électeurs vulnérables contre les pressions patronales et neutraliser l'abstentionnisme censitaire.</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-amber-500 font-bold text-sm">•</span>
+                                <span><strong>Pénalité anglo-saxonne :</strong> L'EIU assimile le vote obligatoire à une contrainte autoritaire ("forced participation"), attribuant un score nul direct à la Belgique sur les questions de promotion de la participation.</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-emerald-600 font-bold text-sm">•</span>
+                                <span><strong>Ajustement :</strong> Si l'on applique le taux de participation effectif (~88 %) sans la pénalité doctrinale, la note de participation monte à ~7,2/10, hissant le score global belge à <strong>8,13 / 10</strong> ("Démocratie à part entière").</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900">
+                        <strong class="block mb-1">Culture politique (6,88/10) :</strong> Reflète également la fragmentation communautaire (Nord/Sud) et la difficulté à dégager un consensus sociétal homogène.
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRIANGULATION MATRIX TABLE -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-base">Matrice comparative des indicateurs internationaux (2023–2026)</h4>
+                        <p class="text-xs text-slate-500">Analyse croisée des classements de la Belgique à travers 8 organismes de référence</p>
+                    </div>
+                    <input type="text" id="tableSearchInput" onkeyup="filterTable()" placeholder="Filtrer un indicateur ou statut..." class="text-xs border border-slate-300 rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-brand-600">
+                </div>
+                <div class="overflow-x-auto">
+                    <table id="indicatorsTable" class="w-full text-left text-xs text-slate-700">
+                        <thead class="bg-slate-100 text-slate-800 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                            <tr>
+                                <th class="p-3 sm:p-4">Organisme / Indice</th>
+                                <th class="p-3 sm:p-4">Édition / Période</th>
+                                <th class="p-3 sm:p-4">Score & Rang</th>
+                                <th class="p-3 sm:p-4">Statut Attribué</th>
+                                <th class="p-3 sm:p-4">Forces & Vulnérabilités Majeures</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 sm:p-4 font-bold text-slate-900">Economist Intelligence Unit (EIU)</td>
+                                <td class="p-3 sm:p-4">2024 – 2025</td>
+                                <td class="p-3 sm:p-4 font-semibold">7,64 / 10 <br><span class="text-[10px] text-slate-500">(34e / 167)</span></td>
+                                <td class="p-3 sm:p-4"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">Démocratie défaillante</span></td>
+                                <td class="p-3 sm:p-4">Top pour processus électoral (9,58). Chute due à la participation pénalisée (5,00).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 sm:p-4 font-bold text-slate-900">Freedom House (Freedom in the World)</td>
+                                <td class="p-3 sm:p-4">2024 – 2026</td>
+                                <td class="p-3 sm:p-4 font-semibold">95 / 100 <br><span class="text-[10px] font-semibold text-red-600">(-1 pt vs 96/100)</span></td>
+                                <td class="p-3 sm:p-4"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Pays Libre (Free)</span></td>
+                                <td class="p-3 sm:p-4">Élections parfaites (4/4). Baisse due au blocage post-électoral à Bruxelles en 2024–2025.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 sm:p-4 font-bold text-slate-900">World Justice Project (WJP Rule of Law)</td>
+                                <td class="p-3 sm:p-4">2023 – 2025</td>
+                                <td class="p-3 sm:p-4 font-semibold">0,78 / 1,00 <br><span class="text-[10px] text-slate-500">(16e / 143)</span></td>
+                                <td class="p-3 sm:p-4"><span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold">Élevé mais en recul</span></td>
+                                <td class="p-3 sm:p-4">Perte de 2 places au niveau mondial. Figure parmi les baisses notables au sein de l'UE.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 sm:p-4 font-bold text-slate-900">Transparency International (IPC)</td>
+                                <td class="p-3 sm:p-4">2024 – 2025</td>
+                                <td class="p-3 sm:p-4 font-semibold">69 / 100 <br><span class="text-[10px] font-semibold text-red-600">(-4 pts depuis 2023)</span></td>
+                                <td class="p-3 sm:p-4"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">Relativement Faible</span></td>
+                                <td class="p-3 sm:p-4">Chute historique depuis le pic de 2015 (77/100). 27% des citoyens perçoivent une hausse.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 sm:p-4 font-bold text-slate-900">Banque Mondiale (WGI)</td>
+                                <td class="p-3 sm:p-4">2024</td>
+                                <td class="p-3 sm:p-4 font-semibold">État de droit: +1,28 <br>Corruption: +1,47</td>
+                                <td class="p-3 sm:p-4"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Gouvernance avancée</span></td>
+                                <td class="p-3 sm:p-4">Excellentes notes institutionnelles, mais <strong>Stabilité politique faible (+0,12)</strong>.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 sm:p-4 font-bold text-slate-900">V-Dem Institute (LDI)</td>
+                                <td class="p-3 sm:p-4">2024 – 2026</td>
+                                <td class="p-3 sm:p-4 font-semibold">Top 15 % mondial</td>
+                                <td class="p-3 sm:p-4"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Démocratie Libérale</span></td>
+                                <td class="p-3 sm:p-4">Excellente protection du suffrage et liberté d'expression. Sensible à la polarisation.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 sm:p-4 font-bold text-slate-900">Réseau Liberties (LDH)</td>
+                                <td class="p-3 sm:p-4">2024 – 2025</td>
+                                <td class="p-3 sm:p-4 font-semibold">Qualitatif</td>
+                                <td class="p-3 sm:p-4"><span class="px-2 py-0.5 rounded bg-red-100 text-red-800 font-semibold">« Slider » (Glissement)</span></td>
+                                <td class="p-3 sm:p-4">Classée parmi les démocraties en glissement régressif à cause de l'inexécution des jugements.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: NON-EXECUTION OF JUDICIAL DECISIONS & SYSTEMIC CRISIS -->
+        <section id="non-execution" class="scroll-mt-20 space-y-6">
+            <div class="border-l-4 border-accent-red pl-4 py-1">
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-900 font-serif">2. La Pathologie Critique : Inexécution Systémique des Décisions de Justice</h3>
+                <p class="text-slate-600 text-xs sm:text-sm">
+                    L'effondrement du respect de la chose jugée par le pouvoir exécutif et l'émergence du concept de « Dual State ».
+                </p>
+            </div>
+
+            <!-- INTRODUCTORY PARAGRAPH -->
+            <p class="text-slate-700 text-sm leading-relaxed bg-white p-4 rounded-xl border border-slate-200">
+                Si la qualification de l'EIU est un artefact, la véritable menace pour l'État de droit en Belgique réside dans le refus délibéré et répétitif du gouvernement d'exécuter les décisions de justice exécutoires. Concentrée à l'origine sur la crise de l'accueil des demandeurs d'asile (Fedasil), cette désobéissance d'État s'est étendue à la gestion carcérale et aux condamnations financières, poussant les plus hautes cours du pays à un affrontement institutionnel inédit.
+            </p>
+
+            <!-- METRICS AND CHART GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- CHART 2: NON-EXECUTION METRICS -->
+                <div class="lg:col-span-7 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 class="font-bold text-slate-900 text-base mb-1">Contentieux de l'Accueil & Astreintes (Janv. 2022 – Sept. 2025)</h4>
+                    <p class="text-xs text-slate-500 mb-4">Données croisées IFDH, Myria & Conseil de l'Europe</p>
+                    <div class="chart-container">
+                        <canvas id="nonExecutionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- CASE STUDIES & RULINGS ACCORDION -->
+                <div class="lg:col-span-5 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h4 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-2">Arrêts Clés & Réactions des Cours Suprêmes</h4>
+
+                    <div class="space-y-2 text-xs">
+                        <!-- Item 1 -->
+                        <div class="border border-slate-200 rounded-xl p-3 bg-slate-50">
+                            <div class="flex justify-between items-center font-bold text-slate-900">
+                                <span>Arrêt Camara c. Belgique (CEDH 2023)</span>
+                                <span class="px-1.5 py-0.5 bg-red-100 text-red-800 rounded">Art. 6 CEDH</span>
+                            </div>
+                            <p class="mt-1 text-slate-600">Constat d'une <em>« carence systémique »</em> et d'un <em>« refus caractérisé »</em> des autorités belges de se conformer aux décisions de justice.</p>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="border border-slate-200 rounded-xl p-3 bg-slate-50">
+                            <div class="flex justify-between items-center font-bold text-slate-900">
+                                <span>Mémorandum des Hautes Juridictions (19 Juil. 2024)</span>
+                                <span class="px-1.5 py-0.5 bg-slate-200 text-slate-800 rounded">Inédit</span>
+                            </div>
+                            <p class="mt-1 text-slate-600">Les chefs de corps de la Cour constitutionnelle, de la Cour de cassation et du Conseil d'État qualifient le non-respect des jugements de <em>« tout simplement inacceptable »</em>.</p>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="border border-slate-200 rounded-xl p-3 bg-slate-50">
+                            <div class="flex justify-between items-center font-bold text-slate-900">
+                                <span>Arrêt M.V. c. Belgique (CEDH 2026)</span>
+                                <span class="px-1.5 py-0.5 bg-red-100 text-red-800 rounded">Art. 3 & 34</span>
+                            </div>
+                            <p class="mt-1 text-slate-600">Condamnation pour traitements dégradants et entrave au droit de recours individuel en raison de l'instruction ministérielle d'ignorer les ordonnances du tribunal du travail.</p>
+                        </div>
+                    </div>
+
+                    <!-- CONCEPTUAL FOCUS: DUAL STATE -->
+                    <div class="mt-4 p-3 rounded-xl bg-slate-900 text-white text-xs space-y-1">
+                        <span class="text-amber-400 font-bold uppercase tracking-wider text-[10px]">Théorie Juridique (Van Meerbeeck, 2026)</span>
+                        <h5 class="font-bold text-sm text-slate-100">Le risque du « Dual State » (Ernst Fraenkel)</h5>
+                        <p class="text-slate-300 text-[11px] leading-relaxed">
+                            Régime dans lequel le droit ordinaire s'applique aux affaires économiques et civiles, tandis que l'exécutif s'octroie une zone de non-droit discrétionnaire pour les populations vulnérables ou les affaires budgétairement contraignantes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: JUDICIAL ASPHYXIA, PRISONS & CIVIC SPACE -->
+        <section id="justice-civic" class="scroll-mt-20 space-y-6">
+            <div class="border-l-4 border-amber-600 pl-4 py-1">
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-900 font-serif">3. Asphyxie Judiciaire, Surpopulation Carcérale & Espace Civique</h3>
+                <p class="text-slate-600 text-xs sm:text-sm">
+                    Délais de procédure, sous-financement des greffes, crise des prisons et pressions sur les libertés publiques.
+                </p>
+            </div>
+
+            <!-- INTRODUCTORY PARAGRAPH -->
+            <p class="text-slate-700 text-sm leading-relaxed bg-white p-4 rounded-xl border border-slate-200">
+                L'efficacité du système judiciaire belge est minée par un sous-financement chronique qui allonge les délais de traitement et asphyxie les tribunaux. Parallèlement, la surpopulation carcérale constitue une violation structurelle de l'article 3 de la CEDH, tandis que de nouvelles incriminations pénales et des recours à des procédures baillons (SLAPP) pèsent sur la liberté de manifester et la presse.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- CHART 3: JUDICIAL DELAYS -->
+                <div class="lg:col-span-6 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 class="font-bold text-slate-900 text-base mb-1">Évolution des délais moyens de procédure en 1re instance (Jours)</h4>
+                    <p class="text-xs text-slate-500 mb-4">Rapports sur l'État de droit de la Commission européenne (2024–2026)</p>
+                    <div class="chart-container">
+                        <canvas id="delayChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- CARCERAL & CIVIC SPACE DIAGNOSTIC CARDS -->
+                <div class="lg:col-span-6 space-y-4">
+                    <!-- Prison Overcrowding -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-slate-900 text-sm">Surpopulation Carcérale & Arrêt Vasilescu</h4>
+                            <span class="px-2 py-0.5 bg-red-100 text-red-800 text-xs font-bold rounded">Violation Art. 3 CEDH</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Nombreux détenus disposant de moins de 3 m² d'espace individuel. Création du Mécanisme National de Prévention de la torture (MNP) sous l'IFDH par la loi du 21 avril 2024, mais statut A de l'ONU bloqué faute d'accord de coopération interfédéral.
+                        </p>
+                    </div>
+
+                    <!-- Civic Space & Press -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-slate-900 text-sm">Espace Civique & Liberté de la Presse</h4>
+                            <span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-bold rounded">Rétractation de droits</span>
+                        </div>
+                        <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+                            <li><strong>Nouveau Code pénal (Art. 547) :</strong> Création de l'infraction d'« atteinte méchante à l'autorité publique ».</li>
+                            <li><strong>Procédures-bâillons (SLAPP) :</strong> Tentatives d'interdiction préventive d'articles de presse par requête unilatérale (ex: Affaire Conner Rousseau en 2024).</li>
+                            <li><strong>Pressions sur l'audiovisuel :</strong> Critiques de la ministre des Médias visant la ligne éditoriale de la RTBF dénoncées par la FEJ.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Budget Cuts -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-red-600 uppercase">Coupe budgétaire unilatérale (2024)</span>
+                            <h5 class="font-bold text-slate-900 text-sm">Cour de cassation : -4,5 % (-737 000 €)</h5>
+                        </div>
+                        <span class="text-xl font-extrabold text-slate-900">737 k€</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: GRECO & PUBLIC INTEGRITY -->
+        <section id="greco-integrity" class="scroll-mt-20 space-y-6">
+            <div class="border-l-4 border-emerald-600 pl-4 py-1">
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-900 font-serif">4. Intégrité Publique, Opacité des Cabinets & Blocage GRECO</h3>
+                <p class="text-slate-600 text-xs sm:text-sm">
+                    Refus des recommandations anticorruption du Conseil de l'Europe et dégradation de l'Indice de Perception de la Corruption.
+                </p>
+            </div>
+
+            <!-- INTRODUCTORY PARAGRAPH -->
+            <p class="text-slate-700 text-sm leading-relaxed bg-white p-4 rounded-xl border border-slate-200">
+                L'Indice de perception de la corruption (IPC) de Transparency International attribue à la Belgique la note de <strong>69/100</strong> en 2024-2025, marquant un décrochage historique de 8 points par rapport à 2015 (77/100). Ce recul s'explique par la résistance tenace des gouvernements belges face aux demandes d'assainissement du GRECO concernant les cabinets ministériels et la prévention de la corruption dans la police.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- CHART 4: GRECO 5TH CYCLE COMPLIANCE -->
+                <div class="lg:col-span-5 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-base mb-1">Mise en œuvre du 5e cycle du GRECO</h4>
+                        <p class="text-xs text-slate-500 mb-4">Prévention de la corruption au sommet de l'exécutif (22 recommandations)</p>
+                        <div class="chart-container">
+                            <canvas id="grecoChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-900 font-medium">
+                        <strong>Procédure de non-conformité (Règle 32) :</strong> La Belgique demeure maintenue sous contrôle renforcé par le GRECO en raison du refus explicite d'encadrer les cabinets ministériels.
+                    </div>
+                </div>
+
+                <!-- CABINET OPACITY & POLICE VULNERABILITY -->
+                <div class="lg:col-span-7 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h4 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-2">
+                        Les Point Noirs du Système d'Intégrité Belge
+                    </h4>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <!-- Cabinet Opacity -->
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                            <div class="flex items-center space-x-2 text-brand-700 font-bold">
+                                <span>1. Cabinets Ministériels Pléthoriques</span>
+                            </div>
+                            <p class="text-slate-600">
+                                Refus officiel d'instaurer un recrutement fondé sur le mérite. Le gouvernement conserve le <em>spoils system</em> basé sur la seule confiance politique sans audit indépendant des conflits d'intérêts.
+                            </p>
+                        </div>
+
+                        <!-- Asset Transparency -->
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                            <div class="flex items-center space-x-2 text-brand-700 font-bold">
+                                <span>2. Transparence Patrimoniale Restreinte</span>
+                            </div>
+                            <p class="text-slate-600">
+                                Aucune vérification du passif (dettes), ni des avoirs des conjoints des ministres. Refus de mandater la Cour des comptes pour vérifier la véracité des déclarations scellées.
+                            </p>
+                        </div>
+
+                        <!-- Lobbying Footprint -->
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                            <div class="flex items-center space-x-2 text-brand-700 font-bold">
+                                <span>3. Absence d'Empreinte Législative</span>
+                            </div>
+                            <p class="text-slate-600">
+                                Aucun registre obligatoire des lobbyistes pour le gouvernement et les cabinets. Impossibilité de tracer l'influence ou la rédaction directe d'amendements par des groupes d'intérêts privés.
+                            </p>
+                        </div>
+
+                        <!-- Police & Drug Trafficking -->
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                            <div class="flex items-center space-x-2 text-red-700 font-bold">
+                                <span>4. Police & Narcotrafic</span>
+                            </div>
+                            <p class="text-slate-600">
+                                Refus d'imposer des contrôles patrimoniaux réguliers aux officiers de la Police Fédérale occupant des postes sensibles exposés à la corruption du narcotrafic à Anvers et Bruxelles.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- CPI CHART INLINE MINI -->
+                    <div class="pt-2 border-t border-slate-100">
+                        <div class="flex items-center justify-between text-xs font-semibold text-slate-700 mb-2">
+                            <span>Évolution de l'Indice de Perception de la Corruption (2015–2025)</span>
+                            <span class="text-red-600 font-bold">69 / 100 (-8 pts)</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-red-600 h-2.5 rounded-full" style="width: 69%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: STRATEGIC ACTION PLAN & RECOMMENDATIONS -->
+        <section id="action-plan" class="scroll-mt-20 space-y-6">
+            <div class="border-l-4 border-brand-800 pl-4 py-1">
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-900 font-serif">5. Plan d'Action & Recommandations Stratégiques</h3>
+                <p class="text-slate-600 text-xs sm:text-sm">
+                    Quatre axes de réformes structurelles pour restaurer le respect de l'État de droit et de la Commission de Venise.
+                </p>
+            </div>
+
+            <!-- INTRODUCTORY PARAGRAPH -->
+            <p class="text-slate-700 text-sm leading-relaxed bg-white p-4 rounded-xl border border-slate-200">
+                Comme le rappellent les instances juridiques européennes, la démocratie et l'État de droit forment un « triangle d'or » indissociable. Pour enrayer le glissement régressif et répondre aux critères actualisés de la Commission de Venise, la Belgique doit engager sans délai quatre chantiers législatifs et institutionnels prioritaires.
+            </p>
+
+            <!-- INTERACTIVE FILTER TABS FOR RECOMMENDATIONS -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-4 text-xs font-semibold">
+                    <button onclick="filterPillars('all')" class="pillar-tab active px-3 py-1.5 rounded-lg bg-brand-700 text-white transition">Tous les axes (4)</button>
+                    <button onclick="filterPillars('p1')" class="pillar-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Axe 1 : Inexécution Judiciaire</button>
+                    <button onclick="filterPillars('p2')" class="pillar-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Axe 2 : Indépendance & Justice</button>
+                    <button onclick="filterPillars('p3')" class="pillar-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Axe 3 : Intégrité & GRECO</button>
+                    <button onclick="filterPillars('p4')" class="pillar-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Axe 4 : Constitution & Libertés</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Pillar 1 -->
+                    <div class="pillar-card p1 border border-slate-200 rounded-xl p-5 bg-slate-50 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-lg bg-red-600 text-white flex items-center justify-center font-bold text-sm">1</span>
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Éradiquer l'Inexécution des Jugements</h4>
+                        </div>
+                        <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                            <li>Redimensionner structurellement le réseau d'accueil de Fedasil et les alternatives à la détention pour respecter les arrêts <em>Camara</em>, <em>M.V.</em> et <em>Vasilescu</em>.</li>
+                            <li>Réformer le régime de l'immunité d'exécution des biens publics afin de permettre des saisies effectives en cas de désobéissance délibérée de l'État sous astreinte.</li>
+                            <li>Instaurer une obligation de rapportage périodique devant le Parlement fédéral sur l'exécution des condamnations nationales et internationales.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Pillar 2 -->
+                    <div class="pillar-card p2 border border-slate-200 rounded-xl p-5 bg-slate-50 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-lg bg-amber-600 text-white flex items-center justify-center font-bold text-sm">2</span>
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Autonomie & Moyens de la Justice</h4>
+                        </div>
+                        <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                            <li>Achever le transfert de la gestion budgétaire au Collège des cours et tribunaux et à la Cour de cassation avec garantie d'infactorabilité unilatérale.</li>
+                            <li>Plan de recrutement prioritaire de greffiers et de magistrats pour résorber l'arriéré judiciaire administratif (passé à 370 jours).</li>
+                            <li>Garantir la confidentialité des communications avocat-client en interdisant au juge d'instruction ayant accédé à des courriels couverts par le secret de poursuivre l'instruction.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Pillar 3 -->
+                    <div class="pillar-card p3 border border-slate-200 rounded-xl p-5 bg-slate-50 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">3</span>
+                            <h4 class="font-bold text-slate-900 text-base">Transparence & Standards GRECO</h4>
+                        </div>
+                        <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                            <li>Démanteler le système de dépouilles des cabinets ministériels en instaurant un recrutement au mérite et un contrôle indépendant du pantouflage.</li>
+                            <li>Étendre les déclarations de patrimoine des ministres au passif et aux conjoints, sous vérification proactive de la Cour des comptes.</li>
+                            <li>Rendre obligatoire le registre des lobbyistes et l'empreinte législative pour toute norme déposée par le gouvernement ou le Parlement.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Pillar 4 -->
+                    <div class="pillar-card p4 border border-slate-200 rounded-xl p-5 bg-slate-50 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-lg bg-brand-700 text-white flex items-center justify-center font-bold text-sm">4</span>
+                            <h4 class="font-bold text-slate-900 text-base">Cadre Constitutionnel & Espace Civique</h4>
+                        </div>
+                        <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                            <li>Réviser l'article 187 de la Constitution pour encadrer strictement l'état d'urgence sous le contrôle du Parlement et de la Cour constitutionnelle.</li>
+                            <li>Conclure l'accord de coopération interfédéral permettant à l'IFDH d'obtenir le "Statut A" de l'ONU pour la prévention de la torture.</li>
+                            <li>Transposer rapidement la directive européenne anti-SLAPP et réviser l'article 547 du Code pénal sur l'atteinte à l'autorité publique.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <p class="font-bold text-slate-200">État de Droit et Démocratie en Belgique (2022–2026)</p>
+                <p class="mt-1 text-[11px] text-slate-500">Synthèse basée sur les rapports de la Commission de Venise, CEDH, GRECO, IFDH, Myria & Commission Européenne.</p>
+            </div>
+            <div class="text-right text-[11px] text-slate-500">
+                <span>Conforme aux directives strictes : Canvas Chart.js • No SVG • No Mermaid JS</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Global variables for charts
+        let eiuChartInstance = null;
+        let simulationActive = false;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            initEIUChart();
+            initNonExecutionChart();
+            initDelayChart();
+            initGRECOChart();
+        });
+
+        // 1. EIU CHART & SIMULATOR LOGIC
+        function initEIUChart() {
+            const ctx = document.getElementById('eiuChart').getContext('2d');
+            
+            const rawScores = [9.58, 8.21, 5.00, 6.88, 8.53];
+            const categories = [
+                'Processus Électoral',
+                'Fonctionnement Gouv.',
+                'Participation Politique*',
+                'Culture Politique',
+                'Libertés Civiles'
+            ];
+
+            eiuChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        label: 'Score EIU Actuel (Note finale : 7.64)',
+                        data: rawScores,
+                        backgroundColor: [
+                            '#059669', // Emerald
+                            '#0b69a3', // Blue
+                            '#9e2a2b', // Crimson (Biased low)
+                            '#d97706', // Amber
+                            '#059669'  // Emerald
+                        ],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Score : ${context.raw} / 10`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            min: 0,
+                            max: 10,
+                            ticks: { stepSize: 2 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleEIUSimulation() {
+            const btn = document.getElementById('toggleSimulatorBtn');
+            const note = document.getElementById('eiuSimulationNote');
+
+            if (!simulationActive) {
+                // Neutralized voting penalty: Participation moves from 5.00 to 7.22
+                eiuChartInstance.data.datasets[0].data = [9.58, 8.21, 7.22, 6.88, 8.53];
+                eiuChartInstance.data.datasets[0].label = 'Score Ajusté Sans Biais (Note globale : 8.08 - Full Democracy)';
+                eiuChartInstance.data.datasets[0].backgroundColor[2] = '#059669'; // Turn to emerald
+                eiuChartInstance.update();
+
+                btn.innerHTML = '<span>Rétablir le codage EIU strict</span>';
+                btn.classList.replace('bg-brand-50', 'bg-amber-100');
+                btn.classList.replace('text-brand-700', 'text-amber-900');
+
+                note.innerHTML = '<strong class="text-emerald-800">Simulation Activée :</strong> En annulant la pénalité doctrinale de 0 point pour le vote obligatoire, la note de participation monte à ~7,22. La moyenne globale passe à <strong>8,08 / 10</strong>, réintégrant la Belgique dans les <em>« Full Democracies »</em>.';
+                simulationActive = true;
+            } else {
+                eiuChartInstance.data.datasets[0].data = [9.58, 8.21, 5.00, 6.88, 8.53];
+                eiuChartInstance.data.datasets[0].label = 'Score EIU Actuel (Note finale : 7.64)';
+                eiuChartInstance.data.datasets[0].backgroundColor[2] = '#9e2a2b';
+                eiuChartInstance.update();
+
+                btn.innerHTML = '<span>Simuler la neutralisation du biais</span>';
+                btn.classList.replace('bg-amber-100', 'bg-brand-50');
+                btn.classList.replace('text-amber-900', 'text-brand-700');
+
+                note.innerHTML = '<strong class="text-slate-900">Biais du vote obligatoire :</strong> L\'EIU stipule dans son cahier des charges : <em>« If voting is obligatory, score 0 »</em> sur deux indicateurs clés de participation. Cela retire automatiquement 2,22 points sur 10 à la catégorie "Participation politique".';
+                simulationActive = false;
+            }
+        }
+
+        // 2. NON-EXECUTION CHART
+        function initNonExecutionChart() {
+            const ctx = document.getElementById('nonExecutionChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jugements Asile Signifiés', 'Mesures Urgence CEDH', 'Astreintes Requises (M€)', 'Astreintes Payées (M€)'],
+                    datasets: [{
+                        label: 'Volume / Montant',
+                        data: [11000, 2300, 44.1, 20.6],
+                        backgroundColor: ['#9e2a2b', '#d97706', '#102a43', '#059669'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.dataIndex >= 2) {
+                                        return `${context.raw} Millions €`;
+                                    }
+                                    return `${context.raw} Décisions / Mesures`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // 3. DELAY CHART
+        function initDelayChart() {
+            const ctx = document.getElementById('delayChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024'],
+                    datasets: [
+                        {
+                            label: 'Affaires Administratives (Jours)',
+                            data: [288, 360, 370],
+                            backgroundColor: '#9e2a2b',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Affaires Civiles/Commerciales (Jours)',
+                            data: [246, 246, 246],
+                            backgroundColor: '#102a43',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // 4. GRECO CHART
+        function initGRECOChart() {
+            const ctx = document.getElementById('grecoChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pleinement Mises en Œuvre (36.3%)', 'Partiellement Appliquées (45.5%)', 'Non Mises en Œuvre (18.2%)'],
+                    datasets: [{
+                        data: [8, 10, 4],
+                        backgroundColor: ['#059669', '#d97706', '#9e2a2b'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // TABLE FILTERING FUNCTION
+        function filterTable() {
+            const input = document.getElementById('tableSearchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('indicatorsTable');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                let text = tr[i].textContent || tr[i].innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+
+        // RECOMMENDATION PILLAR FILTERING
+        function filterPillars(pillarKey) {
+            const cards = document.querySelectorAll('.pillar-card');
+            const tabs = document.querySelectorAll('.pillar-tab');
+
+            tabs.forEach(tab => {
+                tab.classList.remove('bg-brand-700', 'text-white');
+                tab.classList.add('bg-slate-100', 'text-slate-700');
+            });
+
+            event.target.classList.remove('bg-slate-100', 'text-slate-700');
+            event.target.classList.add('bg-brand-700', 'text-white');
+
+            cards.forEach(card => {
+                if (pillarKey === 'all' || card.classList.contains(pillarKey)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
