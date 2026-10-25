@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Place du Citoyen en Belgique (2026) — Rapport Interactive & Observatoire</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        warmbg: '#F8F6F0',
+                        warmcard: '#FFFFFF',
+                        warmborder: '#E6E1DA',
+                        branddark: '#1E293B',
+                        brandaccent: '#9B2C2C',
+                        brandteal: '#2C7A7B',
+                        brandamber: '#D69E2E',
+                        mutedtext: '#64748B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F8F6F0;
+            color: #1E293B;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #9B2C2C;
+            color: #9B2C2C;
+            font-weight: 700;
+            background-color: #FFFFFF;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<!-- Chosen Palette: Warm Harmonious Neutral (Slate, Terracotta, Soft Teal, Sand) -->
+<!-- Application Structure Plan:
+    1. Header & Navigation: Sticky header with overall report title and quick tab switcher (5 main interactive thematic modules).
+    2. Section 1: Dashboard & Institutional Trust (Key KPIs, Chart.js for OCDE 2026 Trust & ESS 2023 EU comparison, regional/gender trust gap filters).
+    3. Section 2: Particracy & Systemic Locks (Interactive breakdown of 4 core locks: imperative mandate, political dynasties/cartel money, shadow bureaucracy & consultancy, GRECO/opacity).
+    4. Section 3: Electoral Fracture & Direct Democracy (Oct 2024 Election split: Flanders vs Wallonia vs Brussels, Chart.js for abstention & profiles, direct demo barriers).
+    5. Section 4: Deliberative Experiments vs Rule of Law Crisis (Interactive matrix of sortition models, MP survey chart, cards on State lawlessness: climate, asylum, prisons, justice).
+    6. Section 5: Civic Resistance & Refoundation Plan (Wealth inequality donut chart, 2025-2026 mobilization timeline, threats to civil society, interactive 4-pillar reform matrix).
+    7. Footer with metadata and download/reference markers.
+    Why chosen: This structure converts a dense, multi-faceted constitutional analysis into a progressive, non-linear exploration tool, allowing users to move from high-level empirical metrics down to institutional mechanics, regional comparisons, and concrete reform proposals. -->
+<!-- Visualization & Content Choices:
+    - OCDE Trust Data -> Dynamic Bar Chart (Chart.js) -> Hover tooltips -> Clear comparison across state pillars vs political parties -> Canvas.
+    - EU Trust Benchmark -> Dynamic Horizontal Bar Chart (Chart.js) -> Visual positioning of Belgium relative to NL, DE, FR -> Canvas.
+    - Political Dynasties & Ad Spending -> Stacked / Mixed Visual Cards + Chart.js Bar -> Shows evolution of "sons/daughters of" MPs & digital ad spend -> Canvas/HTML.
+    - October 2024 Elections -> Grouped Bar Chart (Chart.js) -> Compare turnout/abstention across regions & optional vs obligatory voting -> Canvas.
+    - MP Attitudes to Citizen Deliberation -> Horizontal Bar Chart (Chart.js) -> Highlights MP resistance to binding panels -> Canvas.
+    - Wealth Distribution in Belgium -> Donut Chart (Chart.js) -> Illustrates top 10% vs bottom 50% wealth concentration -> Canvas.
+    - NO SVG graphics used. NO Mermaid JS used. HTML symbols, CSS badges, and Canvas charts used exclusively. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white border-b border-warmborder card-shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-brandaccent text-white font-bold px-2.5 py-1 rounded text-sm tracking-wide">2026</span>
+                    <div>
+                        <h1 class="text-lg font-bold text-branddark leading-tight">La Place du Citoyen en Belgique</h1>
+                        <p class="text-xs text-mutedtext hidden sm:block">Entre démocratie représentative, particratie et contre-pouvoirs</p>
+                    </div>
+                </div>
+                <div class="text-right text-xs text-mutedtext hidden md:block">
+                    <span>Source: Rapport d'Analyse Politologique & Institutionnelle</span>
+                </div>
+            </div>
+            <!-- Navigation Tabs -->
+            <nav class="flex overflow-x-auto no-scrollbar space-x-1 sm:space-x-4 border-t border-warmborder text-xs sm:text-sm">
+                <button onclick="switchTab('tab-trust')" id="btn-tab-trust" class="tab-btn active px-3 py-2.5 whitespace-nowrap transition-colors focus:outline-none">
+                    1. Diagnostic & Confiance
+                </button>
+                <button onclick="switchTab('tab-particracy')" id="btn-tab-particracy" class="tab-btn px-3 py-2.5 whitespace-nowrap transition-colors focus:outline-none">
+                    2. Emprise Particratique
+                </button>
+                <button onclick="switchTab('tab-elections')" id="btn-tab-elections" class="tab-btn px-3 py-2.5 whitespace-nowrap transition-colors focus:outline-none">
+                    3. Fractures Électorales
+                </button>
+                <button onclick="switchTab('tab-deliberative')" id="btn-tab-deliberative" class="tab-btn px-3 py-2.5 whitespace-nowrap transition-colors focus:outline-none">
+                    4. Délibération & État de Droit
+                </button>
+                <button onclick="switchTab('tab-action')" id="btn-tab-action" class="tab-btn px-3 py-2.5 whitespace-nowrap transition-colors focus:outline-none">
+                    5. Contre-Pouvoirs & Refondation
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: DIAGNOSTIC & CONFIANCE -->
+        <!-- ========================================== -->
+        <section id="tab-trust" class="tab-content space-y-6">
+            <!-- Section Introductory Paragraph -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                <h2 class="text-xl font-bold text-branddark mb-2">Diagnostic Empirique : La Fracture Démocratique en Belgique</h2>
+                <p class="text-sm text-slate-700 leading-relaxed">
+                    Cette section analyse le paradoxe central de la démocratie belge en 2026. Si le pays maintient des indicateurs d'excellence procédurale (V-Dem, Freedom House), il souffre d'un décrochage majeur en matière de participation politique (EIU) et d'un fossé profond de confiance entre la prestation des services publics (légitimité de résultat) et la représentation politique par les partis (légitimité d'entrée). Explorez les données ci-dessous pour appréhender les disparités institutionnelles, régionales et sociodémographiques.
+                </p>
+            </div>
+
+            <!-- Global Indices Metric Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-lg border border-warmborder card-shadow flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-mutedtext uppercase tracking-wider">V-Dem 2025</span>
+                        <div class="text-2xl font-extrabold text-branddark mt-1">0.89 <span class="text-xs font-normal text-mutedtext">/ 1.0</span></div>
+                    </div>
+                    <p class="text-xs text-emerald-700 mt-2 font-medium">● 2e rang européen ex-aequo (Électoral)</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-warmborder card-shadow flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-mutedtext uppercase tracking-wider">Freedom House 2026</span>
+                        <div class="text-2xl font-extrabold text-branddark mt-1">95 <span class="text-xs font-normal text-mutedtext">/ 100</span></div>
+                    </div>
+                    <p class="text-xs text-emerald-700 mt-2 font-medium">● Statut « Libre » maintenu</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-warmborder card-shadow flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-mutedtext uppercase tracking-wider">Indice EIU (2024-2025)</span>
+                        <div class="text-2xl font-extrabold text-brandaccent mt-1">7.64 <span class="text-xs font-normal text-mutedtext">/ 10</span></div>
+                    </div>
+                    <p class="text-xs text-brandaccent mt-2 font-medium">▲ Démocratie imparfaite (Partic: 5.00)</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-warmborder card-shadow flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-mutedtext uppercase tracking-wider">Corruption (CPI 2026)</span>
+                        <div class="text-2xl font-extrabold text-brandamber mt-1">69 <span class="text-xs font-normal text-mutedtext">/ 100</span></div>
+                    </div>
+                    <p class="text-xs text-brandamber mt-2 font-medium">▼ Recul de 8 pts depuis 2016 (77/100)</p>
+                </div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chart 1: Trust by Institution (OECD 2026) -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-bold text-branddark text-base">Confiance par Institution Public (OCDE 2026)</h3>
+                            <p class="text-xs text-mutedtext">Légitimité de résultat (services) vs Légitimité d'entrée (partis)</p>
+                        </div>
+                        <span class="bg-slate-100 text-slate-700 text-xs px-2 py-1 rounded">SPF BOSA / OCDE</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartTrustOECD"></canvas>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-600 bg-warmbg p-2.5 rounded border border-warmborder">
+                        <strong>Constat clé :</strong> 64 % des citoyens font confiance à la police et 53 % à la justice, mais la confiance envers les partis politiques s'effondre à <strong>27 %</strong> (et 20-25 % selon l'Eurobaromètre).
+                    </div>
+                </div>
+
+                <!-- Chart 2: EU Comparison (BFP / ESS 2023) -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-bold text-branddark text-base">Confiance Institutionnelle en Europe (ESS 2023)</h3>
+                            <p class="text-xs text-mutedtext">Part des résidents attribuant une note de confiance ≥ 6 / 10</p>
+                        </div>
+                        <span class="bg-slate-100 text-slate-700 text-xs px-2 py-1 rounded">Bureau du Plan</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartTrustEU"></canvas>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-600 bg-warmbg p-2.5 rounded border border-warmborder">
+                        <strong>Positionnement :</strong> Avec 35.8 %, la Belgique accuse près de 20 points de retard sur les Pays-Bas (55.0 %) et se situe derrière l'Allemagne (37.8 %).
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Deep Dive: Regional & Sociodemographic Disparities -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow space-y-4">
+                <h3 class="font-bold text-branddark text-base border-b border-warmborder pb-2">Fractures Régionales et Sociodémographiques (Focus IWEPS & OCDE)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-amber-50 rounded border border-amber-200">
+                        <div class="text-xs font-bold text-amber-900 uppercase tracking-wide">Écart Territorial (IWEPS 2026)</div>
+                        <div class="text-lg font-bold text-amber-950 mt-1">Flandre : 36.5% à 49.3%</div>
+                        <div class="text-sm font-semibold text-amber-800">Wallonie : 31.3% à 38.3%</div>
+                        <p class="text-xs text-amber-900 mt-2">La confiance politique moyenne (>5/10) est structurellement plus dépressive en Wallonie qu'en Flandre.</p>
+                    </div>
+                    <div class="p-4 bg-rose-50 rounded border border-rose-200">
+                        <div class="text-xs font-bold text-rose-900 uppercase tracking-wide">Déficit de Confiance Genré</div>
+                        <div class="text-2xl font-extrabold text-rose-950 mt-1">-8 points</div>
+                        <p class="text-xs text-rose-900 mt-2">La proportion de femmes exprimant une confiance élevée envers le gouvernement fédéral est inférieure de 8 points à celle des hommes (vs -7 pts moyenne OCDE).</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded border border-slate-200">
+                        <div class="text-xs font-bold text-slate-900 uppercase tracking-wide">Perception de la Corruption</div>
+                        <div class="text-xl font-bold text-slate-950 mt-1">69 % des citoyens</div>
+                        <p class="text-xs text-slate-700 mt-2">estiment que la corruption est répandue en Belgique, et <strong>54 %</strong> ignorent où signaler un abus ou un acte de corruption.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: EMPRISE PARTICRATIQUE -->
+        <!-- ========================================== -->
+        <section id="tab-particracy" class="tab-content hidden space-y-6">
+            <!-- Section Introductory Paragraph -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                <h2 class="text-xl font-bold text-branddark mb-2">L'Architecture de la Dépossession Particratique</h2>
+                <p class="text-sm text-slate-700 leading-relaxed">
+                    Le système politique belge est caractérisé par une captation du pouvoir décisionnel par les états-majors des partis. Les assemblées parlementaires, théoriquement dépositaires de la souveraineté nationale (Art. 42 de la Constitution), se trouvent neutralisées par la discipline de vote, la monopolisation de l'accord de gouvernement et le poids financier des appareils partisans. Explorez les verrous structurels ci-dessous.
+                </p>
+            </div>
+
+            <!-- The 4 Structural Locks Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Lock 1 -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold bg-rose-100 text-rose-800 px-2.5 py-1 rounded">Verrou #1</span>
+                        <span class="text-xs text-mutedtext">Constitution vs Pratique</span>
+                    </div>
+                    <h3 class="font-bold text-branddark text-base mb-2">Le Mandat Impératif de Fait & L'Accord de Gouvernement</h3>
+                    <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                        Bien que l'article 42 prohibe le mandat impératif, les présidents de parti contrôlent la confection des listes, la signature d'engagements de loyauté et l'accord de gouvernement à huis clos (ex. Coalition Arizona de 2025). Le Parlement est réduit à une chambre d'enregistrement.
+                    </p>
+                    <div class="bg-warmbg p-3 rounded text-xs space-y-1 text-slate-700 border border-warmborder">
+                        <div class="flex justify-between"><span>Accord Arizona (Fév 2025) :</span> <strong>5 partis en 14 semaines</strong></div>
+                        <div class="flex justify-between"><span>Rôle des députés :</span> <strong>Entérinement sans amendement maj.</strong></div>
+                    </div>
+                </div>
+
+                <!-- Lock 2 -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2.5 py-1 rounded">Verrou #2</span>
+                        <span class="text-xs text-mutedtext">Autonomie Financière</span>
+                    </div>
+                    <h3 class="font-bold text-branddark text-base mb-2">Le Cartel Financier et la Publicité Numérique</h3>
+                    <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                        Grâce à la loi de 1989, 80 % des revenus partisans proviennent de dotations publiques. Les partis accumulent un patrimoine record sans contrôle externe indépendant, réinvesti massivement dans le micro-ciblage algorithmique.
+                    </p>
+                    <div class="bg-warmbg p-3 rounded text-xs space-y-1 text-slate-700 border border-warmborder">
+                        <div class="flex justify-between"><span>Patrimoine net des partis (2025) :</span> <strong class="text-branddark">156.8 Millions €</strong></div>
+                        <div class="flex justify-between"><span>Publicité en ligne (2024, AdLens) :</span> <strong class="text-brandaccent">15 086 183 € TTC</strong></div>
+                    </div>
+                </div>
+
+                <!-- Lock 3 -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold bg-blue-100 text-blue-800 px-2.5 py-1 rounded">Verrou #3</span>
+                        <span class="text-xs text-mutedtext">Bureaucratie Ombre</span>
+                    </div>
+                    <h3 class="font-bold text-branddark text-base mb-2">Cabinets Hypertrophiés & Consultance Privée</h3>
+                    <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                        Chaque ministre belge s'entoure de 32 à 50 collaborateurs (jusqu'à 80 ETP), court-circuitant l'administration neutre. Parallèlement, l'État sous-traite la rédaction intégrale des lois à des cabinets d'avocats privés.
+                    </p>
+                    <div class="bg-warmbg p-3 rounded text-xs space-y-1 text-slate-700 border border-warmborder">
+                        <div class="flex justify-between"><span>Consultance externe Fédérale (2020-22) :</span> <strong class="text-branddark">2.5 Milliards € TVAC</strong></div>
+                        <div class="flex justify-between"><span>Marchés sans justification préalable :</span> <strong class="text-brandaccent">78.22 % (Audit Cour des comptes)</strong></div>
+                    </div>
+                </div>
+
+                <!-- Lock 4 -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold bg-purple-100 text-purple-800 px-2.5 py-1 rounded">Verrou #4</span>
+                        <span class="text-xs text-mutedtext">Évaluation Européenne</span>
+                    </div>
+                    <h3 class="font-bold text-branddark text-base mb-2">Angle Mort Déontologique & Sanction GRECO</h3>
+                    <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                        Absence de registre obligatoire des lobbyistes auprès des cabinets, absence d'empreinte législative, et déclarations de patrimoine des ministres scellées sans audit public.
+                    </p>
+                    <div class="bg-warmbg p-3 rounded text-xs space-y-1 text-slate-700 border border-warmborder">
+                        <div class="flex justify-between"><span>Taux conformité GRECO (fin 2025) :</span> <strong class="text-brandaccent">36.3 % (8 / 22 recom.)</strong></div>
+                        <div class="flex justify-between"><span>Statut international :</span> <strong class="text-purple-900">Procédure disciplinaire Règle 32</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Focus Chart: Political Dynasties in Belgian Parliament -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
+                    <div>
+                        <h3 class="font-bold text-branddark text-base">La Reproduction Dynastique au Parlement (1831–2019)</h3>
+                        <p class="text-xs text-mutedtext">Proportion de députés fédéraux « fils et filles de » parlementaires (Source: ULB/CRISP)</p>
+                    </div>
+                    <span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded self-start md:self-auto">Pilet & Tojerow (2024)</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartDynasties"></canvas>
+                </div>
+                <div class="mt-3 text-xs text-slate-600 bg-warmbg p-3 rounded border border-warmborder">
+                    <strong>Analyse historique :</strong> En 2003, avec 15.3 % de députés issus de dynasties politiques (23/150), le Parlement fédéral a rejoint le record de 1888 (16.7 %, sous le suffrage censitaire). Le niveau s'est stabilisé entre 12 % et 14 % depuis.
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: FRACTURES ÉLECTORALES -->
+        <!-- ========================================== -->
+        <section id="tab-elections" class="tab-content hidden space-y-6">
+            <!-- Section Introductory Paragraph -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                <h2 class="text-xl font-bold text-branddark mb-2">L'Épreuve des Urnes & Les Verrous de la Démocratie Directe</h2>
+                <p class="text-sm text-slate-700 leading-relaxed">
+                    Le cycle électoral de 2024 a révélé des divergences profondes entre le Nord et le Sud du pays suite à l'abolition du vote obligatoire au niveau local en Flandre. Alors que l'abstention atteint des sommets, l'exercice direct de la souveraineté citoyenne se heurte au dogme de l'interdiction référendaire (Art. 33) et à la neutralisation des pétitions consultatives.
+                </p>
+            </div>
+
+            <!-- June 2024 Federal Key Figures -->
+            <div class="bg-slate-900 text-white p-5 rounded-lg card-shadow">
+                <div class="text-xs text-amber-400 font-bold uppercase tracking-wider mb-1">Élections Fédérales du 9 Juin 2024</div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
+                    <div class="border-r border-slate-700 pr-4">
+                        <div class="text-2xl font-black text-white">1 383 123</div>
+                        <div class="text-xs text-slate-300">Citoyens non exprimés (16.5 % des inscrits)</div>
+                    </div>
+                    <div class="border-r border-slate-700 pr-4">
+                        <div class="text-2xl font-black text-amber-400">966 546</div>
+                        <div class="text-xs text-slate-300">Abstentionnistes (Vote obligatoire non poursuivi)</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black text-rose-400">416 577</div>
+                        <div class="text-xs text-slate-300">Bulletins Blancs et Nuls (5.6 % des votants)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- October 2024 Municipal Elections Regional Comparison -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chart 4: October 2024 Elections Turnout -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow flex flex-col">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-bold text-branddark text-base">Élections Communales d'Octobre 2024</h3>
+                            <p class="text-xs text-mutedtext">Participation vs Abstention après la fin du vote obligatoire en Flandre</p>
+                        </div>
+                        <span class="bg-slate-100 text-slate-700 text-xs px-2 py-1 rounded">CESPOL / UCLouvain</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartOct2024"></canvas>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-600 bg-warmbg p-2.5 rounded border border-warmborder">
+                        <strong>Choc électoral :</strong> En Flandre (vote optionnel), la participation s'est effondrée de <strong>28.9 points</strong> (à 63.6 %), tandis qu'en Wallonie (vote obligatoire), le recul est limité à 3.1 points (85.2 % de participation).
+                    </div>
+                </div>
+
+                <!-- Sociodemographic Profile of Non-Voters in Flanders -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-branddark text-base mb-2">Profil des Abstentionnistes en Flandre (Vote Optionnel)</h3>
+                        <p class="text-xs text-slate-600 mb-4">L'analyse micro-individuelle montre que la fin de l'obligation de vote creuse les inégalités sociales de représentation.</p>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1">
+                                    <span>Jeunes (18–39 ans) parmi les non-votants :</span>
+                                    <span class="text-brandaccent">53 %</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5">
+                                    <div class="bg-brandaccent h-2.5 rounded-full" style="width: 53%"></div>
+                                </div>
+                                <div class="text-[10px] text-mutedtext mt-0.5">Ils ne représentent que 28 % des votants effectifs.</div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1">
+                                    <span>Faiblement diplômés parmi les non-votants :</span>
+                                    <span class="text-brandamber">22 %</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5">
+                                    <div class="bg-brandamber h-2.5 rounded-full" style="width: 22%"></div>
+                                </div>
+                                <div class="text-[10px] text-mutedtext mt-0.5">Contre seulement 10 % parmi les votants effectifs.</div>
+                            </div>
+
+                            <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs text-slate-700">
+                                <strong>Votes Blancs/Nuls en Wallonie :</strong> 171 769 bulletins (6.5 % des inscrits). Utilisé comme exutoire protestataire ou dû à la complexité des grands bulletins. Totalement ignorés lors du calcul des sièges.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-3 border-t border-warmborder text-xs text-mutedtext">
+                        Source : Rapport interuniversitaire CESPOL (Mars 2025, N=2 619 électeurs).
+                    </div>
+                </div>
+            </div>
+
+            <!-- Direct Democracy Blockades -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow space-y-3">
+                <h3 class="font-bold text-branddark text-base border-b border-warmborder pb-2">Les Traumatismes et Verrous de la Démocratie Directe</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="p-3.5 bg-warmbg rounded border border-warmborder">
+                        <span class="font-bold text-branddark block mb-1">Article 33 Const. & Traumatisme de 1950</span>
+                        <p class="text-slate-600">Le souvenir de la Question royale (1950, 4 morts à Grâce-Berleur) et l'interprétation restrictive de l'Art. 33 conduisent au rejet systématique de tout référendum décisionnel.</p>
+                    </div>
+                    <div class="p-3.5 bg-warmbg rounded border border-warmborder">
+                        <span class="font-bold text-branddark block mb-1">Article 39bis (Régional) : Coquille Vide</span>
+                        <p class="text-slate-600">Introduit en 2014 pour permettre des consultations régionales, il exclut d'emblée les finances, le budget et exige des majorités qualifiées prohibitivement strictes.</p>
+                    </div>
+                    <div class="p-3.5 bg-warmbg rounded border border-warmborder">
+                        <span class="font-bold text-branddark block mb-1">Pétition Fédérale (25 000 Signatures)</span>
+                        <p class="text-slate-600">Permet une audition à la Chambre (ex. pétition fiscale de sept. 2026), mais sans aucune obligation de vote ni de suite législative pour les parlementaires.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: DÉLIBÉRATION & ÉTAT DE DROIT -->
+        <!-- ========================================== -->
+        <section id="tab-deliberative" class="tab-content hidden space-y-6">
+            <!-- Section Introductory Paragraph -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                <h2 class="text-xl font-bold text-branddark mb-2">Laboratoire Délibératif vs Crise de l'État de Droit</h2>
+                <p class="text-sm text-slate-700 leading-relaxed">
+                    Pionnière mondiale de la sortition (panels citoyens tirés au sort), la Belgique fait face à une ambivalence : les parlementaires refusent fermement de concéder un pouvoir décisionnel aux assemblées citoyennes. Parallèlement, le citoyen juriste se heurte au refus explicite de l'exécutif d'exécuter des milliers de décisions de justice définitives (climat, asile, prisons).
+                </p>
+            </div>
+
+            <!-- Sortition Models Grid Table -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                <h3 class="font-bold text-branddark text-base mb-3">Cartographie des Dispositifs Délibératifs en Belgique</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-700">
+                        <thead class="bg-slate-100 text-branddark font-bold uppercase border-b border-warmborder">
+                            <tr>
+                                <th class="p-3">Dispositif / Entité</th>
+                                <th class="p-3">Composition & Hybridation</th>
+                                <th class="p-3">Modalité de déclenchement</th>
+                                <th class="p-3">Limites & Évolutions 2025–2026</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-warmborder">
+                            <tr>
+                                <td class="p-3 font-semibold text-branddark">Dialogue Citoyen Ostbelgien (2019)</td>
+                                <td class="p-3">100 % Citoyens (Conseil de 24 + Assemblées)</td>
+                                <td class="p-3">Conseil citoyen ou 99 cosignatures</td>
+                                <td class="p-3 text-brandaccent">Réforme restrictive 2026 : Plafond à 5 assemblées/législature et sujet parlementaire imposé.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-branddark">Commissions Mixtes Bruxelles (2019)</td>
+                                <td class="p-3">45 Citoyens (3/4) + 15 Députés (1/4)</td>
+                                <td class="p-3">Suggestion citoyenne (1 000 signatures)</td>
+                                <td class="p-3">Strictement consultatif ; filtrage exécutif et maîtrise du calendrier par les députés.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-branddark">Commissions Mixtes Wallonie / FWB (2021)</td>
+                                <td class="p-3">30 Citoyens (3/4) + 10 Députés (1/4)</td>
+                                <td class="p-3">Plateforme parlementaire dédiée</td>
+                                <td class="p-3">Intimidation par le décorum parlementaire et édulcoration des propositions.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-branddark">Pétition G1000 Sénat (Fédéral, 2026)</td>
+                                <td class="p-3">Projet : Remplacer le Sénat par un Conseil Citoyen</td>
+                                <td class="p-3">Objectif : 25 000 signatures fédérales</td>
+                                <td class="p-3">Forte asymétrie régionale au 23 juin 2026 : 73% quota BXL, 25% Wallonie, 10% Flandre.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Survey Chart: MP Attitudes to Sortition -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow flex flex-col">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-bold text-branddark text-base">Attitude des Députés Belges vers la Délibération</h3>
+                            <p class="text-xs text-mutedtext">Enquête quantitative auprès de 182 parlementaires (Score / 10)</p>
+                        </div>
+                        <span class="bg-slate-100 text-slate-700 text-xs px-2 py-1 rounded">CRISP / Universités</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartMPSurvey"></canvas>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-600 bg-warmbg p-2.5 rounded border border-warmborder">
+                        <strong>Rejet massif :</strong> L'octroi d'un pouvoir décisionnel contraignant aux citoyens est rejeté avec un score global de <strong>1.87/10</strong> (tombant à <strong>0.95/10</strong> en Flandre).
+                    </div>
+                </div>
+
+                <!-- State Lawlessness & Judicial Crisis -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="w-3 h-3 bg-brandaccent rounded-full inline-block"></span>
+                            <h3 class="font-bold text-branddark text-base">La Crise de l'État de Droit : L'État Hors-la-Loi</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-4">Mémorandum des cours souveraines (Juillet 2024 / Juin 2025) dénonçant le refus de l'exécutif d'exécuter les jugements.</p>
+
+                        <div class="space-y-3 text-xs">
+                            <div class="p-2.5 bg-rose-50 border border-rose-200 rounded">
+                                <strong class="text-rose-900 block">1. Crise de l'Accueil (Fedasil) & Inexécution</strong>
+                                <p class="text-rose-800">Plus de 10 000 condamnations et arrêts CEDH (Camara 2023). Plus de 6.6 Millions € d'astreintes non payées. Refus assumé au nom du budget.</p>
+                            </div>
+
+                            <div class="p-2.5 bg-amber-50 border border-amber-200 rounded">
+                                <strong class="text-amber-900 block">2. Inaction Climatique (Klimaatzaak)</strong>
+                                <p class="text-amber-800">Condamnation nov. 2023 (-55 % GES en 2030). Verdict négatif de la CE en janv 2026 sur le PNEC belge. Moratoire judiciaire *WeAreNature* à BXL.</p>
+                            </div>
+
+                            <div class="p-2.5 bg-slate-100 border border-slate-300 rounded">
+                                <strong class="text-slate-900 block">3. Catastrophe Carcérale & Arriéré Judiciaire</strong>
+                                <p class="text-slate-700">Surpopulation carcérale record (125.3 %). <strong>644 à 700 détenus dorment au sol</strong> (mars 2026). Arriéré judiciaire administratif à 370 jours.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 5: CONTRE-POUVOIRS & REFONDATION -->
+        <!-- ========================================== -->
+        <section id="tab-action" class="tab-content hidden space-y-6">
+            <!-- Section Introductory Paragraph -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow">
+                <h2 class="text-xl font-bold text-branddark mb-2">Contre-Pouvoirs Civiques & Chantiers de Refondation</h2>
+                <p class="text-sm text-slate-700 leading-relaxed">
+                    Face au blocage institutionnel, le citoyen se remobilise via l'action syndicale de masse, le secteur associatif d'Éducation permanente et la désobéissance civile. Cette section analyse la répartition de la richesse en Belgique, le calendrier des grèves, la répression normative récente et propose une feuille de route en 4 piliers pour restaurer la démocratie.
+                </p>
+            </div>
+
+            <!-- Wealth Inequality & Mobilization Timeline -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Wealth Distribution Donut Chart -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow flex flex-col">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-bold text-branddark text-base">Répartition du Patrimoine Net en Belgique (2024–2026)</h3>
+                            <p class="text-xs text-mutedtext">Part des ménages dans le patrimoine financier total (BNB / PTB-BCE)</p>
+                        </div>
+                        <span class="bg-slate-100 text-slate-700 text-xs px-2 py-1 rounded">BNB / BCE</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartWealth"></canvas>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-600 bg-warmbg p-2.5 rounded border border-warmborder">
+                        <strong>Inégalités majeures :</strong> Les 10 % les plus fortunés détiennent <strong>54.95 %</strong> du patrimoine net (le Top 5 % détient 43.36 %, soit 1 363 Md€), tandis que les 50 % inférieurs n'en possèdent que 7.65 %. 18.3 % des Belges sont exposés à la pauvreté.
+                    </div>
+                </div>
+
+                <!-- Mobilization Sequence & Threats to Associations -->
+                <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow flex flex-col justify-between space-y-4">
+                    <div>
+                        <h3 class="font-bold text-branddark text-base mb-2">Front Social & Mobilisations (2025–2026)</h3>
+                        <p class="text-xs text-slate-600 mb-3">Mobilisations contre les mesures socio-budgétaires de la coalition Arizona (retraites, chômage à 24 mois).</p>
+                        
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between items-center p-2 bg-slate-50 rounded border border-slate-200">
+                                <span class="font-semibold text-slate-800">Automne 2025 :</span>
+                                <span class="bg-branddark text-white px-2 py-0.5 rounded font-bold">140 000 manifestants (BXL)</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-slate-50 rounded border border-slate-200">
+                                <span class="font-semibold text-slate-800">12 Mars & 12 Mai 2026 :</span>
+                                <span class="bg-branddark text-white px-2 py-0.5 rounded font-bold">100 000 & 75 000 manifestants</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-amber-50 rounded border border-amber-300">
+                                <span class="font-semibold text-amber-900">Pétition Fiscale Syndicale :</span>
+                                <span class="bg-brandamber text-white px-2 py-0.5 rounded font-bold">>76 000 signatures (Sept 2026)</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-rose-50 rounded border border-rose-300">
+                                <span class="font-semibold text-rose-900">Semaine du 23 Novembre 2026 :</span>
+                                <span class="bg-brandaccent text-white px-2 py-0.5 rounded font-bold">Préavis de GRÈVE GÉNÉRALE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Offensives on Associations -->
+                    <div class="p-3 bg-warmbg rounded border border-warmborder text-xs space-y-1">
+                        <span class="font-bold text-branddark block">Pression sur la Société Civile & Désobéissance :</span>
+                        <p class="text-slate-700">● <strong>Art. 103 FWB (17 déc 2025) :</strong> 8 critères de « partisannerie » menaçant de couper les subsides des ASBL d'Éducation permanente fin 2026.</p>
+                        <p class="text-slate-700">● <strong>Arrêt Cour Const. n° 172/2025 (11 déc 2025) :</strong> Consécration majeure de l'impératif écologique dans la liberté d'expression (Art. 10 CEDH) pour les militants.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The 4 Pillars of Democratic Refoundation -->
+            <div class="bg-white p-5 rounded-lg border border-warmborder card-shadow space-y-4">
+                <div class="border-b border-warmborder pb-2">
+                    <h3 class="font-bold text-branddark text-lg">Pistes de Refondation Démocratique Structurelle</h3>
+                    <p class="text-xs text-mutedtext">Consensus des recommandations formulées par le GRECO, la Commission européenne, le CRISP et l'IFDH</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <!-- Pillar 1 -->
+                    <div class="p-4 bg-slate-50 rounded border border-slate-200">
+                        <div class="font-bold text-slate-900 text-sm mb-1">1. Démanteler le Cartel Particratique</div>
+                        <ul class="list-disc list-inside space-y-1 text-slate-700">
+                            <li>Audit indépendant de la Cour des comptes sur les 156.8 M€ de patrimoine partisan.</li>
+                            <li>Plafonnement des cabinets ministériels à 10-15 conseillers.</li>
+                            <li>Création d'une circonscription électorale fédérale nationale.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Pillar 2 -->
+                    <div class="p-4 bg-slate-50 rounded border border-slate-200">
+                        <div class="font-bold text-slate-900 text-sm mb-1">2. Transparence Exécutive & Règle 32</div>
+                        <ul class="list-disc list-inside space-y-1 text-slate-700">
+                            <li>Pouvoir décisionnel contraignant pour la CADA fédérale (Art. 32).</li>
+                            <li>Archivage obligatoire des courriels/messageries inter-cabinets (IKW).</li>
+                            <li>Registre obligatoire des lobbyistes et empreinte législative publique.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Pillar 3 -->
+                    <div class="p-4 bg-slate-50 rounded border border-slate-200">
+                        <div class="font-bold text-slate-900 text-sm mb-1">3. Codécision & Référendum</div>
+                        <ul class="list-disc list-inside space-y-1 text-slate-700">
+                            <li>Révision de l'Art. 33 pour autoriser le Référendum d'Initiative Citoyenne (RIC).</li>
+                            <li>Valeur normative ou suspensive accordée aux avis des commissions délibératives.</li>
+                            <li>Abrogation des articles d'austérité associative (Art. 103 FWB / Art. 146 Flandre).</li>
+                        </ul>
+                    </div>
+
+                    <!-- Pillar 4 -->
+                    <div class="p-4 bg-slate-50 rounded border border-slate-200">
+                        <div class="font-bold text-slate-900 text-sm mb-1">4. Soumission de l'État au Juge</div>
+                        <ul class="list-disc list-inside space-y-1 text-slate-700">
+                            <li>Levée du régime d'immunité d'exécution forcée pour la puissance publique en faute.</li>
+                            <li>Autonomie de gestion budgétaire transférée au pouvoir judiciaire (PIB > 0.30 %).</li>
+                            <li>Fin du quota de 50 % d'anciens parlementaires à la Cour constitutionnelle.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-warmborder py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-mutedtext space-y-2">
+            <p><strong>Observatoire de la Démocratie Belge (Automne 2026)</strong> — Basé sur les rapports V-Dem, OCDE, ESS, EIU, GRECO, CRISP, BNB & CESPOL.</p>
+            <p>Conçu pour une exploration fluide des enjeux institutionnels, juridiques et sociaux de la Belgique.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Tab Switcher Logic
+        function switchTab(tabId) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show current tab content & set active button
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+
+            // Trigger chart resize if needed
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        // Global Chart Defaults for Consistency & Aesthetics
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        Chart.defaults.color = '#4A5568';
+
+        // Label Truncation Utility (16 chars limit as per UI specs)
+        function formatLabel(str, maxlen = 16) {
+            if (typeof str === 'string' && str.length > maxlen) {
+                return str.substring(0, maxlen - 3) + '...';
+            }
+            return str;
+        }
+
+        // Initialize Charts when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // CHART 1: Trust by Institution (OECD 2026)
+            const ctxTrustOECD = document.getElementById('chartTrustOECD').getContext('2d');
+            new Chart(ctxTrustOECD, {
+                type: 'bar',
+                data: {
+                    labels: ['Police', 'Tribunaux / Justice', 'Fonction Publique', 'Gouvernement Féd.', 'Partis Politiques'].map(l => formatLabel(l)),
+                    datasets: [{
+                        label: '% Confiance Élevée / Modérée (2025-2026)',
+                        data: [64, 53, 46, 41, 27],
+                        backgroundColor: ['#1E293B', '#2C7A7B', '#319795', '#D69E2E', '#9B2C2C'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.raw} % des citoyens font confiance`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { callback: (val) => val + '%' }
+                        }
+                    }
+                }
+            });
+
+            // CHART 2: Trust Benchmark EU (ESS 2023)
+            const ctxTrustEU = document.getElementById('chartTrustEU').getContext('2d');
+            new Chart(ctxTrustEU, {
+                type: 'bar',
+                data: {
+                    labels: ['Pays-Bas', 'Allemagne', 'Belgique', 'France'],
+                    datasets: [{
+                        label: '% Confiance ≥ 6/10',
+                        data: [55.0, 37.8, 35.8, 27.3],
+                        backgroundColor: ['#2C7A7B', '#4A5568', '#9B2C2C', '#E2E8F0'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.raw} % des résidents`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 70,
+                            ticks: { callback: (val) => val + '%' }
+                        }
+                    }
+                }
+            });
+
+            // CHART 3: Dynasties in Parliament (1888-2014)
+            const ctxDynasties = document.getElementById('chartDynasties').getContext('2d');
+            new Chart(ctxDynasties, {
+                type: 'line',
+                data: {
+                    labels: ['1888 (Censitaire)', '2003', '2007', '2010', '2014'],
+                    datasets: [{
+                        label: '% Députés "Fils et Filles de"',
+                        data: [16.7, 15.3, 14.0, 13.3, 12.0],
+                        borderColor: '#9B2C2C',
+                        backgroundColor: 'rgba(155, 44, 44, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.2,
+                        pointBackgroundColor: '#9B2C2C',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.raw} % des députés fédéraux`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 8,
+                            max: 20,
+                            ticks: { callback: (val) => val + '%' }
+                        }
+                    }
+                }
+            });
+
+            // CHART 4: October 2024 Election Turnout & Abstention
+            const ctxOct2024 = document.getElementById('chartOct2024').getContext('2d');
+            new Chart(ctxOct2024, {
+                type: 'bar',
+                data: {
+                    labels: ['Flandre (Optionnel)', 'Wallonie (Obligatoire)', 'Bruxelles (Obligatoire)'],
+                    datasets: [
+                        {
+                            label: 'Participation %',
+                            data: [63.6, 85.2, 79.6],
+                            backgroundColor: '#2C7A7B',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Abstention %',
+                            data: [36.4, 14.8, 20.4],
+                            backgroundColor: '#9B2C2C',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.dataset.label}: ${ctx.raw} %`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { callback: (val) => val + '%' }
+                        }
+                    }
+                }
+            });
+
+            // CHART 5: MP Survey Attitudes (CRISP)
+            const ctxMPSurvey = document.getElementById('chartMPSurvey').getContext('2d');
+            new Chart(ctxMPSurvey, {
+                type: 'bar',
+                data: {
+                    labels: ['"Les élus décident"', 'Panels consultatifs', 'Panels contraignants'].map(l => formatLabel(l)),
+                    datasets: [{
+                        label: 'Score Moyen / 10 accordé par les Députés',
+                        data: [7.78, 4.03, 1.87],
+                        backgroundColor: ['#1E293B', '#D69E2E', '#9B2C2C'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `Score: ${ctx.raw} / 10`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: { stepSize: 2 }
+                        }
+                    }
+                }
+            });
+
+            // CHART 6: Wealth Inequality (BNB)
+            const ctxWealth = document.getElementById('chartWealth').getContext('2d');
+            new Chart(ctxWealth, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Top 10% le plus riche', '40% Intermédiaire', '50% les plus pauvres'],
+                    datasets: [{
+                        data: [54.95, 37.40, 7.65],
+                        backgroundColor: ['#9B2C2C', '#D69E2E', '#E2E8F0'],
+                        borderWidth: 2,
+                        borderColor: '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.label}: ${ctx.raw} % du patrimoine net`
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
