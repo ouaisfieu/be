@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Politique Spectacle en Belgique Francophone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            500: '#f43f5e',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                        },
+                        neutralbg: '#f8fafc',
+                        surface: '#ffffff'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom-color: #be123c;
+            color: #be123c;
+            font-weight: 700;
+            background-color: #fff1f2;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-rose-200 selection:text-rose-900">
+
+<!-- Chosen Palette: Warm Slate & Deep Crimson -->
+
+<!-- Application Structure Plan:
+    1. Header & Navigation: Clean, sticky navigation with report title, thematic sections, and mobile drawer.
+    2. Section 1: Dashboard & Key Insights (Interactive summary cards, key data indicators, core synthesis).
+    3. Section 2: Cadre Théorique (Interactive concept matrix: Théâtrocratie, Peopolisation, Extimité, Marque Politique).
+    4. Section 3: Infodivertissement & Modèle Culturel (Comparative Wallonie vs Flandre, CSA report 2006, Le Grand Cactus & Satire).
+    5. Section 4: Figures Prototypiques (Interactive profile viewer: Michel Daerden, Georges-Louis Bouchez, Raoul Hedebouw).
+    6. Section 5: Data Studio - Réseaux Sociaux & Budgets Publicitaires (Interactive Chart.js visualizations for organic post share, Meta/Google ad budgets, and DSA Impact Simulator).
+    7. Section 6: Risques, Burnout & Régulation (Interactive breakdown of mental health impacts, CSA regulation, and influencer status).
+    8. Footer with credits and report reference.
+-->
+
+<!-- Visualization & Content Choices:
+    - Overview Metrics: HTML Stat Badges for immediate high-level grasp.
+    - Concept Matrix: Interactive tabbed card grid with dynamic modal/detail display for Balandier, Debord, Baygert concepts.
+    - Wallonie vs Flandre Comparison: Interactive side-by-side toggle matrix emphasizing cultural asymmetries.
+    - Profile Switcher: Interactive tabbed case study viewer for Daerden, Bouchez, and Hedebouw.
+    - Chart 1 (Organic Social Media Share): Grouped Bar Chart using Chart.js to visualize Platform distribution for Presidents vs Official Parties (Data Table 1).
+    - Chart 2 (Political Ad Spending): Dynamic Doughnut/Horizontal Bar Chart using Chart.js representing Meta & Google spending by Party (Data Table 2).
+    - DSA Impact Simulator: Interactive slider/button widget calculating impact of ad bans on political strategy.
+    - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+-->
+
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand-800 text-white font-serif font-bold text-xl shadow">
+                        🏛️
+                    </span>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">Politique Spectacle</h1>
+                        <p class="text-xs text-slate-500 font-medium">Belgique Francophone • Analyse & Observatoire</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-1 overflow-x-auto py-2 custom-scrollbar">
+                    <button onclick="switchTab('tab-vue-ensemble')" id="btn-tab-vue-ensemble" class="tab-btn active px-3 py-2 text-xs font-medium rounded-md transition duration-150 ease-in-out whitespace-nowrap">📊 Vue d'ensemble</button>
+                    <button onclick="switchTab('tab-theorie')" id="btn-tab-theorie" class="tab-btn px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition duration-150 ease-in-out whitespace-nowrap">🧠 Concepts & Théorie</button>
+                    <button onclick="switchTab('tab-infotainment')" id="btn-tab-infotainment" class="tab-btn px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition duration-150 ease-in-out whitespace-nowrap">📺 TV & Culture</button>
+                    <button onclick="switchTab('tab-figures')" id="btn-tab-figures" class="tab-btn px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition duration-150 ease-in-out whitespace-nowrap">👤 Figures Clés</button>
+                    <button onclick="switchTab('tab-dataviz')" id="btn-tab-dataviz" class="tab-btn px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition duration-150 ease-in-out whitespace-nowrap">📈 Data & Réseaux</button>
+                    <button onclick="switchTab('tab-regulation')" id="btn-tab-regulation" class="tab-btn px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition duration-150 ease-in-out whitespace-nowrap">🛡️ Risques & CSA</button>
+                </nav>
+
+                <div class="md:hidden">
+                    <select id="mobile-nav-select" onchange="switchTab(this.value)" class="bg-slate-100 border border-slate-300 text-slate-800 text-xs rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full p-2">
+                        <option value="tab-vue-ensemble">📊 Vue d'ensemble</option>
+                        <option value="tab-theorie">🧠 Concepts & Théorie</option>
+                        <option value="tab-infotainment">📺 TV & Culture</option>
+                        <option value="tab-figures">👤 Figures Clés</option>
+                        <option value="tab-dataviz">📈 Data & Réseaux</option>
+                        <option value="tab-regulation">🛡️ Risques & CSA</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Body Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: VUE D'ENSEMBLE -->
+        <!-- ========================================== -->
+        <section id="tab-vue-ensemble" class="tab-content space-y-8">
+            <div class="bg-gradient-to-r from-slate-900 via-brand-900 to-slate-900 text-white rounded-2xl p-6 sm:p-10 shadow-xl relative overflow-hidden">
+                <div class="relative z-10 max-w-3xl space-y-4">
+                    <span class="inline-block px-3 py-1 bg-brand-700/80 text-rose-100 rounded-full text-xs font-semibold tracking-wide uppercase">Rapport de Synthèse Scientifique</span>
+                    <h2 class="text-2xl sm:text-4xl font-serif font-bold leading-tight">De l'Hémicycle Parlementaire au Théâtre des Algorithmes</h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Ce portail interactif explore la transformation structurelle de la communication politique en Belgique francophone. Analyse de la transition depuis les premiers débats télévisés des années 2000 jusqu'à l'hyperpolitique sur les réseaux sociaux, la peopolisation, la monétisation des écuries du like et le rôle de la régulation.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Introductory Paragraph Requirement -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <span>💡</span> Présentation de la Section : Vue d'Ensemble & Indicateurs Stratégiques
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Cette section synthétise les données quantitatives et qualitatives majeures du rapport. Elle met en lumière les mutations technologiques et médiatiques ayant déplacé le centre de gravité de la démocratie belge francophone des assemblées représentatives vers les plateaux d'infodivertissement et les plateformes numériques. Découvrez ci-dessous les indicateurs clés et la trajectoire temporelle de cette métamorphose.
+                </p>
+            </div>
+
+            <!-- Metric Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-brand-200 transition">
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dépenses Publicitaires 2024</div>
+                    <div class="text-2xl font-extrabold text-brand-800 mt-1">&gt; 7,4 M€</div>
+                    <p class="text-xs text-slate-600 mt-2">Investis par les partis belges sur les réseaux Meta (FB/Insta) et Google.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-brand-200 transition">
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Posts Organiques (2024)</div>
+                    <div class="text-2xl font-extrabold text-slate-900 mt-1">16.572</div>
+                    <p class="text-xs text-slate-600 mt-2">Publications des présidents et partis belges, avec 57% portés par les francophones.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-brand-200 transition">
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Record d'Activités (GLB)</div>
+                    <div class="text-2xl font-extrabold text-amber-600 mt-1">+255 %</div>
+                    <p class="text-xs text-slate-600 mt-2">Hausse du volume de posts de G.-L. Bouchez en 2024, cumulant 1,63M d'interactions.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-brand-200 transition">
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Part de la Plateforme X</div>
+                    <div class="text-2xl font-extrabold text-indigo-700 mt-1">47,8 %</div>
+                    <p class="text-xs text-slate-600 mt-2">Des publications des présidents de partis malgré le mythe des « élections TikTok ».</p>
+                </div>
+            </div>
+
+            <!-- Historical Timeline / Paradigm Shifts -->
+            <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <h3 class="text-lg font-bold text-slate-900 font-serif">Chronologie de la Spectaculairisation Politique en Belgique</h3>
+                    <p class="text-xs sm:text-sm text-slate-600">Quatre décennies de glissement symbolique, de la télévision généraliste aux flux algorithmiques.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+                    <div class="p-4 bg-slate-50 rounded-lg border-l-4 border-slate-400 space-y-2">
+                        <span class="text-xs font-bold text-slate-500">Années 2000</span>
+                        <h4 class="text-sm font-bold text-slate-900">Le Rapport CSA (2006)</h4>
+                        <p class="text-xs text-slate-600">Première étude constatant le déplacement du débat du Parlement vers les plateaux TV et les émissions hybrides d'infodivertissement.</p>
+                    </div>
+
+                    <div class="p-4 bg-rose-50 rounded-lg border-l-4 border-rose-500 space-y-2">
+                        <span class="text-xs font-bold text-rose-600">Ère Michel Daerden</span>
+                        <h4 class="text-sm font-bold text-slate-900">La "Daerdenmania"</h4>
+                        <p class="text-xs text-slate-600">L'émergence du premier buzz politique francophone. Exploitation de la bonhomie et de l'auto-dérision sur le web naissant.</p>
+                    </div>
+
+                    <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500 space-y-2">
+                        <span class="text-xs font-bold text-amber-600">2015 - 2020</span>
+                        <h4 class="text-sm font-bold text-slate-900">Satire & Infodivertissement</h4>
+                        <p class="text-xs text-slate-600">Consolidation du <i>Grand Cactus</i> (RTBF) et de <i>C'est pas tous les jours dimanche</i> (RTL-TVI). Co-construction des marques politiques par la caricature.</p>
+                    </div>
+
+                    <div class="p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500 space-y-2">
+                        <span class="text-xs font-bold text-indigo-600">2020 - 2024+</span>
+                        <h4 class="text-sm font-bold text-slate-900">L'Hyperpolitique Numérique</h4>
+                        <p class="text-xs text-slate-600">Clashs permanents sur X, immersion dans la téléréalité flamande (Bouchez dans <i>Special Forces</i>) et sponsoring massif sur Meta.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: CADRE THÉORIQUE -->
+        <!-- ========================================== -->
+        <section id="tab-theorie" class="tab-content hidden space-y-8">
+            <!-- Introductory Paragraph Requirement -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <span>🧠</span> Présentation de la Section : Fondements Théoriques & Modèles Scientifiques
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Cette section propose un éclairage sociologique et communicationnel sur les concepts fondamentaux qui sous-tendent la politique spectacle. Basée sur les travaux de Georges Balandier, Guy Debord et Nicolas Baygert, elle explicite comment la recherche de proximité, la création de marques personnelles et le recours à l'« extimité » cherchent à pallier le sentiment d'impuissance politique face aux contraintes technocratiques.
+                </p>
+            </div>
+
+            <!-- Interactive Concept Explorer -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Concept Card 1 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center font-bold text-lg">🎭</div>
+                        <h3 class="text-lg font-serif font-bold text-slate-900">Théâtrocratie & Peopolisation</h3>
+                        <p class="text-xs text-slate-500">Georges Balandier / Tabloidization</p>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            La « théâtrocratie » désigne le besoin consubstantiel des institutions politiques de se mettre en scène pour susciter l'admiration et conquérir la légitimité. Dans le monde contemporain, cela débouche sur la <i>peopolisation</i> (ou vedettisation), soit l'hybridation du champ politique avec les codes des célébrités du spectacle.
+                        </p>
+                    </div>
+                    <button onclick="openConceptModal('theatrocratie')" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg transition">En savoir plus →</button>
+                </div>
+
+                <!-- Concept Card 2 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg">🎬</div>
+                        <h3 class="text-lg font-serif font-bold text-slate-900">Société du Spectacle & Impuissance</h3>
+                        <p class="text-xs text-slate-500">Guy Debord</p>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Le spectacle n'est pas une simple décoration mais le cœur de l'irréalisme sociétal. Face à la complexité technocratique et la perte de souveraineté matérielle, la communication devient le seul terrain où les gouvernants conservent une illusion de maîtrise totale.
+                        </p>
+                    </div>
+                    <button onclick="openConceptModal('debord')" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg transition">En savoir plus →</button>
+                </div>
+
+                <!-- Concept Card 3 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-lg">🏷️</div>
+                        <h3 class="text-lg font-serif font-bold text-slate-900">Marque Politique & Extimité</h3>
+                        <p class="text-xs text-slate-500">Nicolas Baygert (ULB / IHECS)</p>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Transformation du personnel politique en marques soumises aux règles du marketing. L'« extimité » – le désir de dévoiler des éléments de son intimité sur les réseaux – crée un simulacre de proximité destiné à reconstruire un lien de confiance fragilisé.
+                        </p>
+                    </div>
+                    <button onclick="openConceptModal('extimite')" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg transition">En savoir plus →</button>
+                </div>
+            </div>
+
+            <!-- Deep Analytical Breakdown Box -->
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 sm:p-8 rounded-xl shadow-md space-y-4">
+                <h3 class="text-lg font-serif font-bold text-rose-300">Analyse : Le Paradoxe du "Simulacre de Proximité"</h3>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    Selon Nicolas Baygert, le recours massif aux récits personnels (<i>storytelling</i>) et l'exposition d'instants du quotidien visent à composer un « ethos d'authenticité ». Cependant, cette démarche produit un effet pervers : en remplaçant la confrontation programmatique par la monstration d'affects, la politique spectacle anesthésie la délibération citoyenne. L'électeur n'est plus invité à juger la pertinence d'une réforme fiscale ou sociale, mais à consommer l'histoire d'un dirigeant perçu comme « humain et accessible ».
+                </p>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: INFODIVERTISSEMENT & CULTURE -->
+        <!-- ========================================== -->
+        <section id="tab-infotainment" class="tab-content hidden space-y-8">
+            <!-- Introductory Paragraph Requirement -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <span>📺</span> Présentation de la Section : Infodivertissement, Satire & Clivage Culturel
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Cette section examine les dispositifs audiovisuels belges et la divergence culturelle majeure séparant la Belgique francophone de la Flandre. Alors que le Nord intègre naturellement le personnel politique au sein du star-system télévisuel (« Bekende Vlamingen »), le Sud a longtemps maintenu une réserve inspirée de la tradition républicaine française, avant d'être rattrapé par la dynamique d'infodivertissement et de satire institutionnalisée (ex. <i>Le Grand Cactus</i>).
+                </p>
+            </div>
+
+            <!-- Asymmetry Comparison Widget -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 font-serif">L'Asymétrie Culturelle : Belgique Francophone vs Flandre</h3>
+                        <p class="text-xs text-slate-500">Comparatif des rapports à la célébrité politique et à l'infodivertissement.</p>
+                    </div>
+                    <div class="flex bg-slate-100 p-1 rounded-lg text-xs font-semibold">
+                        <button onclick="setCultureView('all')" id="btn-culture-all" class="px-3 py-1.5 rounded-md bg-white shadow-sm text-slate-900">Vue Globale</button>
+                        <button onclick="setCultureView('fr')" id="btn-culture-fr" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900">Focus Francophone</button>
+                        <button onclick="setCultureView('nl')" id="btn-culture-nl" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900">Focus Flamand</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="culture-grid">
+                    <!-- Wallonie / FBA Card -->
+                    <div id="card-culture-fr" class="p-5 rounded-xl border border-rose-200 bg-rose-50/50 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                                <span class="text-rose-700">🔴</span> Belgique Francophone (FWB)
+                            </h4>
+                            <span class="text-xs bg-rose-100 text-rose-800 font-semibold px-2 py-0.5 rounded">Héritage Républicain</span>
+                        </div>
+                        <ul class="text-xs sm:text-sm text-slate-700 space-y-2.5">
+                            <li class="flex items-start gap-2">
+                                <span class="text-rose-600 font-bold">•</span>
+                                <span><b>Réserve Sacralisée :</b> Maintien historique d'une distance entre la fonction publique et le divertissement pur.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-rose-600 font-bold">•</span>
+                                <span><b>Absence de "Wallons Connus" :</b> Pas de panthéon médiatique unifié intégrant ministres et vedettes de variétés.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-rose-600 font-bold">•</span>
+                                <span><b>Satire Canalisée :</b> Rôle central du <i>Grand Cactus</i> (RTBF) et de <i>C'est pas tous les jours dimanche</i> (RTL) qui co-construisent la notoriété via la caricature.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-rose-600 font-bold">•</span>
+                                <span><b>Prudence Téléréalité :</b> La participation aux formats de divertissement extrême y demeure jugée risquée et politiquement transgressive.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Flandre Card -->
+                    <div id="card-culture-nl" class="p-5 rounded-xl border border-amber-200 bg-amber-50/50 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                                <span class="text-amber-700">🟡</span> Flandre (Vlaanderen)
+                            </h4>
+                            <span class="text-xs bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded">Star-System Intégré</span>
+                        </div>
+                        <ul class="text-xs sm:text-sm text-slate-700 space-y-2.5">
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-600 font-bold">•</span>
+                                <span><b>Culture "Bekende Vlamingen" (BV) :</b> Alignement horizontal absolu entre politiciens, chanteurs, journalistes et sportifs.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-600 font-bold">•</span>
+                                <span><b>Institutionnalisation du Quiz :</b> Émission phare <i>De Slimste Mens ter Wereld</i> (VTM) sur plus de 20 ans, passage incontournable pour les chefs de parti.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-600 font-bold">•</span>
+                                <span><b>Acceptation Sociale :</b> Omniprésence naturelle de figures comme Bart De Wever ou Conner Rousseau dans les jeux télévisés.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-600 font-bold">•</span>
+                                <span><b>Aiguillon VTM :</b> Téléréalité d'action (ex. <i>Special Forces</i>) utilisée comme arène de visibilité nationale.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Satire Breakdown: Le Grand Cactus -->
+            <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 font-serif">Le Rôle Ambivalent du <i>Grand Cactus</i> (RTBF / Tipik)</h3>
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Créé par Jérôme de Warzée et porté par des comédiens comme Kody, Damien Gillard ou Martin Charlier, <i>Le Grand Cactus</i> est devenu un rouage essentiel de l'écosystème médiatique francophone. L'émission génère une véritable <b>symbiose avec le personnel politique</b> : en parodiant leurs tics comportementaux ou leurs déboires (ex. le passage militaire de Georges-Louis Bouchez), le programme consacre leur notoriété tout en accumulant des millions de vues sur les réseaux sociaux. La frontière entre critique satirique et consolidation de la marque politique s'y avère de plus en plus poreuse.
+                </p>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: FIGURES PROTOTYPIQUES -->
+        <!-- ========================================== -->
+        <section id="tab-figures" class="tab-content hidden space-y-8">
+            <!-- Introductory Paragraph Requirement -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <span>👤</span> Présentation de la Section : Études de Cas & Figures Prototypiques
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Cette section propose une immersion dans les trajectoires de trois figures emblématiques incarnant différentes facettes de la politique spectacle en Belgique francophone. Découvrez comment Michel Daerden a inauguré le buzz affectif, comment Georges-Louis Bouchez en a fait un système d'hyperpolitique permanente, et comment Raoul Hedebouw utilise l'« anti-spectacle » performatif comme levier de mobilisation.
+                </p>
+            </div>
+
+            <!-- Figure Selector Tabs -->
+            <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+                <button onclick="selectProfile('daerden')" id="prof-btn-daerden" class="profile-tab-btn px-4 py-2 text-xs sm:text-sm font-bold rounded-lg bg-brand-800 text-white shadow-sm">Michel Daerden (Le Précurseur)</button>
+                <button onclick="selectProfile('bouchez')" id="prof-btn-bouchez" class="profile-tab-btn px-4 py-2 text-xs sm:text-sm font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Georges-Louis Bouchez (L'Hyperpolitique)</button>
+                <button onclick="selectProfile('hedebouw')" id="prof-btn-hedebouw" class="profile-tab-btn px-4 py-2 text-xs sm:text-sm font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">Raoul Hedebouw (L'Anti-Spectacle)</button>
+            </div>
+
+            <!-- Profile Content Display Container -->
+            <div id="profile-display-container" class="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-sm space-y-6">
+                <!-- Dynamic Content Hydrated via JavaScript -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 5: DATA & RÉSEAUX SOCIAUX -->
+        <!-- ========================================== -->
+        <section id="tab-dataviz" class="tab-content hidden space-y-8">
+            <!-- Introductory Paragraph Requirement -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <span>📈</span> Présentation de la Section : Dataviz & Budgets Publicitaires Numériques
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Cette section regroupe les données chiffrées issues des études récentes (AdLens, Xavier Degraux). Explorez la réalité des usages sur les réseaux sociaux en 2024, la suprématie surprenante de la plateforme X pour l'activité organique, les investissements colossaux des partis politiques sur l'écosystème Meta (Facebook, Instagram) et Google, ainsi qu'un simulateur de l'impact des futures réglementations européennes (DSA).
+                </p>
+            </div>
+
+            <!-- Data Visualizations Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Chart 1: Organic Social Media Share -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 font-serif">Répartition des Publications Organiques (2024)</h3>
+                        <p class="text-xs text-slate-500">Source : Étude Xavier Degraux (2024) - Présidents vs Partis Belges</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartOrganicPosts"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <b>Enseignement :</b> Malgré le battage médiatique autour de TikTok, X (Twitter) concentre près de 48% des messages des présidents de partis, confirmant la dépendance au réseau préféré des journalistes.
+                    </p>
+                </div>
+
+                <!-- Chart 2: Political Ad Spending Meta & Google -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 font-serif">Dépenses Publicitaires Estimées (2024)</h3>
+                        <p class="text-xs text-slate-500">Source : Collectif AdLens - Sponsoring Meta & Google</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartAdSpending"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <b>Enseignement :</b> Une asymétrie capacitaire massive favorise les écuries du Vlaams Belang (~2,3M€) et de Vooruit en Flandre, tandis que Les Engagés dominent le budget sponsoring francophone (~760k€).
+                    </p>
+                </div>
+            </div>
+
+            <!-- Interactive Table: Ad Spending and Organic Metrics -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <h3 class="text-base font-bold text-slate-900 font-serif">Tableau Recapitulatif des Investissements Publicitaires</h3>
+                    <input type="text" id="table-search" onkeyup="filterDataTable()" placeholder="Filtrer par parti ou région..." class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs w-full sm:w-64 focus:ring-brand-500 focus:border-brand-500">
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                                <th class="p-3">Parti Politique</th>
+                                <th class="p-3">Région / Communauté</th>
+                                <th class="p-3">Budget Estimé Meta & Google</th>
+                                <th class="p-3">Volume Organique Annuel</th>
+                                <th class="p-3">Stratégie Dominante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-table-body" class="divide-y divide-slate-100 text-slate-700">
+                            <!-- Populated dynamically via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Interactive Widget: DSA Impact Simulator -->
+            <div class="bg-gradient-to-r from-rose-900 to-slate-900 text-white p-6 sm:p-8 rounded-xl shadow-lg space-y-6">
+                <div class="space-y-2">
+                    <span class="bg-rose-700 text-white text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-1 rounded-full">Simulateur Réglementaire</span>
+                    <h3 class="text-xl font-serif font-bold">L'Impact du Bannissement des Ads Politiques (DSA Européen)</h3>
+                    <p class="text-xs sm:text-sm text-slate-300">
+                        Ajustez le niveau d'interdiction des publicités payantes par Meta pour voir la réaction anticipée des écuries politiques belges.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <div class="space-y-3 bg-white/10 p-4 rounded-lg backdrop-blur">
+                        <label class="text-xs font-bold text-slate-200">Niveau de Restriction Ads :</label>
+                        <input type="range" id="dsa-slider" min="0" max="100" value="75" oninput="updateDSASimulation(this.value)" class="w-full accent-rose-500 cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-300">
+                            <span>0% (Open Far-West)</span>
+                            <span id="slider-val-label" class="font-bold text-rose-300">75% (Règles DSA)</span>
+                            <span>100% (Ban Total)</span>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2 bg-slate-950/60 p-4 rounded-lg border border-slate-800 space-y-2">
+                        <h4 class="text-xs font-bold text-rose-400 uppercase tracking-wide">Projection de la Réaction Partisane :</h4>
+                        <p id="dsa-simulation-output" class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                            Interdiction forte (DSA) : Perte de la portée ciblée payante. Les partis reportent 80% de leurs ressources vers la provocation organique, les clashs sur X et les apparitions dans des podcasts ou émissions de divertissement pour forcer l'algorithme.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 6: RISQUES, BURNOUT & RÉGULATION -->
+        <!-- ========================================== -->
+        <section id="tab-regulation" class="tab-content hidden space-y-8">
+            <!-- Introductory Paragraph Requirement -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <span>🛡️</span> Présentation de la Section : Conséquences Démocratiques & Cadre Régulatoire
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Cette section analyse les dérives de l'exposition permanente. Elle met en relief le coût psychologique pour les mandataires (harcèlement, burn-out politique) et présente les réponses institutionnelles apportées par le Conseil Supérieur de l'Audiovisuel (CSA) en Fédération Wallonie-Bruxelles, notamment les nouveaux pictogrammes de signalétique et le statut juridique d'« éditeur responsable » appliqué aux politiciens-influenceurs.
+                </p>
+            </div>
+
+            <!-- Risk Grid & CSA Regulations -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Psychological and Democratic Impact -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="w-10 h-10 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center font-bold text-lg">⚠️</div>
+                    <h3 class="text-lg font-serif font-bold text-slate-900">Le Bilan Psychologique & Démocratique</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        L'injonction à l'exposition continue (extimité) expose directement les élus à la haine en ligne et au harcèlement de meute. Les exemples récents, comme la mise en quarantaine du domicile de Theo Francken suite à des menaces, illustrent la porosité toxique entre arène virtuelle et sécurité physique.
+                    </p>
+                    <div class="bg-rose-50 p-4 rounded-lg border-l-4 border-rose-600 space-y-2 text-xs text-rose-900">
+                        <b>Risque de Burn-out Politique :</b> Soumis à la pression algorithmique ininterrompue et enfermés dans des chambres d'écho (<i>echo chambers</i>), de nombreux responsables s'épuisent dans une performance théâtrale qui ne s'arrête jamais.
+                    </div>
+                </div>
+
+                <!-- CSA & Regulatory Framework -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-lg">🏛️</div>
+                    <h3 class="text-lg font-serif font-bold text-slate-900">L'Encadrement du CSA & la Régulation Influenceurs</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Le Conseil Supérieur de l'Audiovisuel (CSA) impose un cadre strict pour protéger la dignité humaine et la jeunesse en Communauté française :
+                    </p>
+                    <ul class="text-xs text-slate-700 space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-indigo-600 font-bold">•</span>
+                            <span><b>Nouvelle Signalétique :</b> Pictogrammes d'avertissement obligatoires en cas de violence verbale, angoisse ou discours clivants.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-indigo-600 font-bold">•</span>
+                            <span><b>Politiciens Vlogueurs :</b> Assimilés à des éditeurs responsables devant déclarer leur activité et porter des mentions explicites (#pub, #sponsorisé).</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-indigo-600 font-bold">•</span>
+                            <span><b>Certificat JEP :</b> Initiative du Jury d'Éthique Publicitaire pour moraliser la création de contenu hybride politique/divertissement.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Conclusion Synthesis Banner -->
+            <div class="bg-slate-900 text-white p-6 sm:p-8 rounded-xl shadow-md space-y-3">
+                <h3 class="text-base sm:text-lg font-serif font-bold text-rose-400">Conclusion : Réinventer le Récit Démocratique Face au Réel</h3>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    Comme l'indique l'analyse sociologique, la communication politique ne peut pas indéfiniment maquer les réalités socio-économiques. Face à la polarisation et au populisme algorithmique, le défi majeur de la classe politique modérée en Belgique francophone consiste à inventer des contre-modèles capables de mobiliser la raison et d'expliquer la complexité, sans succomber à la dictature de l'instantanéité et au spectacle permanent.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Interactive Concept Modal -->
+    <div id="concept-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative">
+            <button onclick="closeConceptModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 font-bold text-xl">✕</button>
+            <div id="modal-badge" class="inline-block px-2.5 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-bold">Concept Théorique</div>
+            <h3 id="modal-title" class="text-xl font-serif font-bold text-slate-900">Titre du Concept</h3>
+            <p id="modal-body" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Description détaillée du concept...
+            </p>
+            <div class="pt-2 flex justify-end">
+                <button onclick="closeConceptModal()" class="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p><b>Observatoire de la Politique Spectacle en Belgique Francophone</b> • Basé sur le Rapport Exhaustif de Recherche</p>
+            <p class="text-[11px] text-slate-400">Conçu avec Tailwind CSS & Chart.js • Aucune ressource SVG / Mermaid JS externe</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let chartOrganicInstance = null;
+        let chartAdSpendingInstance = null;
+
+        const profilesData = {
+            daerden: {
+                title: "Michel Daerden (1949-2012) : Le Précurseur du Buzz Affectif",
+                badge: "La Daerdenmania (Années 2000)",
+                subtitle: "Bourgmestre d'Ans, Ministre du Budget & 'Roi du Buzz'",
+                bgClass: "border-rose-200 bg-rose-50/30",
+                text: "Michel Daerden demeure l'archétype pionnier de la peopolisation en Belgique francophone. Réviseur d'entreprises et figure forte du PS liégois, il a incarné un phénomène médiatique inédit baptisé 'Daerdenmania'. Jouant de son élocution lente et de ses prestations joviales réinterprétées comme des moments de comédie sur le web émergent (La Télé Infernale, YouTube), il a su transformer la caricature en capital de sympathie électorale massif.",
+                bullet1: "<b>Autodérision Tactique :</b> Acceptation assumée de la parodie pour forger une proximité émotionnelle ('Papa').",
+                bullet2: "<b>Transition Web 1.0 :</b> Premier homme politique belge francophone devenu viral sur les plateformes vidéo.",
+                bullet3: "<b>Bilan :</b> Preuve précoce qu'une peopolisation assumée pouvait, contre toute attente institutionnelle, générer des victoires électorales."
+            },
+            bouchez: {
+                title: "Georges-Louis Bouchez : L'Apogée de l'Hyperpolitique et de la Saturation",
+                badge: "L'Ère Mouvement Réformateur (2020-2024+)",
+                subtitle: "Président du MR & Champion des Réseaux Sociaux",
+                bgClass: "border-amber-200 bg-amber-50/30",
+                text: "Georges-Louis Bouchez (GLB) théorise et pratique l'hyperpolitique comme un outil de domination de l'espace mental et médiatique. Sa stratégie repose sur l'omniprésence, le clivage permanent sur X (+255% de posts en 2024) et la transgression des frontières linguistiques. Son passage remarqué dans l'émission de téléréalité militaire flamande 'Special Forces' (VTM) illustre le pari du buzz à tout prix, transformant un échec physique rapide en stratégie de notoriété nationale globale.",
+                bullet1: "<b>Saturation Médiatique :</b> 72% de son activité concentrée sur X avec plus de 1,63M d'interactions publiques.",
+                bullet2: "<b>Expérience Special Forces (VTM) :</b> Transgression de la frontière linguistique assumée malgré l'exposition au ridicule.",
+                bullet3: "<b>Risque de Sidération :</b> Stratégie de clash permanent tendant à substituer la communication à la résolution des problèmes structurels."
+            },
+            hedebouw: {
+                title: "Raoul Hedebouw : L'Anti-Spectacle Performatif du PTB",
+                badge: "Gauches Radicales & Populisme Prolétarien",
+                subtitle: "Président du Parti du Travail de Belgique (PTB)",
+                bgClass: "border-indigo-200 bg-indigo-50/30",
+                text: "Raoul Hedebouw illustre la théâtralisation de l'anti-élitisme. Tout en percevant le traitement parlementaire légal (>160.000€ bruts/an), il scénarise systématiquement son choix d'extimité financière en affirmant ne conserver que 2.500€ net par mois (le reste étant rétrocédé au parti). Cette posture d'authenticité prolétarienne est calibrée pour la viralité sur TikTok et LN24 ('Face aux Belges'), prouvant que même la critique du système doit adopter les codes de la politique spectacle pour exister.",
+                bullet1: "<b>Ethos Prolétarien :</b> Théâtralisation du salaire plafonné comme arme rhétorique contre 'l'establishment'.",
+                bullet2: "<b>Formats Courts & Punchlines :</b> Maîtrise des séquences incisives adaptées au repartage TikTok et Instagram.",
+                bullet3: "<b>Ambivalence :</b> Une posture d'anti-spectacle qui utilise avec brio les ficelles de la mise en scène médiatique."
+            }
+        };
+
+        const tableData = [
+            { party: "Vlaams Belang (VB)", region: "Flandre", budget: "~ 2.300.000 €", volume: "Très Élevé", strategy: "Ciblage anxiogène & Ads Meta massifs" },
+            { party: "Vooruit", region: "Flandre", budget: "~ 1.190.000 €", volume: "+791% (Depraetere)", strategy: "Sponsoring de rattrapage & Instagram" },
+            { party: "Les Engagés", region: "Belgique Francophone", budget: "~ 760.000 €", volume: "Moyen", strategy: "Rebranding visuel & Ads ciblés" },
+            { party: "Parti Socialiste (PS)", region: "Belgique Francophone", budget: "~ 680.000 €", volume: "Élevé", strategy: "Sponsoring social & présence locale" },
+            { party: "Mouvement Réformateur (MR)", region: "Belgique Francophone", budget: "~ 470.000 €", volume: "Record Organique (GLB)", strategy: "Hyperactivité X & Viralité organique" }
+        ];
+
+        const conceptDetails = {
+            theatrocratie: {
+                title: "Théâtrocratie & Peopolisation Politique",
+                badge: "Concept de Georges Balandier",
+                text: "La théâtrocratie désigne le besoin rituel des institutions de parader pour assoir leur légitimité. Dans l'écosystème contemporain, la 'peopolisation' (ou vedettisation) en est l'aboutissement : l'homme politique s'approprie les codes des stars du show-business, expose des éléments intimes de sa vie privée et privilégie l'émotion immédiate au détriment de l'argumentation idéologique rationnelle."
+            },
+            debord: {
+                title: "La Société du Spectacle & l'Impuissance Statale",
+                badge: "Concept de Guy Debord",
+                text: "Debord définit le spectacle comme le cœur de l'irréalisme de la société moderne. Face à la mondialisation économique, à la finance et aux règles technocratiques européennes, les gouvernants perdent la maîtrise réelle de leviers clés (migration, budget, industrie). La communication spectaculaire devient alors l'unique domaine où le pouvoir continue d'exhiber une capacité d'action fictive."
+            },
+            extimité: {
+                title: "Marque Politique & Extimité Tactique",
+                badge: "Travaux de Nicolas Baygert (ULB/IHECS)",
+                text: "La marque politique soumet l'élu aux lois du branding. L'extimité représente le désir délibéré de rendre publiques certaines facettes privées (passions, famille, faiblesses) afin de susciter l'empathie. Ce 'simulacre de proximité' cherche à rétablir le lien de confiance brisé entre la population et les élites, mais risque d'anesthésier le débat démocratique en le réduisant à une compétition de sympathie."
+            }
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            const target = document.getElementById(tabId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            const mobileSelect = document.getElementById('mobile-nav-select');
+            if (mobileSelect) {
+                mobileSelect.value = tabId;
+            }
+
+            if (tabId === 'tab-dataviz') {
+                setTimeout(initCharts, 100);
+            }
+        }
+
+        function setCultureView(view) {
+            const cardFr = document.getElementById('card-culture-fr');
+            const cardNl = document.getElementById('card-culture-nl');
+            const btnAll = document.getElementById('btn-culture-all');
+            const btnFr = document.getElementById('btn-culture-fr');
+            const btnNl = document.getElementById('btn-culture-nl');
+
+            [btnAll, btnFr, btnNl].forEach(b => {
+                b.classList.remove('bg-white', 'shadow-sm', 'text-slate-900');
+                b.classList.add('text-slate-600');
+            });
+
+            if (view === 'fr') {
+                cardFr.classList.remove('hidden');
+                cardNl.classList.add('hidden');
+                btnFr.classList.add('bg-white', 'shadow-sm', 'text-slate-900');
+            } else if (view === 'nl') {
+                cardFr.classList.add('hidden');
+                cardNl.classList.remove('hidden');
+                btnNl.classList.add('bg-white', 'shadow-sm', 'text-slate-900');
+            } else {
+                cardFr.classList.remove('hidden');
+                cardNl.classList.remove('hidden');
+                btnAll.classList.add('bg-white', 'shadow-sm', 'text-slate-900');
+            }
+        }
+
+        function selectProfile(key) {
+            document.querySelectorAll('.profile-tab-btn').forEach(b => {
+                b.classList.remove('bg-brand-800', 'text-white');
+                b.classList.add('bg-slate-100', 'text-slate-700');
+            });
+
+            const activeBtn = document.getElementById('prof-btn-' + key);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+                activeBtn.classList.add('bg-brand-800', 'text-white');
+            }
+
+            const data = profilesData[key];
+            const container = document.getElementById('profile-display-container');
+
+            if (data && container) {
+                container.className = `bg-white p-6 sm:p-8 rounded-xl border ${data.bgClass} shadow-sm space-y-6 transition-all duration-300`;
+                container.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-800">${data.badge}</span>
+                            <h3 class="text-xl font-serif font-bold text-slate-900">${data.title}</h3>
+                            <p class="text-xs text-slate-500 font-medium">${data.subtitle}</p>
+                        </div>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${data.text}</p>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 space-y-2">
+                        <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">Éléments Clés de la Stratégie :</h4>
+                        <ul class="text-xs sm:text-sm text-slate-700 space-y-2">
+                            <li class="flex items-start gap-2"><span class="text-brand-700">✦</span><span>${data.bullet1}</span></li>
+                            <li class="flex items-start gap-2"><span class="text-brand-700">✦</span><span>${data.bullet2}</span></li>
+                            <li class="flex items-start gap-2"><span class="text-brand-700">✦</span><span>${data.bullet3}</span></li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        function populateDataTable() {
+            const tbody = document.getElementById('data-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            tableData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-900">${row.party}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-semibold ${row.region.includes('Flandre') ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'}">${row.region}</span></td>
+                    <td class="p-3 font-semibold text-brand-800">${row.budget}</td>
+                    <td class="p-3">${row.volume}</td>
+                    <td class="p-3 text-slate-600">${row.strategy}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterDataTable() {
+            const query = document.getElementById('table-search').value.toLowerCase();
+            const rows = document.querySelectorAll('#data-table-body tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        function openConceptModal(key) {
+            const modal = document.getElementById('concept-modal');
+            const data = conceptDetails[key];
+            if (data && modal) {
+                document.getElementById('modal-title').innerText = data.title;
+                document.getElementById('modal-badge').innerText = data.badge;
+                document.getElementById('modal-body').innerText = data.text;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeConceptModal() {
+            const modal = document.getElementById('concept-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function updateDSASimulation(val) {
+            const label = document.getElementById('slider-val-label');
+            const output = document.getElementById('dsa-simulation-output');
+
+            label.innerText = val + '% (Niveau de Restriction)';
+
+            if (val < 30) {
+                output.innerText = "Restriction faible : Les partis continuent d'inonder Facebook et Instagram de publicités ciblées. La politique spectacle reste financée par la puissance budgétaire brute.";
+            } else if (val < 70) {
+                output.innerText = "Restriction modérée : Les budgets Meta basculent vers le marketing d'influence, la création de podcasts et les chaînes YouTube de partis. L'extimité scénarisée prend le dessus.";
+            } else {
+                output.innerText = "Interdiction quasi-totale (DSA strict) : Perte du ciblage payant. Les partis basculent massivement vers la provocation organique, les clashs sur X, la saturation télévisuelle et les frasques dans la téléréalité pour forcer l'attention algorithmique gratuite.";
+            }
+        }
+
+        function initCharts() {
+            if (chartOrganicInstance) chartOrganicInstance.destroy();
+            if (chartAdSpendingInstance) chartAdSpendingInstance.destroy();
+
+            const ctxOrganic = document.getElementById('chartOrganicPosts');
+            if (ctxOrganic) {
+                chartOrganicInstance = new Chart(ctxOrganic, {
+                    type: 'bar',
+                    data: {
+                        labels: ['X (Twitter)', 'Instagram', 'Facebook', 'TikTok', 'LinkedIn'],
+                        datasets: [
+                            {
+                                label: 'Présidents de Partis (%)',
+                                data: [47.8, 19.6, 19.2, 7.6, 5.8],
+                                backgroundColor: '#be123c'
+                            },
+                            {
+                                label: 'Partis Officiels (%)',
+                                data: [46.7, 20.9, 21.6, 2.2, 5.6],
+                                backgroundColor: '#475569'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.raw + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, max: 60, ticks: { callback: v => v + '%' } },
+                            x: { ticks: { font: { size: 10 } } }
+                        }
+                    }
+                });
+            }
+
+            const ctxAd = document.getElementById('chartAdSpending');
+            if (ctxAd) {
+                chartAdSpendingInstance = new Chart(ctxAd, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Vlaams Belang', 'Vooruit', 'Les Engagés', 'Parti Socialiste', 'Mouvement Réformateur'],
+                        datasets: [{
+                            data: [2300000, 1190000, 760000, 680000, 470000],
+                            backgroundColor: ['#d97706', '#dc2626', '#059669', '#e11d48', '#2563eb']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const val = context.raw.toLocaleString('fr-BE') + ' €';
+                                        return ' ' + context.label + ': ' + val;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            selectProfile('daerden');
+            populateDataTable();
+        });
+    </script>
+</body>
+</html>
